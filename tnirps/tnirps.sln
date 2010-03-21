@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tnirps", "tnirps\tnirps.vcproj", "{1C96AE56-E21E-41E7-BEE1-BF6186FD9464}"
+	ProjectSection(ProjectDependencies) = postProject
+		{101CEA0C-8C1F-4ECC-AE04-9DE61A7ED2A4} = {101CEA0C-8C1F-4ECC-AE04-9DE61A7ED2A4}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "common\common.vcproj", "{101CEA0C-8C1F-4ECC-AE04-9DE61A7ED2A4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C96AE56-E21E-41E7-BEE1-BF6186FD9464}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1C96AE56-E21E-41E7-BEE1-BF6186FD9464}.Debug|Win32.Build.0 = Debug|Win32
+		{1C96AE56-E21E-41E7-BEE1-BF6186FD9464}.Release|Win32.ActiveCfg = Release|Win32
+		{1C96AE56-E21E-41E7-BEE1-BF6186FD9464}.Release|Win32.Build.0 = Release|Win32
+		{101CEA0C-8C1F-4ECC-AE04-9DE61A7ED2A4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{101CEA0C-8C1F-4ECC-AE04-9DE61A7ED2A4}.Debug|Win32.Build.0 = Debug|Win32
+		{101CEA0C-8C1F-4ECC-AE04-9DE61A7ED2A4}.Release|Win32.ActiveCfg = Release|Win32
+		{101CEA0C-8C1F-4ECC-AE04-9DE61A7ED2A4}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
