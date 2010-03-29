@@ -4,6 +4,7 @@
 #include "list.h"
 #include "tnirps_monomial.h"
 #include "tnirps_polynomial.h"
+#include "tnirps_reduction.h"
 
 const char* varName (int idx) {
    static const char* vars[] = {"a", "b", "c", "d", "e", "f", "g", "h", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
@@ -11,6 +12,8 @@ const char* varName (int idx) {
       throw Exception("Variable index %i out of range!", idx);
    return vars[idx];
 }
+
+const char* vv = "abcdefghkmnpqrstuvwxyz";
 
 void testMonome (void)
 {
@@ -265,10 +268,72 @@ void testPolySum (void)
    scanf("*");
 }
 
+void testInitFromString (void)
+{
+   const char* vv = "abcdefghkmnpqrstuvwxyz";
+   Monomial m;
+   m = MP.init("a5", 0, 0, vv);
+   MP.print(m);
+   MP.release(m);
+   printf("\n");
+
+   m = MP.init("b4", 0, 0, vv);
+   MP.print(m);
+   MP.release(m);
+   printf("\n");
+
+   m = MP.init("a71 b 13", 0, 0, vv);
+   MP.print(m);
+   MP.release(m);
+   printf("\n");
+
+   m = MP.init("c^5*d*e^2", 0, 0, vv);
+   MP.print(m);
+   MP.release(m);
+   printf("\n");
+
+   m = MP.init("aaa*abc", 2, 0, vv);
+   MP.print(m);
+   MP.release(m);
+   printf("\n");
+
+   Polynomial g[3];
+   g[0].init("x^5+3*x^3*y^2+7*y^3", 0, 0, vv);
+   g[1].init("x^2*y^2+x^8", 0, 0, vv);
+   g[2].init("x^4*y+x*y", 0, 0, vv);
+
+   g[0].print(); printf("\n");
+   g[1].print(); printf("\n");
+   g[2].print(); printf("\n");
+   scanf("*");
+}
+
+void testReduce (void)
+{
+   Polynomial g[4],p;
+   //const char* pp[] = {"y^3+x*y", "y^2*x+x^2"};
+   g[0].init("y^3+x*y", 0, 0, vv);
+   g[1].init("y^2*x+x^2", 0, 0, vv);
+   g[2].init("x^2*y-2*y^2+x", 0, 0, vv);
+   g[3].init("x^3-3*x*y", 0, 0, vv);
+   g[0].sort();
+   g[1].sort();
+   g[2].sort();
+   g[3].sort();
+   
+   p.init("x^3-2*y^2*x^2+7*y^5", 0, 0, vv);
+   p.sort();
+
+   reduce(g, NELEM(g), p);
+
+   scanf("*");
+}
+
 int main (void)
 {
-   MP.setOrder(MonoPool::LEX);
+   MP.setOrder(MonoPool::DRL);
    MP.varName = varName;
+   testReduce();
    // TODO: reduction, etc.
    //testPolySum();
    //testPolyMul();

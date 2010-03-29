@@ -210,6 +210,14 @@
 				/>
 			</FileConfiguration>
 		</File>
+		<File
+			RelativePath=".\tnirps_reduction.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\tnirps_reduction.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

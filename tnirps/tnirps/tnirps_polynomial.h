@@ -20,7 +20,25 @@ public:
    };
 
    Polynomial () : _terms(_pool) {}
-   
+
+   void init (const char* expr, int begin, int end, const char* vnames) {
+      int val = 0;
+      if (end <= 0)
+         end = strlen(expr);
+      int p0 = 0;
+      for (int i = begin; i <= end; ++i) {
+         if (i == end || expr[i] == '+' || expr[i] == '-') {
+            if (sscanf(expr+p0, "%d", &val) != 1)
+               val = 1;
+            while (!isalpha(expr[p0]))
+               ++p0;
+            Monomial m = MP.init(expr, p0, i, vnames);
+            addTerm(m,val);
+            p0 = i;
+         }
+      }
+   }
+
    int addTerm (Monomial m, CFTYPE f)
    {                      
       int id = _terms.add();
@@ -55,8 +73,10 @@ public:
    const Term& at (int i) const { return _terms.at(i); }
    Term& at (int i) { return _terms.at(i); }
    int size () const { return _terms.size(); }
+   int lm () const { return _terms.at(_terms.begin()).m; }
+   CFTYPE lc () const { return _terms.at(_terms.begin()).f; }
    
-   void print (const char* const * vnames = NULL) {
+   void print () const {
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i)) {
          if (i != _terms.begin())    
             printf(" + ");
@@ -89,18 +109,23 @@ public:
    }
 
    static void add (Polynomial& r, const Polynomial& a, const CFTYPE& f) {
+      add(r, a, 1, f);
+   }
+
+   static void add (Polynomial& r, const Polynomial& a, const CFTYPE& fr, const CFTYPE& fa) {
       int ri = r.begin(), ai = a.begin();
       while (ri < r.end() && ai < a.end()) {
          Term& tr = r.at(ri);
          const Term& ta = a.at(ai);
          int c = MP.cmp(tr.m, ta.m);
          if (c > 0) {
+            tr.f *= fr;
             ri = r.next(ri);
          } else if (c < 0) {
-            r.insertTerm(ta.m, ta.f * f, ri);
+            r.insertTerm(ta.m, ta.f * fa, ri);
             ai = a.next(ai);
          } else {
-            tr.f += ta.f * f;
+            tr.f = tr.f * fr + ta.f * fa;
             if (tr.f == 0) {
                int t = ri;
                ri = r.next(ri);
@@ -112,12 +137,21 @@ public:
             }
          }
       }
+      while (ri < r.end()) {
+         Term& tr = r.at(ri);
+         tr.f *= fr;
+         ri = r.next(ri);
+      }
+      while (ai < a.end()) {
+         const Term& ta = a.at(ai);
+         r.addTerm(ta.m, ta.f * fa);
+         ai = a.next(ai);
+      }
    }
 
    void copy (const Polynomial& a) {
       clear();
       for (int i = a.begin(); i < a.end(); i = a.next(i)) {
-         printf("%i", i);
          const Term& t = a.at(i);
          addTerm(t.m, t.f);
       }

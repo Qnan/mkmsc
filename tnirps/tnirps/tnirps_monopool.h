@@ -34,6 +34,40 @@ public:
       return id;
    }
 
+   Monomial init (const char* expr, int begin, int end, const char* vnames) {
+      int var = -1, deg = 0;
+      static int degs[1024];
+      int len = strlen(vnames);
+      for (int j = 0; j < len; ++j)
+         degs[j] = 0;
+      if (end <= 0)
+         end = strlen(expr);
+      char c;
+      for (int i = begin; i < end; ++i) {
+         c = expr[i];
+         if (isalpha(c)) {
+            if (var >= 0)
+               degs[var]++;
+            for (var = 0; var < len && vnames[var] != c; ++var);
+            if (var == len)
+               throw Exception("Variable name unrecognized: %c", c);
+         } else if (isdigit(c)) {
+            if (sscanf(expr+i, "%d", &deg) != 1 || var < 0)
+               throw Exception("Error parsing expression %s, starting %s", expr, expr+i);
+            degs[var] += deg;
+            var = -1;
+            deg = 0;
+            while (i+1 < end && isdigit(expr[i+1]))
+               ++i;
+         } else if (isspace(c) || c == '*' || c == '^') {
+         } else
+            throw Exception("Unexpected symbol at %s, starting %s", expr, expr+i);
+      }
+      if (var >= 0)
+         degs[var]++;
+      return init(degs, len);
+   }
+
    int length (Monomial id) const {
       return _pool.at(id).length();
    }
@@ -70,7 +104,7 @@ public:
       return r;
    }
 
-   bool divides(Monomial id1, Monomial id2) {
+   bool divides(Monomial id1, Monomial id2) { // id2 divides id1
       return _Mon::divides(_pool.at(id1), _pool.at(id2));
    }
 
