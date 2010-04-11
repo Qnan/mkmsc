@@ -5,6 +5,7 @@
 #include "tnirps_monomial.h"
 #include "tnirps_polynomial.h"
 #include "tnirps_reduction.h"
+#include "tnirps_scheme.h"
 
 const char* varName (int idx) {
    static const char* vars[] = {"a", "b", "c", "d", "e", "f", "g", "h", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
@@ -329,12 +330,28 @@ void testReduce (void)
    scanf("*");
 }
 
+void testGorner (void)
+{
+   Polynomial p;
+
+   p.init("x2y+xy2+xy+x+y3+y2", 0, 0, vv);
+   p.sort();
+
+   p.print(),printf("\n");
+   SchemeGorner gorner(p);
+   gorner.build();
+   //reduce(g, NELEM(g), p);
+
+   scanf("*");
+}
+
 int main (void)
 {
-   MP.setOrder(MonoPool::DRL);
+   MP.setOrder(MonoPool::LEX);
    MP.varName = varName;
-   testReduce();
-   // TODO: reduction, etc.
+   //testReduce();
+   testGorner();
+   
    //testPolySum();
    //testPolyMul();
    //testPolyPrint();

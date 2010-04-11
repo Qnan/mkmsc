@@ -75,6 +75,7 @@ public:
    int size () const { return _terms.size(); }
    int lm () const { return _terms.at(_terms.begin()).m; }
    CFTYPE lc () const { return _terms.at(_terms.begin()).f; }
+   Term& lt () const { return _terms.at(_terms.begin()); }
    
    void print () const {
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i)) {
@@ -156,69 +157,6 @@ public:
          addTerm(t.m, t.f);
       }
    }
-
-   //void div (const Polynomial& a, const Polynomial& b) {
-   //   vars.clear();
-   //   int i = 0, j = 0, i1 = a.vars.length(), j1 = b.vars.length(), d;
-   //   while (i < i1 && j < j1) {             
-   //      const Var& va = a.vars[i], vb = b.vars[j];
-   //      if (va.idx == vb.idx) {
-   //         d = va.deg - vb.deg;
-   //         if (d > 0)
-   //            vars.push(Var(va.idx, d));
-   //         ++i;
-   //         ++j;
-   //      } else if (va.idx < vb.idx) {
-   //         vars.push(Var(va.idx, va.deg));
-   //         ++i;
-   //      } else {
-   //         throw Exception("Monomes don't divide");
-   //      }  
-   //   }
-   //   while (i < i1) {
-   //      vars.push(Var(a.vars[i].idx, a.vars[i].deg));
-   //      ++i;
-   //   }
-   //   if (j < j1)
-   //      throw Exception("Monomes don't divide");
-   //}
-
-   //void gcd (const Polynomial& a, const Polynomial& b) {
-   //   vars.clear();
-   //   int i = 0, j = 0, i1 = a.vars.length(), j1 = b.vars.length();
-   //   while (i < i1 && j < j1) {             
-   //      const Var& va = a.vars[i], vb = b.vars[j];
-   //      if (va.idx == vb.idx) {
-   //         vars.push(Var(va.idx, MIN(va.deg, vb.deg)));
-   //         ++i;
-   //         ++j;
-   //      } else if (va.idx < vb.idx) {
-   //         ++i;
-   //      } else {
-   //         ++j;
-   //      }  
-   //   }
-   //}
-
-   //int nvars (void) const {
-   //   return vars.length();
-   //}
-
-   //const Var& var (int i) const {
-   //   return vars[i];
-   //}
-
-   //int countHash() const
-   //{
-   //   const int p = 31;
-   //   for (int i = 0; i < )
-   //   static long k[]={0,4,8,12,16,20,24,28};
-   //   static int and = 0x7;
-   //   int hash = 0;
-   //   for(int i = 0; i < vars.length(); ++i)
-   //      hash ^= vars[i].deg << k[vars[i].idx & and];
-   //   return hash;
-   //}
 
 private:
    static Pool<ObjList<Term>::Elem> _pool;

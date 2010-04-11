@@ -218,6 +218,14 @@
 			RelativePath=".\tnirps_reduction.h"
 			>
 		</File>
+		<File
+			RelativePath=".\tnirps_scheme.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\tnirps_scheme.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

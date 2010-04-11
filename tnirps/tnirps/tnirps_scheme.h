@@ -15,6 +15,10 @@ public:
       build(_poly);
    }
 
+   struct Step {
+
+   };
+
    void build (const Polynomial& p) {
       if (p.size() <= 1) {
          p.print();
