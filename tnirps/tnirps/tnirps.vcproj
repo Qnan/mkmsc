@@ -226,6 +226,22 @@
 			RelativePath=".\tnirps_scheme.h"
 			>
 		</File>
+		<File
+			RelativePath=".\tnirps_scheme_gorner.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\tnirps_scheme_gorner.h"
+			>
+		</File>
+		<File
+			RelativePath=".\tnirps_scheme_mst.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\tnirps_scheme_mst.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

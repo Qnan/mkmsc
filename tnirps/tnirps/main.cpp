@@ -5,7 +5,7 @@
 #include "tnirps_monomial.h"
 #include "tnirps_polynomial.h"
 #include "tnirps_reduction.h"
-#include "tnirps_scheme.h"
+#include "tnirps_scheme_gorner.h"
 
 const char* varName (int idx) {
    static const char* vars[] = {"a", "b", "c", "d", "e", "f", "g", "h", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
