@@ -13,7 +13,7 @@ public:
 
    virtual void proceed (void* context) = 0;
 
-   virtual ~Scheme () = 0 {}
+   virtual ~Scheme () {}
 
 protected:
    const Polynomial& _poly;

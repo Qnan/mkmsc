@@ -44,7 +44,6 @@ void testMonome (void)
    MP.release(m3);
    MP.release(m4);
    MP.release(m5);
-   scanf("*");
 }
 
 void testMonSort (void)
@@ -104,8 +103,6 @@ void testMonSort (void)
       MP.release(mm[i]);
 
    printf("\n");
-
-   scanf("*");
 }
 
 void testMonDiv ()
@@ -143,7 +140,6 @@ void testMonDiv ()
    MP.release(m2);
    MP.release(m3);
    MP.release(m4);
-   scanf("*");
 }
 
 void testListSort ()
@@ -167,8 +163,6 @@ void testListSort ()
    for (int i = list.begin(); i < list.end(); i = list.next(i))
       printf(" %i", list.at(i));
    printf("\n");
-
-   scanf("*");
 }
 
 void testPolyPrint (void)
@@ -190,8 +184,6 @@ void testPolyPrint (void)
       MP.release(m);
    }
    p.print();
-
-   scanf("*");
 }
 
 void testPolyMul (void)
@@ -220,8 +212,6 @@ void testPolyMul (void)
    Polynomial::mul(r, p, m);
    r.print(); printf("\n");
    MP.release(m);
-
-   scanf("*");
 }
 
 void initTestPoly (Polynomial& p, const int* id, const int* cf, int nvars, int nterms)
@@ -265,8 +255,6 @@ void testPolySum (void)
    r.copy(p1);
    Polynomial::add(r, p2, -2);
    r.print(); printf("\n");       
-
-   scanf("*");
 }
 
 void testInitFromString (void)
@@ -306,7 +294,6 @@ void testInitFromString (void)
    g[0].print(); printf("\n");
    g[1].print(); printf("\n");
    g[2].print(); printf("\n");
-   scanf("*");
 }
 
 void testReduce (void)
@@ -327,7 +314,6 @@ void testReduce (void)
 
    reduce(g, NELEM(g), p);
 
-   scanf("*");
 }
 
 void testGorner (void)
@@ -341,8 +327,6 @@ void testGorner (void)
    SchemeGorner gorner(p);
    gorner.build();
    //reduce(g, NELEM(g), p);
-
-   scanf("*");
 }
 
 int main (void)

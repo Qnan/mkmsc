@@ -244,10 +244,10 @@ private:
       int countHash() const
       {
          static long k[]={0,4,8,12,16,20,24,28};
-         static int and = 0x7;
+         static int a = 0x7;
          int hash = 0;
          for(int i = 0; i < vars.size(); ++i)
-            hash ^= vars[i].deg << k[vars[i].idx & and];
+            hash ^= vars[i].deg << k[vars[i].idx & a];
          return hash;
       }
 
