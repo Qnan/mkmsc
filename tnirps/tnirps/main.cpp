@@ -6,6 +6,9 @@
 #include "tnirps_polynomial.h"
 #include "tnirps_reduction.h"
 #include "tnirps_scheme_gorner.h"
+#include "tnirps_bigint.h"
+
+#include <gmp.h>
 
 const char* varName (int idx) {
    static const char* vars[] = {"a", "b", "c", "d", "e", "f", "g", "h", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
@@ -331,6 +334,20 @@ void testGorner (void)
 
 int main (void)
 {
+   bigint_t a, b, r;
+   BI::init(a);
+   BI::init(b);
+   BI::init(r);
+
+   BI::set(a, 70036);
+   BI::set(b, 1245);
+   BI::sub(r, a, b);
+   gmp_printf("%Zd - %Zd = %Zd", a, b, r);
+   
+   BI::clear(a);
+   BI::clear(b);
+   BI::clear(r);
+
    MP.setOrder(MonoPool::LEX);
    MP.varName = varName;
    //testReduce();
