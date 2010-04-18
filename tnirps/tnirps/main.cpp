@@ -7,11 +7,21 @@
 #include "tnirps_reduction.h"
 #include "tnirps_scheme_gorner.h"
 #include "tnirps_bigint.h"
+#include "tnirps_poly_evaluator.h"
+#include "tnirps_poly_evaluator_i.h"
+#include "tnirps_poly_printer.h"
 
 #include <gmp.h>
 
 const char* varName (int idx) {
    static const char* vars[] = {"a", "b", "c", "d", "e", "f", "g", "h", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
+   if (idx < 0 || idx >= NELEM(vars))
+      throw Exception("Variable index %i out of range!", idx);
+   return vars[idx];
+}
+
+const char* varNameXYZ (int idx) {
+   static const char* vars[] = {"x", "y", "z"};
    if (idx < 0 || idx >= NELEM(vars))
       throw Exception("Variable index %i out of range!", idx);
    return vars[idx];
@@ -323,33 +333,31 @@ void testGorner (void)
 {
    Polynomial p;
 
-   p.init("x2y+xy2+xy+x+y3+y2", 0, 0, vv);
+   p.init("x2y+13xy2+xy+x+y3+y2", 0, 0, "xyz");
    p.sort();
 
    p.print(),printf("\n");
-   SchemeGorner gorner(p);
+   Scheme scheme;
+   SchemeGorner gorner(scheme, p);
    gorner.build();
-   //reduce(g, NELEM(g), p);
+   printf("\n\n");
+   Printer prn;
+   prn.evaluate(scheme);
+   printf("\n");
+   Printer prn1;
+   prn1.evaluate(scheme);
+   printf("\n");
+   EvaluatorInt eval;
+   Array<int> values;
+   values.push(3);
+   values.push(-1);
+   eval.evaluate(scheme, values);
 }
 
 int main (void)
 {
-   bigint_t a, b, r;
-   BI::init(a);
-   BI::init(b);
-   BI::init(r);
-
-   BI::set(a, 70036);
-   BI::set(b, 1245);
-   BI::sub(r, a, b);
-   gmp_printf("%Zd - %Zd = %Zd", a, b, r);
-   
-   BI::clear(a);
-   BI::clear(b);
-   BI::clear(r);
-
    MP.setOrder(MonoPool::LEX);
-   MP.varName = varName;
+   MP.varName = varNameXYZ;
    //testReduce();
    testGorner();
    

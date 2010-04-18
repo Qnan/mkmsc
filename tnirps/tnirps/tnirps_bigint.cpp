@@ -70,7 +70,7 @@ void BigInt::pow (bigint_t& r, const bigint_t& base, const long exp) {
    mpz_pow_ui(r, base, TO_UNSIGNED(exp));
 }
 void BigInt::pow (bigint_t& r, const long base, const long exp) {
-   mpz_ui_pow_ui(r, TO_UNSIGNED(base), TO_UNSIGNED(exp));
+   mpz_ui_pow_ui(r, base, TO_UNSIGNED(exp));
 }
 void BigInt::powmod (bigint_t& r, const bigint_t& base, const bigint_t& exp, const bigint_t& mod) {
    mpz_powm(r, base, exp, mod);

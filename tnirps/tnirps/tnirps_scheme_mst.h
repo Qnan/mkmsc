@@ -8,26 +8,21 @@
 #include "tnirps_polynomial.h"
 class Exception;
 
-class SchemeMst : public Scheme {
+class SchemeMst {
 public:
-   SchemeMst (const Polynomial& poly) : Scheme(poly) {}
+   SchemeMst (const Polynomial& poly) : _poly(poly) {}
 
-   // override
-   virtual void build () {
+   void build () {
       build(_poly);
-   }
-
-   // override
-   virtual void proceed (void* context) {
-      // call step() for each edge on the way
    }
 
    void build (const Polynomial& p) {
       //...
    }
 
-
 private:
+   const Polynomial& _poly;
+
    SchemeMst (const SchemeMst&); // no implicit copy
 };
 

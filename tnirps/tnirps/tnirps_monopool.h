@@ -8,122 +8,6 @@ typedef int Monomial;
 
 class MonoPool {
 public:
-   static MonoPool& inst () {
-      return _inst;
-   }
-   enum ORDER {LEX, DRL};
-   void setOrder (ORDER o) {
-      _order = o;
-      if (_order == LEX)
-         _cmp = _Mon::cmpLex;
-      else if (_order == DRL)
-         _cmp = _Mon::cmpDegRevLex;
-      else
-         throw Exception("Order unknown");
-   }
-
-   Monomial init (const int* idcs, const int* degs, const int length) {
-      int id = _pool.add();
-      _pool.at(id).init(idcs, degs, length);
-      return id;
-   }
-
-   Monomial init (const int* degs, const int length) {
-      int id = _pool.add();
-      _pool.at(id).init(degs, length);
-      return id;
-   }
-
-   Monomial init (const char* expr, int begin, int end, const char* vnames) {
-      int var = -1, deg = 0;
-      static int degs[1024];
-      int len = strlen(vnames);
-      for (int j = 0; j < len; ++j)
-         degs[j] = 0;
-      if (end <= 0)
-         end = strlen(expr);
-      char c;
-      for (int i = begin; i < end; ++i) {
-         c = expr[i];
-         if (isalpha(c)) {
-            if (var >= 0)
-               degs[var]++;
-            for (var = 0; var < len && vnames[var] != c; ++var);
-            if (var == len)
-               throw Exception("Variable name unrecognized: %c", c);
-         } else if (isdigit(c)) {
-            if (sscanf(expr+i, "%d", &deg) != 1 || var < 0)
-               throw Exception("Error parsing expression %s, starting %s", expr, expr+i);
-            degs[var] += deg;
-            var = -1;
-            deg = 0;
-            while (i+1 < end && isdigit(expr[i+1]))
-               ++i;
-         } else if (isspace(c) || c == '*' || c == '^') {
-         } else
-            throw Exception("Unexpected symbol at %s, starting %s", expr, expr+i);
-      }
-      if (var >= 0)
-         degs[var]++;
-      return init(degs, len);
-   }
-
-   int length (Monomial id) const {
-      return _pool.at(id).length();
-   }
-   
-   void release (Monomial id) {
-      _pool.remove(id);
-   }
-
-   void print(Monomial id) const {
-      _pool.at(id).print(varName);
-   }
-
-   Monomial clone(Monomial id) {
-      int id2 = _pool.add();
-      _pool.at(id2).copy(_pool.at(id));
-      return id2;
-   }
-
-   Monomial mul(Monomial id1, Monomial id2) {
-      int r = _pool.add();
-      _pool.at(r).mul(_pool.at(id1), _pool.at(id2));
-      return r;
-   }
-
-   Monomial div(Monomial id1, Monomial id2) {
-      int r = _pool.add();
-      _pool.at(r).div(_pool.at(id1), _pool.at(id2));
-      return r;
-   }
-
-   Monomial gcd(Monomial id1, Monomial id2) {
-      int r = _pool.add();
-      _pool.at(r).gcd(_pool.at(id1), _pool.at(id2));
-      return r;
-   }
-
-   bool divides(Monomial id1, Monomial id2) { // id2 divides id1
-      return _Mon::divides(_pool.at(id1), _pool.at(id2));
-   }
-
-   bool equals(Monomial id1, Monomial id2) {
-      return _Mon::equals(_pool.at(id1), _pool.at(id2));
-   }
-
-   int cmp (Monomial id1, Monomial id2) const {
-      return _cmp(_pool.at(id1), _pool.at(id2));
-   }
-
-   int countHash(Monomial id) const
-   {
-      return _pool.at(id).countHash();
-   }
-
-   const char* (*varName) (int idx);
-
-private:
    struct Var {
       Var (int i, int d) : idx(i), deg(d) {}
       int idx;
@@ -157,7 +41,7 @@ private:
       void print (const char* (*vnames) (int) = NULL) const
       {
          for (int i = 0; i < vars.size(); ++i) {
-            if (i > 0)    
+            if (i > 0)
                printf("*");
             if (vnames)
                printf("%s", vnames(vars[i].idx));
@@ -172,7 +56,7 @@ private:
       {
          vars.clear();
          int i = 0, j = 0, i1 = a.vars.size(), j1 = b.vars.size();
-         while (i < i1 && j < j1) {             
+         while (i < i1 && j < j1) {
             const Var& va = a.vars[i], vb = b.vars[j];
             if (va.idx == vb.idx) {
                vars.push(Var(va.idx, va.deg + vb.deg));
@@ -184,7 +68,7 @@ private:
             } else {
                vars.push(Var(vb.idx, vb.deg));
                ++j;
-            }  
+            }
          }
          while (i < i1) {
             vars.push(Var(a.vars[i].idx, a.vars[i].deg));
@@ -200,7 +84,7 @@ private:
       {
          vars.clear();
          int i = 0, j = 0, i1 = a.vars.size(), j1 = b.vars.size(), d;
-         while (i < i1 && j < j1) {             
+         while (i < i1 && j < j1) {
             const Var& va = a.vars[i], vb = b.vars[j];
             if (va.idx == vb.idx) {
                d = va.deg - vb.deg;
@@ -213,7 +97,7 @@ private:
                ++i;
             } else {
                throw Exception("Monomes don't divide");
-            }  
+            }
          }
          while (i < i1) {
             vars.push(Var(a.vars[i].idx, a.vars[i].deg));
@@ -227,7 +111,7 @@ private:
       {
          vars.clear();
          int i = 0, j = 0, i1 = a.vars.size(), j1 = b.vars.size();
-         while (i < i1 && j < j1) {             
+         while (i < i1 && j < j1) {
             const Var& va = a.vars[i], vb = b.vars[j];
             if (va.idx == vb.idx) {
                vars.push(Var(va.idx, __min(va.deg, vb.deg)));
@@ -237,7 +121,7 @@ private:
                ++i;
             } else {
                ++j;
-            }  
+            }
          }
       }
 
@@ -254,7 +138,7 @@ private:
       static bool divides (const _Mon& a, const _Mon& b)
       {
          int i = 0, j = 0, i1 = a.vars.size(), j1 = b.vars.size();
-         while (i < i1 && j < j1) {             
+         while (i < i1 && j < j1) {
             const Var& va = a.vars[i], vb = b.vars[j];
             if (va.idx > vb.idx)
                return false;
@@ -290,7 +174,7 @@ private:
       static int cmpLex (const _Mon& a, const _Mon& b)
       { // 1 if a > b
          int i = 0, j = 0, i1 = a.vars.size(), j1 = b.vars.size();
-         while (i < i1 && j < j1) {             
+         while (i < i1 && j < j1) {
             const Var& va = a.vars[i], vb = b.vars[j];
             if (va.idx < vb.idx)
                return 1;
@@ -369,11 +253,156 @@ private:
          return vars.size();
       }
 
+      int var (int i) const {
+         return vars[i].idx;
+      }
+
+      int deg (int i) const {
+         return vars[i].deg;
+      }
    private:
       Array<Var> vars;
       _Mon (const _Mon&);
    };
 
+   static MonoPool& inst () {
+      return _inst;
+   }
+   enum ORDER {LEX, DRL};
+   void setOrder (ORDER o) {
+      _order = o;
+      if (_order == LEX)
+         _cmp = _Mon::cmpLex;
+      else if (_order == DRL)
+         _cmp = _Mon::cmpDegRevLex;
+      else
+         throw Exception("Order unknown");
+   }
+
+   Monomial init (const int* idcs, const int* degs, const int length) {
+      int id = _pool.add();
+      _pool.at(id).init(idcs, degs, length);
+      return id;
+   }
+
+   Monomial init (const int* degs, const int length) {
+      int id = _pool.add();
+      _pool.at(id).init(degs, length);
+      return id;
+   }
+
+   Monomial init (const char* expr, int begin, int end, const char* vnames) {
+      int var = -1, deg = 0;
+      static int degs[1024];
+      int len = strlen(vnames);
+      for (int j = 0; j < len; ++j)
+         degs[j] = 0;
+      if (end <= 0)
+         end = strlen(expr);
+      char c;
+      for (int i = begin; i < end; ++i) {
+         c = expr[i];
+         if (isalpha(c)) {
+            if (var >= 0)
+               degs[var]++;
+            for (var = 0; var < len && vnames[var] != c; ++var);
+            if (var == len)
+               throw Exception("Variable name unrecognized: %c", c);
+         } else if (isdigit(c)) {
+            if (sscanf(expr+i, "%d", &deg) != 1 || var < 0)
+               throw Exception("Error parsing expression %s, starting %s", expr, expr+i);
+            degs[var] += deg;
+            var = -1;
+            deg = 0;
+            while (i+1 < end && isdigit(expr[i+1]))
+               ++i;
+         } else if (isspace(c) || c == '*' || c == '^') {
+         } else
+            throw Exception("Unexpected symbol at %s, starting %s", expr, expr+i);
+      }
+      if (var >= 0)
+         degs[var]++;
+      return init(degs, len);
+   }
+
+   int length (Monomial id) const {
+      return _pool.at(id).length();
+   }
+   
+   void release (Monomial id) {
+      _pool.remove(id);
+   }
+
+   void print(Monomial id) const {
+      _pool.at(id).print(varName);
+   }
+
+   void print(Monomial id, int coeff) const {
+      bool empty = _pool.at(id).length() == 0;
+      if (coeff != 1 || empty)
+         printf(empty ? "%i" : "%i ", coeff);
+      _pool.at(id).print(varName);
+   }
+
+   Monomial clone(Monomial id) {
+      int id2 = _pool.add();
+      _pool.at(id2).copy(_pool.at(id));
+      return id2;
+   }
+
+   Monomial mul(Monomial id1, Monomial id2) {
+      int r = _pool.add();
+      _pool.at(r).mul(_pool.at(id1), _pool.at(id2));
+      return r;
+   }
+
+   Monomial div(Monomial id1, Monomial id2) {
+      int r = _pool.add();
+      _pool.at(r).div(_pool.at(id1), _pool.at(id2));
+      return r;
+   }
+
+   Monomial gcd(Monomial id1, Monomial id2) {
+      int r = _pool.add();
+      _pool.at(r).gcd(_pool.at(id1), _pool.at(id2));
+      return r;
+   }
+
+   bool divides(Monomial id1, Monomial id2) { // id2 divides id1
+      return _Mon::divides(_pool.at(id1), _pool.at(id2));
+   }
+
+   bool equals(Monomial id1, Monomial id2) {
+      return _Mon::equals(_pool.at(id1), _pool.at(id2));
+   }
+
+   int cmp (Monomial id1, Monomial id2) const {
+      return _cmp(_pool.at(id1), _pool.at(id2));
+   }
+
+   int countHash(Monomial id) const
+   {
+      return _pool.at(id).countHash();
+   }
+
+   int var (Monomial id, int i) const
+   {
+      return _pool.at(id).var(i);
+   }
+
+   int deg (Monomial id, int i) const
+   {
+      return _pool.at(id).deg(i);
+   }
+   
+   const _Mon& get (Monomial id) const
+   {
+      return _pool.at(id);
+   }
+
+   const char* (*varName) (int idx);
+
+private:
    ObjPool<_Mon> _pool;
    int (*_cmp) (const _Mon& a, const _Mon& b);
    ORDER _order;
@@ -383,6 +412,7 @@ private:
    MonoPool (const MonoPool&);
 };
 
+typedef MonoPool::_Mon MData;
 extern MonoPool& MP; // global!
 
 #endif //__TNIRPS_MONOPOOL_H__
