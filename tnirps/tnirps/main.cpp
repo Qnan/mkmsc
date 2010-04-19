@@ -10,6 +10,8 @@
 #include "tnirps_poly_evaluator.h"
 #include "tnirps_poly_evaluator_i.h"
 #include "tnirps_poly_printer.h"
+#include "tnirps_script.h"
+#include "scanner.h"
 
 #include <gmp.h>
 
@@ -368,12 +370,25 @@ void testGMP() {
    BI::clear(a),BI::clear(b),BI::clear(c),BI::clear(d);
 }
 
+void testScript() {
+   ScriptInterpreter interpreter;
+   const char* input = " \
+      vars xyz                      \n\
+      set p1 x2y+13xy2+xy+x+y3+y2   \n\
+      build s1 p1 gorner            \n\
+      eval s1 3,-1,0                \n\
+   ";
+   BufferScanner scanner(input);
+   interpreter.execute(scanner);
+}
+
 int main (void)
 {
    MP.setOrder(MonoPool::LEX);
    MP.varName = varNameXYZ;
    //testReduce();
-   testGorner();
+//   testGorner();
+   testScript();
 //   testGMP();
    
    //testPolySum();

@@ -67,7 +67,7 @@ private:
    void yield (int id) {
       DBG(printf("yield %i\n", id));
       BI::set(result, intermediateValues[id]);
-      gmp_printf("%Zd\n", result);
+      gmp_printf("result: %Zd\n", result);
       DBG(printf("yield done\n"));
    }
 
