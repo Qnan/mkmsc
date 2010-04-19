@@ -5,6 +5,9 @@
 #include "tnirps_monopool.h"
 #include "tnirps_bigint.h"
 
+//#define DBG(op) op
+#define DBG(op)
+
 class Evaluator {
 public:
    Evaluator () {}
@@ -25,15 +28,15 @@ public:
 
 private:
    void evaluateMonomial (const Array<Monomial>& mm, int i) {
-      printf("init\n");
+      DBG(printf("init %i\n", i));
       const MData& m = MP.get(mm[i]);
       bigint_t& v = intermediateValues[i];
-      BI::init(v);
       BI::set(v, 1);
       bigint_t t;
       BI::init(t);
       for (int i = 0; i < m.length(); ++i) {
-         BI::pow(t, varValues[m.var(i)], m.deg(i));
+         BI::set(t, varValues[m.var(i)]);
+         BI::pow(t, t, m.deg(i));
          BI::mul(v, v, t);
       }
       BI::clear(t);
@@ -44,34 +47,34 @@ private:
       intermediateValues.resize(total);
       for (int i = 0; i < intermediateValues.size(); ++i)
          BI::init(intermediateValues[i]);
+      BI::init(result);
 
       for (int i = 0; i < mm.size(); ++i)
          evaluateMonomial(mm, i);
    }
    void add (int id, int a, int b) {
-      printf("add\n");
+      DBG(printf("add %i %i %i\n", id, a, b));
       BI::add(intermediateValues[id], intermediateValues[a], intermediateValues[b]);
    }
    void mul (int id, int a, int b) {
-      printf("mul\n");
+      DBG(printf("mul %i %i %i\n", id, a, b));
       BI::mul(intermediateValues[id], intermediateValues[a], intermediateValues[b]);
    }
    void mulnum (int id, int a, int num) {
-      printf("mulnum\n");
+      DBG(printf("mulnum %i %i %i\n", id, a, num));
       BI::mul(intermediateValues[id], intermediateValues[a], num);
    }
    void yield (int id) {
-      printf("yield\n");
+      DBG(printf("yield %i\n", id));
       BI::set(result, intermediateValues[id]);
-      BI::printf("%Zd\n", result);
-      printf("yield done\n");
+      gmp_printf("%Zd\n", result);
+      DBG(printf("yield done\n"));
    }
 
    Array<int> varValues;
    Array<bigint_t> intermediateValues;
    bigint_t result;
 };
-
 
 #endif /* __TNIRPS_POLY_EVALUATOR__ */
 

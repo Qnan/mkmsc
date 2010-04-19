@@ -347,11 +347,25 @@ void testGorner (void)
    Printer prn1;
    prn1.evaluate(scheme);
    printf("\n");
-   EvaluatorInt eval;
+   Evaluator eval;
    Array<int> values;
    values.push(3);
    values.push(-1);
    eval.evaluate(scheme, values);
+}
+
+void testGMP() {
+   bigint_t a, b, c, d;
+   BI::init(a),BI::init(b),BI::init(c),BI::init(d);
+   BI::set(a, 19283); BI::set(b, 723890); BI::mul(c, a, b);
+   gmp_printf("%Zd * %Zd = %Zd\n", a, b, c);
+   BI::set(a, 232111124); BI::set(b, 342123); BI::mul(c, a, b);
+   gmp_printf("%Zd * %Zd = %Zd\n", a, b, c);
+   BI::set(a, "1298371928379482364826482364"); BI::set(b, "123812389162"); BI::add(c, a, b);
+   gmp_printf("%Zd + %Zd = %Zd\n", a, b, c);
+   BI::pow(c, 123, 4);
+   gmp_printf("123 ^ 4 = %Zd\n", c);
+   BI::clear(a),BI::clear(b),BI::clear(c),BI::clear(d);
 }
 
 int main (void)
@@ -360,6 +374,7 @@ int main (void)
    MP.varName = varNameXYZ;
    //testReduce();
    testGorner();
+//   testGMP();
    
    //testPolySum();
    //testPolyMul();

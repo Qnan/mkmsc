@@ -34,7 +34,10 @@ void BigInt::add (bigint_t& r, const bigint_t& a, const bigint_t& b) {
    mpz_add(r, a, b);
 }
 void BigInt::add (bigint_t& r, const bigint_t& a, const long b) {
-   mpz_add_ui(r, a, TO_UNSIGNED(b));
+   if (b >= 0)
+      mpz_add_ui(r, a, TO_UNSIGNED(b));
+   else
+      mpz_add_ui(r, a, TO_UNSIGNED(-b));
 }
 void BigInt::sub (bigint_t& r, const bigint_t& a, const bigint_t& b) {
    mpz_sub(r, a, b);
