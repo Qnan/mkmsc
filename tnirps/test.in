@@ -1,0 +1,7 @@
+vars xyz
+set p1   x^2 y + 13 x y^2 + 67 x y z + x + 11 y^3 + 26 y^2
+build s1 p1 gorner
+eval s1 23, -112, 7
+
+
+

@@ -5,6 +5,7 @@
 #include "obj_array.h"
 #include "tnirps_scheme_gorner.h"
 #include "tnirps_poly_evaluator.h"
+#include "nano.h"
 
 class ScriptInterpreter {
 public:
@@ -53,14 +54,19 @@ private:
          printf("polynomial \"%s\" not defined\n", name);
          return 1;
       }
+      float time = 0.0f;
       if (!strcmp(arg, "simple")) {
          printf("scheme not implemented\n");
          return 1;
       } else if (!strcmp(arg, "gorner")) {
          Scheme& s = scheme.value(scheme.insert(schname));
          SchemeGorner sg(s, poly.at(name));
+         qword t0 = nanoClock();
          sg.build();
+         qword t1 = nanoClock();
+         time = 1000.0f * nanoHowManySeconds(t1 - t0);
          printf("\n");
+         printf("time: %.3f ms\n", time);
          printf("scheme built\n");
       } else if (!strcmp(arg, "mst")) {
          printf("scheme not implemented\n");
@@ -93,7 +99,12 @@ private:
          return 1;
       }
       Evaluator eval;
+      float time;
+      qword t0 = nanoClock();
       eval.evaluate(scheme.at(schname), vvals);
+      qword t1 = nanoClock();
+      time = 1000.0f * nanoHowManySeconds(t1 - t0);
+      printf("time: %.3f ms\n", time);
       return 0;
    }
    int executeLine (Scanner& sc) {
@@ -101,7 +112,6 @@ private:
       Array<char> command, name, arg, schname;
       sc.skipSpace();
       sc.readWord(command, 0);
-      printf("command: %s\n", command.ptr());
       sc.skipSpace();
       int r = 0;
       if (!strcmp(command.ptr(), "set")) {
@@ -124,8 +134,8 @@ private:
          sc.skipSpace();
          sc.readWord(arg, "\n");
          r = evaluate(name.ptr(), arg.ptr());
-      } else if (!strcmp(command.ptr(), "prnp")) {
-         //sc.readWord(name);
+//      } else if (!strcmp(command.ptr(), "prnp")) {
+//         //sc.readWord(name);
       } else {
          printf("command unknown: \"%s\"", command.ptr());
          return 1;

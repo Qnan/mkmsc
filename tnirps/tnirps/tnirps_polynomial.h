@@ -28,13 +28,15 @@ public:
       int p0 = 0;
       for (int i = begin; i <= end; ++i) {
          if (i == end || expr[i] == '+' || expr[i] == '-') {
+            while (isspace(expr[p0]))
+               ++p0;
             if (sscanf(expr+p0, "%d", &val) != 1)
                val = 1;
             while (!isalpha(expr[p0]))
                ++p0;
             Monomial m = MP.init(expr, p0, i, vnames);
             addTerm(m,val);
-            p0 = i;
+            p0 = ++i;
          }
       }
    }

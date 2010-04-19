@@ -372,23 +372,31 @@ void testGMP() {
 
 void testScript() {
    ScriptInterpreter interpreter;
-   const char* input = " \
-      vars xyz                      \n\
-      set p1 x2y+13xy2+xy+x+y3+y2   \n\
-      build s1 p1 gorner            \n\
-      eval s1 3,-1,0                \n\
+   const char* input = "vars xyz          \n\
+      set p1 x2y+13xy2+67xyz+x+11y3+26y2  \n\
+      build s1 p1 gorner                  \n\
+      eval s1 23,-112,7                   \n\
    ";
    BufferScanner scanner(input);
    interpreter.execute(scanner);
 }
 
-int main (void)
+int main (int argc, const char** argv)
 {
    MP.setOrder(MonoPool::LEX);
-   MP.varName = varNameXYZ;
+   if (argc == 1) {
+      printf("Please pass input file path as a parameter.\n");
+      printf("Script file example is included in the distribution.\n");
+   } else {
+      ScriptInterpreter interpreter;
+
+      FileScanner scanner(argv[1]);
+      interpreter.execute(scanner);
+   }
+//   MP.varName = varNameXYZ;
    //testReduce();
 //   testGorner();
-   testScript();
+//   testScript();
 //   testGMP();
    
    //testPolySum();
