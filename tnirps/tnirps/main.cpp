@@ -6,6 +6,8 @@
 #include "tnirps_polynomial.h"
 #include "tnirps_reduction.h"
 #include "tnirps_scheme_gorner.h"
+#include "tnirps_scheme_simple.h"
+#include "tnirps_scheme_mst.h"
 #include "tnirps_bigint.h"
 #include "tnirps_poly_evaluator.h"
 #include "tnirps_poly_evaluator_i.h"
@@ -375,7 +377,9 @@ void testScript() {
    const char* input = "vars xyz          \n\
       set p1 x2y+13xy2+67xyz+x+11y3+26y2  \n\
       build s1 p1 gorner                  \n\
+      build s2 p1 simple                  \n\
       eval s1 23,-112,7                   \n\
+      eval s2 23,-112,7                   \n\
    ";
    BufferScanner scanner(input);
    interpreter.execute(scanner);
@@ -384,19 +388,12 @@ void testScript() {
 int main (int argc, const char** argv)
 {
    MP.setOrder(MonoPool::LEX);
-   if (argc == 1) {
-      printf("Please pass input file path as a parameter.\n");
-      printf("Script file example is included in the distribution.\n");
-   } else {
-      ScriptInterpreter interpreter;
+//   script(argc, argv);
 
-      FileScanner scanner(argv[1]);
-      interpreter.execute(scanner);
-   }
 //   MP.varName = varNameXYZ;
    //testReduce();
 //   testGorner();
-//   testScript();
+   testScript();
 //   testGMP();
    
    //testPolySum();
@@ -407,4 +404,17 @@ int main (int argc, const char** argv)
    //testMonSort();
    //testMonDiv();
    return 0;
+}
+
+int script (int argc, const char** argv)
+{
+   if (argc == 1) {
+      printf("Please pass input file path as a parameter.\n");
+      printf("Script file example is included in the distribution.\n");
+   } else {
+      ScriptInterpreter interpreter;
+
+      FileScanner scanner(argv[1]);
+      interpreter.execute(scanner);
+   }
 }

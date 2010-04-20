@@ -4,6 +4,8 @@
 #include "scanner.h"
 #include "obj_array.h"
 #include "tnirps_scheme_gorner.h"
+#include "tnirps_scheme_simple.h"
+#include "tnirps_scheme_mst.h"
 #include "tnirps_poly_evaluator.h"
 #include "nano.h"
 
@@ -55,11 +57,17 @@ private:
          return 1;
       }
       float time = 0.0f;
+      Scheme& s = scheme.value(scheme.insert(schname));
       if (!strcmp(arg, "simple")) {
-         printf("scheme not implemented\n");
-         return 1;
+         SchemeSimple ss(s, poly.at(name));
+         qword t0 = nanoClock();
+         ss.build();
+         qword t1 = nanoClock();
+         time = 1000.0f * nanoHowManySeconds(t1 - t0);
+         printf("\n");
+         printf("time: %.3f ms\n", time);
+         printf("scheme built\n");
       } else if (!strcmp(arg, "gorner")) {
-         Scheme& s = scheme.value(scheme.insert(schname));
          SchemeGorner sg(s, poly.at(name));
          qword t0 = nanoClock();
          sg.build();
