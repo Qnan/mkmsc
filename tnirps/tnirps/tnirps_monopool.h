@@ -260,7 +260,23 @@ public:
       int deg (int i) const {
          return vars[i].deg;
       }
-   private:
+
+      int maxDeg () const
+      {
+         int d = 0;
+         for (int i = 0; i < length(); ++i)
+            d = __max(d, vars[i].deg);
+         return d;
+      }
+
+      int totalDeg () const
+      {
+         int d = 0;
+         for (int i = 0; i < length(); ++i)
+            d += vars[i].deg;
+         return d;
+      }
+private:
       Array<Var> vars;
       _Mon (const _Mon&);
    };
@@ -394,7 +410,17 @@ public:
    {
       return _pool.at(id).deg(i);
    }
+
+   int maxDeg (Monomial id) const
+   {
+      return _pool.at(id).maxDeg();
+   }
    
+   int totalDeg (Monomial id) const
+   {
+      return _pool.at(id).totalDeg();
+   }
+
    const _Mon& get (Monomial id) const
    {
       return _pool.at(id);

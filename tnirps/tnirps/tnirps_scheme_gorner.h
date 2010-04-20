@@ -13,13 +13,6 @@ class SchemeGorner {
 public:
    SchemeGorner (Scheme& scheme, const Polynomial& poly) : _poly(poly), _scheme(scheme) {}
 
-   void postProcIds (int& id) {
-      if (id < 0)
-         id = -(id + 1);
-      else
-         id += monomialCounter;
-   }
-
    void build () {
       monomials.clear();
       monomialCounter = 0;
@@ -42,6 +35,14 @@ public:
       }
       monomials.clear();
       _scheme.totalCount = monomialCounter + intermediateCounter;
+   }
+   
+private:
+   void postProcIds (int& id) {
+      if (id < 0)
+         id = -(id + 1);
+      else
+         id += monomialCounter;
    }
 
    int addMonomial (const Monomial& m1) {

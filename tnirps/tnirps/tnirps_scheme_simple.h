@@ -14,6 +14,7 @@ public:
       _scheme.totalCount = _scheme.resultId+1;
    }
 
+private:
    int build (const Polynomial& p) {
       Array<Monomial>& initial = _scheme.monomials;
       initial.clear();
@@ -30,14 +31,15 @@ public:
          ops.push().init(Scheme::OP_MULNUM, i + n, i, p.at(i).f);
       int r = 2 * n;
       // multiply sum up terms
-      ops.push().init(Scheme::OP_ADD, r, n, n + 1);
-      for (int i = 2; i < n; ++i)
-         ops.push().init(Scheme::OP_ADD, i + r - 1, r + i - 2, n + i);
-      r = n + r - 2;
-      return r;
+      int r0 = n;
+      for (int i = 1; i < n; ++i) {
+         int r1 = i + r - 1;
+         ops.push().init(Scheme::OP_ADD, r1, r0, n + i);
+         r0 = r1;
+      }
+      return r0;
    }
-
-private:
+   
    const Polynomial& _poly;
    Scheme& _scheme;
 

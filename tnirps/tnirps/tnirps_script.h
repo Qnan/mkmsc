@@ -64,25 +64,25 @@ private:
          ss.build();
          qword t1 = nanoClock();
          time = 1000.0f * nanoHowManySeconds(t1 - t0);
-         printf("\n");
-         printf("time: %.3f ms\n", time);
-         printf("scheme built\n");
       } else if (!strcmp(arg, "gorner")) {
          SchemeGorner sg(s, poly.at(name));
          qword t0 = nanoClock();
          sg.build();
          qword t1 = nanoClock();
          time = 1000.0f * nanoHowManySeconds(t1 - t0);
-         printf("\n");
-         printf("time: %.3f ms\n", time);
-         printf("scheme built\n");
       } else if (!strcmp(arg, "mst")) {
-         printf("scheme not implemented\n");
-         return 1;
+         SchemeMst sm(s, poly.at(name));
+         qword t0 = nanoClock();
+         sm.build();
+         qword t1 = nanoClock();
+         time = 1000.0f * nanoHowManySeconds(t1 - t0);
       } else {
          printf("scheme \"%s\" unknwon\n", arg);
          return 1;
       }
+      printf("\n");
+      printf("time: %.3f ms\n", time);
+      printf("scheme built\n");
       return 0;
    }
    int evaluate(const char* schname, const char* arg) {

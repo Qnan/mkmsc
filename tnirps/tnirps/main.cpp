@@ -374,12 +374,14 @@ void testGMP() {
 
 void testScript() {
    ScriptInterpreter interpreter;
-   const char* input = "vars xyz          \n\
-      set p1 x2y+13xy2+67xyz+x+11y3+26y2  \n\
-      build s1 p1 gorner                  \n\
-      build s2 p1 simple                  \n\
-      eval s1 23,-112,7                   \n\
-      eval s2 23,-112,7                   \n\
+   const char* input = "vars xyz             \n\
+      set p1 x3yz+x2y+13xy2+67xyz+x+11y3+26y2\n\
+      build sg p1 gorner                     \n\
+      build ss p1 simple                     \n\
+      build sm p1 mst                        \n\
+      eval sg 23,-112,7                      \n\
+      eval ss 23,-112,7                      \n\
+      eval sm 23,-112,7                      \n\
    ";
    BufferScanner scanner(input);
    interpreter.execute(scanner);
