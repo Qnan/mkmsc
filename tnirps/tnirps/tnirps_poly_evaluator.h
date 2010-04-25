@@ -1,5 +1,5 @@
-#ifndef __TNIRPS_POLY_EVALUATOR_H_
-#define __TNIRPS_POLY_EVALUATOR_H_
+#ifndef __TNIRPS_POLY_EVALUATOR_H__
+#define __TNIRPS_POLY_EVALUATOR_H__
 
 #include "tnirps_scheme.h"
 #include "tnirps_monopool.h"
@@ -76,5 +76,4 @@ private:
    bigint_t result;
 };
 
-#endif /* __TNIRPS_POLY_EVALUATOR__ */
-
+#endif /* __TNIRPS_POLY_EVALUATOR_H__ */

@@ -1,5 +1,5 @@
-#ifndef __TNIRPS_POLY_PRINTER_H_
-#define __TNIRPS_POLY_PRINTER_H_
+#ifndef __TNIRPS_POLY_PRINTER_H__
+#define __TNIRPS_POLY_PRINTER_H__
 
 #include "obj_array.h"
 #include "output.h"
@@ -65,5 +65,5 @@ private:
 };
 
 
-#endif /* __TNIRPS_POLY_EVALUATOR__ */
+#endif /* __TNIRPS_POLY_PRINTER_H__ */
 
