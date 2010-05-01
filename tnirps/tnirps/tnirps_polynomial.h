@@ -21,6 +21,10 @@ public:
 
    Polynomial () : _terms(_pool) {}
 
+   ~Polynomial () {
+      clear();
+   }
+
    void init (const char* expr, int begin, int end, const char* vnames) {
       int val = 0;
       if (end <= 0)
@@ -79,29 +83,31 @@ public:
    CFTYPE lc () const { return _terms.at(_terms.begin()).f; }
    Term& lt () const { return _terms.at(_terms.begin()); }
    
-   void print () const {
+   void print (Output& output) const {
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i)) {
-         if (i != _terms.begin())    
-            printf(" + ");
+         if (i != _terms.begin())
+            output.printf(" + ");
          const Term& t = _terms.at(i);
          bool showVars = MP.length(t.m) > 0;
          bool showCf = (t.f != 1 || !showVars);
          if (showCf)
-            printf("%lld", t.f);
+            output.printf("%lld", t.f);
          if (showVars) {
             if (showCf)
-               printf(" ");
-            MP.print(t.m);
+               output.printf(" ");
+            MP.print(output, t.m);
          }
       }
    }
 
    void clear ()
    {
+      for (int i = 0; i < _terms.size(); ++i)
+         MP.release(_terms[i].m);
       _terms.clear();
    }
 
-   static void mul (Polynomial& r, const Polynomial& a, int m) {
+   static void mul (Polynomial& r, const Polynomial& a, Monomial m) {
       r.clear();
       int t;
       for (int i = a.begin(); i < a.end(); i = a.next(i)) {
@@ -109,6 +115,15 @@ public:
          t = MP.mul(ta.m, m);
          r.addTerm(t, ta.f);
       }
+   }
+
+   static void sum (Polynomial& r, const Polynomial& a, const Polynomial& b) {
+      r.copy(a);
+      add(r, b);
+   }
+
+   static void add (Polynomial& r, const Polynomial& a) {
+      add(r, a, 1, 1);
    }
 
    static void add (Polynomial& r, const Polynomial& a, const CFTYPE& f) {
@@ -152,6 +167,11 @@ public:
       }
    }
 
+   void mulnum (const CFTYPE& f) {
+      for (int i = 0; i < _terms.size(); ++i)
+         _terms[i].f *= f;
+   }
+
    void copy (const Polynomial& a) {
       clear();
       for (int i = a.begin(); i < a.end(); i = a.next(i)) {
@@ -162,7 +182,7 @@ public:
 
 private:
    static Pool<ObjList<Term>::Elem> _pool;
-   ObjList<Term> _terms;
+   ObjList<Term> _terms; // XXX: shouldn't we be usinig simple List<> here?
    Polynomial (const Polynomial&);
 };
 

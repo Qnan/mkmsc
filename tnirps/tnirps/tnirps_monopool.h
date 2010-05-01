@@ -1,8 +1,10 @@
 #ifndef __TNIRPS_MONOPOOL_H__
 #define __TNIRPS_MONOPOOL_H__
 
+#include "output.h"
 #include "obj_pool.h"
 #include "tnirps_hashset.h"
+#include "tnirps_common.h"
 class Exception;
 
 typedef int Monomial;
@@ -19,6 +21,11 @@ public:
    public:
       _Mon () {}
 
+      void initSingle (int var) {
+         vars.clear();
+         vars.push(Var(var, 1));
+      }
+      
       void copy (const _Mon& a) {
          vars.clear();
          vars.copy(a.vars);
@@ -39,32 +46,17 @@ public:
                vars.push(Var(i, degs[i]));
       }
 
-      void print (const char* (*vnames) (int) = NULL) const
+      void print (Output& output, const char* (*vnames) (int) = NULL) const
       {
          for (int i = 0; i < vars.size(); ++i) {
             if (i > 0)
-               printf("*");
+               output.printf("*");
             if (vnames)
-               printf("%s", vnames(vars[i].idx));
+               output.printf("%s", vnames(vars[i].idx));
             else
-               printf("[%i]", vars[i].idx);
+               output.printf("[%i]", vars[i].idx);
             if (vars[i].deg > 1)
-               printf("^%i", vars[i].deg);
-         }
-      }
-
-      void sprint (char* buf, const char* (*vnames) (int) = NULL) const
-      {
-         sprintf(buf, "");
-         for (int i = 0; i < vars.size(); ++i) {
-            if (i > 0)
-               sprintf(buf + strlen(buf), "*");
-            if (vnames)
-               sprintf(buf + strlen(buf), "%s", vnames(vars[i].idx));
-            else
-               sprintf(buf + strlen(buf), "[%i]", vars[i].idx);
-            if (vars[i].deg > 1)
-               sprintf(buf + strlen(buf), "^%i", vars[i].deg);
+               output.printf("^%i", vars[i].deg);
          }
       }
 
@@ -311,6 +303,23 @@ private:
          throw Exception("Order unknown");
    }
 
+   Monomial unit () {
+      return _munit;
+   }
+
+   Monomial single (int var) {
+      int sz = _msingle.size();
+      if (var >= sz) {
+         _msingle.resize(var + 1);
+         for (int i = sz; i < _msingle.size(); ++i) {
+            int id = _pool.add();
+            _pool.at(id).initSingle(i);
+            _msingle[i] = resolve(id);
+         }
+      }
+      return _msingle[var];
+   }
+
    Monomial init (const int* idcs, const int* degs, const int length) {
       int id = _pool.add();
       _pool.at(id).init(idcs, degs, length);
@@ -363,22 +372,17 @@ private:
    
    void release (Monomial id) {
       refDec(id);
-      //_pool.remove(id);
    }
 
-   void print(Monomial id) const {
-      _pool.at(id).print(varName);
+   void print(Output& output, Monomial id) const {
+      _pool.at(id).print(output, varName);
    }
 
-   void print(char* buf, Monomial id) const {
-      _pool.at(id).sprint(buf, varName);
-   }
-
-   void print(Monomial id, int coeff) const {
+   void print(Output& output, Monomial id, int coeff) const {
       bool empty = _pool.at(id).length() == 0;
       if (coeff != 1 || empty)
          printf(empty ? "%i" : "%i ", coeff);
-      _pool.at(id).print(varName);
+      _pool.at(id).print(output, varName);
    }
 
    Monomial clone(Monomial id) {
@@ -468,13 +472,18 @@ private:
 
    int checkLeaks (bool printem) {
       int total = 0;
+      bool none = true;
+      printf("\n\nLeaks:\n");
       for (int i = refcnt.begin(); i < refcnt.end(); i = refcnt.next(i)) {
          if (refcnt.value(i) == 0)
             continue;
+         none = false;
          total += refcnt.value(i);
          if (printem)
-            _pool.at(refcnt.key(i)).print(),printf(": %d\n", refcnt.value(i));
+            _pool.at(refcnt.key(i)).print(sout),printf(": %d\n", refcnt.value(i));
       }
+      if (none)
+         printf("\tnone.\n");
    }
 
 //   int collectUnused () {
@@ -497,10 +506,17 @@ private:
    int (*_cmp) (const _Mon& a, const _Mon& b);
    ORDER _order;
    static MonoPool _inst;
+   Monomial _munit;
+   Array<Monomial> _msingle;
 
    MonoPool () {
       _uniq.context = this;
       _uniq.eq = cb_cmp;
+
+      int id = _pool.add();
+      _pool.at(id).init(NULL, 0);
+      _munit = resolve(id);
+      _msingle.clear();
    }
    MonoPool (const MonoPool&);
 };

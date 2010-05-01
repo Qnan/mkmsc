@@ -13,8 +13,8 @@ public:
    Evaluator () {}
 
    ~Evaluator () {
-      for (int i = 0; i < intermediateValues.size(); ++i)
-         BI::clear(intermediateValues[i]);
+      for (int i = 0; i < values.size(); ++i)
+         BI::clear(values[i]);
       BI::clear(result);
    }
 
@@ -30,7 +30,7 @@ private:
    void evaluateMonomial (const Array<Monomial>& mm, int i) {
       DBG(printf("init %i\n", i));
       const MData& m = MP.get(mm[i]);
-      bigint_t& v = intermediateValues[i];
+      bigint_t& v = values[i];
       BI::set(v, 1);
       bigint_t t;
       BI::init(t);
@@ -43,10 +43,10 @@ private:
    }
 
    void init (const Array<Monomial>& mm, int total) {
-      intermediateValues.clear();
-      intermediateValues.resize(total);
-      for (int i = 0; i < intermediateValues.size(); ++i)
-         BI::init(intermediateValues[i]);
+      values.clear();
+      values.resize(total);
+      for (int i = 0; i < values.size(); ++i)
+         BI::init(values[i]);
       BI::init(result);
 
       for (int i = 0; i < mm.size(); ++i)
@@ -54,25 +54,25 @@ private:
    }
    void add (int id, int a, int b) {
       DBG(printf("add %i %i %i\n", id, a, b));
-      BI::add(intermediateValues[id], intermediateValues[a], intermediateValues[b]);
+      BI::add(values[id], values[a], values[b]);
    }
    void mul (int id, int a, int b) {
       DBG(printf("mul %i %i %i\n", id, a, b));
-      BI::mul(intermediateValues[id], intermediateValues[a], intermediateValues[b]);
+      BI::mul(values[id], values[a], values[b]);
    }
    void mulnum (int id, int a, int num) {
       DBG(printf("mulnum %i %i %i\n", id, a, num));
-      BI::mul(intermediateValues[id], intermediateValues[a], num);
+      BI::mul(values[id], values[a], num);
    }
    void yield (int id) {
       DBG(printf("yield %i\n", id));
-      BI::set(result, intermediateValues[id]);
+      BI::set(result, values[id]);
       gmp_printf("result: %Zd\n", result);
       DBG(printf("yield done\n"));
    }
 
    Array<int> varValues;
-   Array<bigint_t> intermediateValues;
+   Array<bigint_t> values;
    bigint_t result;
 };
 

@@ -44,7 +44,7 @@ private:
    int setPoly (const char* name, const char* body) {
       Polynomial& p = poly.value(poly.insert(name));
       p.init(body, 0, 0, vars.ptr());
-      printf("%s = ", name), p.print(), printf("\n");
+      printf("%s = ", name), p.print(sout), printf("\n");
       return 0;
    }
    int buildScheme(const char* schname, const char* name, const char* arg) {

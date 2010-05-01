@@ -80,7 +80,7 @@ private:
       for (; i < p.end(); i = p.next(i)) {
          p2.addTerm(p.at(i).m, p.at(i).f);
       }
-      MP.print(m, 1);
+      MP.print(sout, m, 1);
       int id0 = addMonomial(m), id1 = -1, id2 = -1;
       bool hasFactor = MP.length(p1.lm()) > 0;
       if (hasFactor) {

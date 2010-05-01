@@ -19,7 +19,7 @@ public:
 private:
    void evaluateMonomial (const Array<Monomial>& mm, int i) {
       const MData& m = MP.get(mm[i]);
-      int& v = intermediateValues[i];
+      int& v = values[i];
       v = 1;
       for (int i = 0; i < m.length(); ++i)
          for (int j = 0; j < m.deg(i); ++j)
@@ -27,28 +27,28 @@ private:
    }
 
    void init (const Array<Monomial>& mm, int total) {
-      intermediateValues.clear();
-      intermediateValues.resize(total);
+      values.clear();
+      values.resize(total);
 
       for (int i = 0; i < mm.size(); ++i)
          evaluateMonomial(mm, i);
    }
    void add (int id, int a, int b) {
-      intermediateValues[id] = intermediateValues[a] + intermediateValues[b];
+      values[id] = values[a] + values[b];
    }
    void mul (int id, int a, int b) {
-      intermediateValues[id] = intermediateValues[a] * intermediateValues[b];
+      values[id] = values[a] * values[b];
    }
    void mulnum (int id, int a, int num) {
-      intermediateValues[id] = intermediateValues[a] * num;
+      values[id] = values[a] * num;
    }
    void yield (int id) {
-      result = intermediateValues[id];
+      result = values[id];
       printf("%d\n", result);
    }
 
    Array<int> varValues;
-   Array<int> intermediateValues;
+   Array<int> values;
    int result;
 };
 

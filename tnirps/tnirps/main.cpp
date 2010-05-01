@@ -34,11 +34,12 @@ const char* varNameXYZ (int idx) {
 
 const char* vv = "abcdefghkmnpqrstuvwxyz";
 
-void testMonome (void)
-{
+void testMonome (void) {
    const char* name = "testMonome";
 
    MP.setOrder(MonoPool::LEX);
+   Array<char> buf;
+   ArrayOutput output(buf);
    Monomial m1, m2, m3, m4, m5;
    const int i1[] = {1,2,3,5}, d1[] = {3,5,7,11};
    const char* s1 = "[1]^3*[2]^5*[3]^7*[5]^11";
@@ -46,15 +47,15 @@ void testMonome (void)
 
    const int i2[] = {2,3,4,6};
    const int d2[] = {21,22,23,24};
-   char buf[1024] = {0};
    
    const char* s3 = "[1]^3*[2]^26*[3]^29*[4]^23*[5]^11*[6]^24",
              * s4 = "[2]^21*[3]^22*[4]^23*[6]^24",
              * s5 = "[2]^5*[3]^7";
    m1 = MP.init(i1, d1, 4);
-   MP.print(buf, m1);
-   if (strcmp(buf, s1) != 0)
-      throw Exception("%s: Monomial printing mismatch: %s != %s", name, buf, s1);
+   output.clear();
+   MP.print(output, m1);output.writeChar(0);
+   if (strcmp(buf.ptr(), s1) != 0)
+      throw Exception("%s: Monomial printing mismatch: %s != %s", name, buf.ptr(), s1);
 
    int h = MP.countHash(m1);
    if (h != h1)
@@ -62,19 +63,22 @@ void testMonome (void)
 
    m2 = MP.init(i2, d2, 4);
    m3 = MP.mul(m1, m2);
-   MP.print(buf, m3);
-   if (strcmp(buf, s3) != 0)
-      throw Exception("%s: Monomial multiplication error: %s != %s", name, buf, s3);
+   output.clear();
+   MP.print(output, m3);output.writeChar(0);
+   if (strcmp(buf.ptr(), s3) != 0)
+      throw Exception("%s: Monomial multiplication error: %s != %s", name, buf.ptr(), s3);
 
    m4 = MP.div(m3, m1);
-   MP.print(buf, m4);
-   if (strcmp(buf, s4) != 0)
-      throw Exception("%s: Monomial division error: %s != %s", name, buf, s4);
+   output.clear();
+   MP.print(output, m4);output.writeChar(0);
+   if (strcmp(buf.ptr(), s4) != 0)
+      throw Exception("%s: Monomial division error: %s != %s", name, buf.ptr(), s4);
 
    m5 = MP.gcd(m1, m2);
-   MP.print(buf, m5);
-   if (strcmp(buf, s5) != 0)
-      throw Exception("%s: Monomial GCD calculation error: %s != %s", name, buf, s5);
+   output.clear();
+   MP.print(output, m5);output.writeChar(0);
+   if (strcmp(buf.ptr(), s5) != 0)
+      throw Exception("%s: Monomial GCD calculation error: %s != %s", name, buf.ptr(), s5);
 
    MP.release(m1);
    MP.release(m2);
@@ -84,300 +88,92 @@ void testMonome (void)
    printf("%s succeeded\n", name);
 }
 
-void testMonSort (void)
-{
-   const int cnt = 5;
-   Monomial mm[cnt];
-   int order[cnt];
-   const int id[cnt][3] = {{2, 1, 0},
-                        {1, 1, 1},
-                        {1, 0, 1},
-                        {0, 5, 0},
-                        {1, 2, 0}};
-
-   for (int i = 0; i < cnt; ++i)
-      mm[i] = MP.init(id[i], 3);
-   for (int i = 0; i < cnt; ++i)
-      order[i] = i;
-   printf("monomes: ");
-   for (int i = 0; i < cnt; ++i) {
-      if (i > 0) printf(", ");
-      MP.print(mm[i]);
-   }
-   printf("\n");
-   MP.setOrder(MonoPool::LEX);
-   for (int i = 0, t; i < cnt; ++i) {
-      for (int j = i + 1; j < cnt; ++j) {
-         if (MP.cmp(mm[order[i]], mm[order[j]]) > 0) {
-            t = order[i];
-            order[i] = order[j];
-            order[j] = t;
-         }
-      }
-   }
-   printf("lex: ");
-   for (int i = 0; i < cnt; ++i) {
-      if (i > 0) printf(", ");
-      MP.print(mm[order[i]]);
-   }
-   printf("\n");
-   MP.setOrder(MonoPool::DRL);
-   for (int i = 0, t; i < cnt; ++i) {
-      for (int j = i + 1; j < cnt; ++j) {
-         if (MP.cmp(mm[order[i]], mm[order[j]]) > 0) {
-            t = order[i];
-            order[i] = order[j];
-            order[j] = t;
-         }
-      }
-   }
-   printf("degRevLex: ");
-   for (int i = 0; i < cnt; ++i) {
-      if (i > 0) printf(", ");
-      MP.print(mm[order[i]]);
-   }
-
-   for (int i = 0; i < cnt; ++i)
-      MP.release(mm[i]);
-
-   printf("\n");
+void testMonLoad (void) {
+   // TODO: test monome loading from string, with different syntax
 }
 
 void testMonDiv ()
 {
-   Monomial m1, m2, m3, m4;
-   const int d1[] = {0,21};
-   const int d2[] = {0,21,22,23,0,24};
-   const int d3[] = {0,21,21,23,0,24};
-   const int d4[] = {0,21,22,23,0,24};
-   //1:3, 2:26, 3:29, 4:23, 5:11, 6:24
-   m1 = MP.init(d1, NELEM(d1));
-   MP.print(m1);
-   printf("\n");
-   m2 = MP.init(d2, NELEM(d2));
-   MP.print(m2);
-   printf("\n");
-   m3 = MP.init(d3, NELEM(d3));
-   MP.print(m3);
-   printf("\n");
-   m4 = MP.init(d4, NELEM(d4));
-   MP.print(m4);
-   printf("\n");
+   const char* name = "testMonDiv";
+   Monomial m[3];
+   const int dd[3][2] = {{5, 7}, {6, 5}, {5, 5}};
 
-   printf("%s\n", MP.equals(m1,m2) ? "yes" : "no"); // no
-   printf("%s\n", MP.equals(m2,m1) ? "yes" : "no"); // no
-   printf("%s\n", MP.equals(m2,m3) ? "yes" : "no"); // no
-   printf("%s\n", MP.equals(m2,m4) ? "yes" : "no"); // yes
+   for (int i = 0; i < 3; ++i)
+      m[i] = MP.init(dd[i], 2);
 
-   printf("%s\n", MP.divides(m1,m2) ? "yes" : "no"); // no
-   printf("%s\n", MP.divides(m2,m1) ? "yes" : "no"); // yes
-   printf("%s\n", MP.divides(m2,m3) ? "yes" : "no"); // yes
-   printf("%s\n", MP.divides(m3,m2) ? "yes" : "no"); // no
-   printf("%s\n", MP.divides(m2,m4) ? "yes" : "no"); // yes
-   MP.release(m1);
-   MP.release(m2);
-   MP.release(m3);
-   MP.release(m4);
+   if (!MP.divides(m[0],m[2]) || !MP.divides(m[1],m[2]) || MP.divides(m[0],m[1])
+            || MP.divides(m[1],m[0])  || MP.divides(m[2],m[0])  || MP.divides(m[2],m[1]))
+      throw Exception("%s: Divisibility check failed", name);
+
+   for (int i = 0; i < 3; ++i)
+      MP.release(m[i]);
+   printf("%s succeeded\n", name);
 }
 
-void testListSort ()
-{
-   const int nn[] = {0,5,8,4,1,2,7,6,3};
-   List<int> list;
-   for (int i = 0; i < NELEM(nn); ++i)
-      list.add(nn[i]);
-
-   for (int i = list.begin(); i < list.end(); i = list.next(i))
-      printf(" %i", list.at(i));
-   printf("\n");
-
-   for (int i = 0; i < list.size(); ++i)
-      for (int j = list.begin(), k = i + 1; k < list.size(); ++k)
-         if (list.at(j) > list.at(list.next(j)))
-            list.swap(j);
-         else
-            j = list.next(j);
-
-   for (int i = list.begin(); i < list.end(); i = list.next(i))
-      printf(" %i", list.at(i));
-   printf("\n");
-}
-
-void testPolyPrint (void)
-{
-   Monomial m;
-   int cnt = 0;
-   const char*const vars[] = {"x", "y", "z"};
-   const int id[5][3] = {{2, 1, 0},
-                        {1, 1, 1},
-                        {1, 0, 1},
-                        {0, 5, 0},
-                        {1, 2, 0}};
-   const int cf[5] = {77, 4, 35, 36, 8};
-   cnt = NELEM(id);
-   Polynomial p;
-   for (int i = 0; i < cnt; ++i) {
-      m = MP.init(id[i], NELEM(id[i]));
-      p.addTerm(m, cf[i]);
-      MP.release(m);
-   }
-   p.print();
-}
-
-void testPolyMul (void)
-{
-   Monomial m;
-   int cnt = 0;
-   const int id[5][3] = {{2, 1, 0},
-                        {1, 1, 1},
-                        {1, 0, 1},
-                        {0, 5, 0},
-                        {1, 2, 0}};
-   const int id2[] = {1, 0, 0, 1};
-   const int cf[5] = {77, 4, 35, 36, 8};
-   cnt = NELEM(id);
-   Polynomial p, r;
-   for (int i = 0; i < cnt; ++i) {
-      m = MP.init(id[i], NELEM(id[i]));
-      p.addTerm(m, cf[i]);
-      MP.release(m);
-   }
-   p.print(); printf("\n");
-   p.sort();
-   p.print(); printf("\n");
-   m = MP.init(id2, NELEM(id2));
-   MP.print(m); printf("\n");
-   Polynomial::mul(r, p, m);
-   r.print(); printf("\n");
-   MP.release(m);
-}
-
-void initTestPoly (Polynomial& p, const int* id, const int* cf, int nvars, int nterms)
-{
-   static Monomial m;
-   p.clear();
-   for (int i = 0; i < nterms; ++i) {
-      m = MP.init(id + i * nvars, nvars);
-      p.addTerm(m, cf[i]);
-      MP.release(m);
-   }
-   p.sort();
-}
-
-void testPolySum (void)
-{
-   const int id[] = {
-      2, 1, 0,
-      1, 1, 1,
-      1, 0, 1,
-      0, 5, 0,
-      1, 2, 0};
-   const int id2[] = {
-      1, 0, 0,
-      1, 1, 1,
-      1, 2, 0,
-      1, 2, 1};
-   const int cf[] = {
-      77, 4, 35, 36, 8};
-   const int cf2[] = {
-      10, 4, 4, 6};
-
-   Polynomial p1, p2, r;
-   initTestPoly(p1, id, cf, 3, NELEM(id) / 3);
-   initTestPoly(p2, id2, cf2, 3, 4);
-   p1.print(); printf("\n");
-   p2.print(); printf("\n");
-   r.copy(p1);
-   Polynomial::add(r, p2, -1);
-   r.print(); printf("\n");       
-   r.copy(p1);
-   Polynomial::add(r, p2, -2);
-   r.print(); printf("\n");       
-}
-
-void testInitFromString (void)
-{
-   const char* vv = "abcdefghkmnpqrstuvwxyz";
-   Monomial m;
-   m = MP.init("a5", 0, 0, vv);
-   MP.print(m);
-   MP.release(m);
-   printf("\n");
-
-   m = MP.init("b4", 0, 0, vv);
-   MP.print(m);
-   MP.release(m);
-   printf("\n");
-
-   m = MP.init("a71 b 13", 0, 0, vv);
-   MP.print(m);
-   MP.release(m);
-   printf("\n");
-
-   m = MP.init("c^5*d*e^2", 0, 0, vv);
-   MP.print(m);
-   MP.release(m);
-   printf("\n");
-
-   m = MP.init("aaa*abc", 2, 0, vv);
-   MP.print(m);
-   MP.release(m);
-   printf("\n");
-
-   Polynomial g[3];
-   g[0].init("x^5+3*x^3*y^2+7*y^3", 0, 0, vv);
-   g[1].init("x^2*y^2+x^8", 0, 0, vv);
-   g[2].init("x^4*y+x*y", 0, 0, vv);
-
-   g[0].print(); printf("\n");
-   g[1].print(); printf("\n");
-   g[2].print(); printf("\n");
-}
-
-void testReduce (void)
-{
-   Polynomial g[4],p;
-   //const char* pp[] = {"y^3+x*y", "y^2*x+x^2"};
-   g[0].init("y^3+x*y", 0, 0, vv);
-   g[1].init("y^2*x+x^2", 0, 0, vv);
-   g[2].init("x^2*y-2*y^2+x", 0, 0, vv);
-   g[3].init("x^3-3*x*y", 0, 0, vv);
-   g[0].sort();
-   g[1].sort();
-   g[2].sort();
-   g[3].sort();
-   
-   p.init("x^3-2*y^2*x^2+7*y^5", 0, 0, vv);
-   p.sort();
-
-   reduce(g, NELEM(g), p);
-
-}
-
-void testGorner (void)
+void testPoly (void)
 {
    Polynomial p;
+   p.init("4x2yz+13xy2+10xy-71x+z3+y2z", 0, 0, "xyz");
+   p.print(sout);
 
-   p.init("x2y+13xy2+xy+x+y3+y2", 0, 0, "xyz");
-   p.sort();
-
-   p.print(),printf("\n");
-   Scheme scheme;
-   SchemeGorner gorner(scheme, p);
-   gorner.build();
-   printf("\n\n");
-   Printer prn;
-   prn.evaluate(scheme);
-   printf("\n");
-   Printer prn1;
-   prn1.evaluate(scheme);
-   printf("\n");
-   Evaluator eval;
-   Array<int> values;
-   values.push(3);
-   values.push(-1);
-   eval.evaluate(scheme, values);
+   // test
+   //    initialization
+   //    printing
+   //    sorting
+   //    addition
+   //    multiplication
+   //    copy
 }
+
+void testPolyLoad (void) {
+   // test
+   //    initialization
+}
+
+void testReduce (void) {
+   // TODO: test simple reduction
+//   Polynomial g[4],p;
+//   //const char* pp[] = {"y^3+x*y", "y^2*x+x^2"};
+//   g[0].init("y^3+x*y", 0, 0, vv);
+//   g[1].init("y^2*x+x^2", 0, 0, vv);
+//   g[2].init("x^2*y-2*y^2+x", 0, 0, vv);
+//   g[3].init("x^3-3*x*y", 0, 0, vv);
+//   g[0].sort();
+//   g[1].sort();
+//   g[2].sort();
+//   g[3].sort();
+//
+//   p.init("x^3-2*y^2*x^2+7*y^5", 0, 0, vv);
+//   p.sort();
+//
+//   reduce(g, NELEM(g), p);
+//
+}
+
+//void testGorner (void)
+//{
+//   Polynomial p;
+//
+//   p.init("x2y+13xy2+xy+x+y3+y2", 0, 0, "xyz");
+//   p.sort();
+//
+//   p.print(),printf("\n");
+//   Scheme scheme;
+//   SchemeGorner gorner(scheme, p);
+//   gorner.build();
+//   printf("\n\n");
+//   Printer prn;
+//   prn.evaluate(scheme);
+//   printf("\n");
+//   Printer prn1;
+//   prn1.evaluate(scheme);
+//   printf("\n");
+//   Evaluator eval;
+//   Array<int> values;
+//   values.push(3);
+//   values.push(-1);
+//   eval.evaluate(scheme, values);
+//}
 
 void testGMP() {
    bigint_t a, b, c, d;
@@ -429,11 +225,13 @@ int main (int argc, const char** argv)
    MP.setOrder(MonoPool::LEX);
    try {
       testMonome();
+      testMonDiv();
+      testPoly();
    } catch (Exception ex) {
       printf("Error: %s", ex.message());
    }
 //   testMonSort();
-//   testMonDiv();
+//   ;
 //   testListSort();
 //   testPolyPrint();
 //   testPolyMul();
