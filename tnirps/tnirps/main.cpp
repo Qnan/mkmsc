@@ -36,47 +36,67 @@ const char* vv = "abcdefghkmnpqrstuvwxyz";
 
 void testMonome (void)
 {
+   const char* name = "testMonome";
+
+   MP.setOrder(MonoPool::LEX);
    Monomial m1, m2, m3, m4, m5;
-   const int i1[] = {1,2,3,5};
-   const int d1[] = {3,5,7,11};
+   const int i1[] = {1,2,3,5}, d1[] = {3,5,7,11};
+   const char* s1 = "[1]^3*[2]^5*[3]^7*[5]^11";
+   const int h1 = 11564336; // hash
+
    const int i2[] = {2,3,4,6};
    const int d2[] = {21,22,23,24};
-   //1:3, 2:26, 3:29, 4:23, 5:11, 6:24
+   char buf[1024] = {0};
+   
+   const char* s3 = "[1]^3*[2]^26*[3]^29*[4]^23*[5]^11*[6]^24",
+             * s4 = "[2]^21*[3]^22*[4]^23*[6]^24",
+             * s5 = "[2]^5*[3]^7";
    m1 = MP.init(i1, d1, 4);
-   MP.print(m1);
-   printf("\n%i\n", MP.countHash(m1));
+   MP.print(buf, m1);
+   if (strcmp(buf, s1) != 0)
+      throw Exception("%s: Monomial printing mismatch: %s != %s", name, buf, s1);
+
+   int h = MP.countHash(m1);
+   if (h != h1)
+      throw Exception("%s: Hash mismatch: %X != %X", name, h, h1);
+
    m2 = MP.init(i2, d2, 4);
-   MP.print(m2);
-   printf("\n%i\n", MP.countHash(m2));
    m3 = MP.mul(m1, m2);
-   MP.print(m3);
-   printf("\n%i\n", MP.countHash(m3));
+   MP.print(buf, m3);
+   if (strcmp(buf, s3) != 0)
+      throw Exception("%s: Monomial multiplication error: %s != %s", name, buf, s3);
+
    m4 = MP.div(m3, m1);
-   MP.print(m4);
-   printf("\n%i\n", MP.countHash(m4));
+   MP.print(buf, m4);
+   if (strcmp(buf, s4) != 0)
+      throw Exception("%s: Monomial division error: %s != %s", name, buf, s4);
+
    m5 = MP.gcd(m1, m2);
-   MP.print(m5);
-   printf("\n%i\n", MP.countHash(m5));
+   MP.print(buf, m5);
+   if (strcmp(buf, s5) != 0)
+      throw Exception("%s: Monomial GCD calculation error: %s != %s", name, buf, s5);
+
    MP.release(m1);
    MP.release(m2);
    MP.release(m3);
    MP.release(m4);
    MP.release(m5);
+   printf("%s succeeded\n", name);
 }
 
 void testMonSort (void)
 {
-   Monomial mm[10];
-   int order[10];
-   int cnt = 0;
-   const int id[5][3] = {{2, 1, 0},
+   const int cnt = 5;
+   Monomial mm[cnt];
+   int order[cnt];
+   const int id[cnt][3] = {{2, 1, 0},
                         {1, 1, 1},
                         {1, 0, 1},
                         {0, 5, 0},
                         {1, 2, 0}};
-   cnt = NELEM(id);
+
    for (int i = 0; i < cnt; ++i)
-      mm[i] = MP.init(id[i], NELEM(id[i]));
+      mm[i] = MP.init(id[i], 3);
    for (int i = 0; i < cnt; ++i)
       order[i] = i;
    printf("monomes: ");
@@ -407,22 +427,23 @@ void testHashSet() {
 int main (int argc, const char** argv)
 {
    MP.setOrder(MonoPool::LEX);
-//   script(argc, argv);
-
-//   MP.varName = varNameXYZ;
-   //testReduce();
+   try {
+      testMonome();
+   } catch (Exception ex) {
+      printf("Error: %s", ex.message());
+   }
+//   testMonSort();
+//   testMonDiv();
+//   testListSort();
+//   testPolyPrint();
+//   testPolyMul();
+//   testPolySum();
+//   testReduce();
 //   testGorner();
-   //testScript();
-   testHashSet();
 //   testGMP();
+//   testScript();
    
-   //testPolySum();
-   //testPolyMul();
-   //testPolyPrint();
-   //testListSort();
-   //testMonome();
-   //testMonSort();
-   //testMonDiv();
+   MP.checkLeaks(true);
    return 0;
 }
 

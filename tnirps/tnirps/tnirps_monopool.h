@@ -2,6 +2,7 @@
 #define __TNIRPS_MONOPOOL_H__
 
 #include "obj_pool.h"
+#include "tnirps_hashset.h"
 class Exception;
 
 typedef int Monomial;
@@ -49,6 +50,21 @@ public:
                printf("[%i]", vars[i].idx);
             if (vars[i].deg > 1)
                printf("^%i", vars[i].deg);
+         }
+      }
+
+      void sprint (char* buf, const char* (*vnames) (int) = NULL) const
+      {
+         sprintf(buf, "");
+         for (int i = 0; i < vars.size(); ++i) {
+            if (i > 0)
+               sprintf(buf + strlen(buf), "*");
+            if (vnames)
+               sprintf(buf + strlen(buf), "%s", vnames(vars[i].idx));
+            else
+               sprintf(buf + strlen(buf), "[%i]", vars[i].idx);
+            if (vars[i].deg > 1)
+               sprintf(buf + strlen(buf), "^%i", vars[i].deg);
          }
       }
 
@@ -298,13 +314,13 @@ private:
    Monomial init (const int* idcs, const int* degs, const int length) {
       int id = _pool.add();
       _pool.at(id).init(idcs, degs, length);
-      return id;
+      return resolve(id);
    }
 
    Monomial init (const int* degs, const int length) {
       int id = _pool.add();
       _pool.at(id).init(degs, length);
-      return id;
+      return resolve(id);
    }
 
    Monomial init (const char* expr, int begin, int end, const char* vnames) {
@@ -346,11 +362,16 @@ private:
    }
    
    void release (Monomial id) {
-      _pool.remove(id);
+      refDec(id);
+      //_pool.remove(id);
    }
 
    void print(Monomial id) const {
       _pool.at(id).print(varName);
+   }
+
+   void print(char* buf, Monomial id) const {
+      _pool.at(id).sprint(buf, varName);
    }
 
    void print(Monomial id, int coeff) const {
@@ -361,27 +382,25 @@ private:
    }
 
    Monomial clone(Monomial id) {
-      int id2 = _pool.add();
-      _pool.at(id2).copy(_pool.at(id));
-      return id2;
+      return id;
    }
 
    Monomial mul(Monomial id1, Monomial id2) {
       int r = _pool.add();
       _pool.at(r).mul(_pool.at(id1), _pool.at(id2));
-      return r;
+      return resolve(r);
    }
 
    Monomial div(Monomial id1, Monomial id2) {
       int r = _pool.add();
       _pool.at(r).div(_pool.at(id1), _pool.at(id2));
-      return r;
+      return resolve(r);
    }
 
    Monomial gcd(Monomial id1, Monomial id2) {
       int r = _pool.add();
       _pool.at(r).gcd(_pool.at(id1), _pool.at(id2));
-      return r;
+      return resolve(r);
    }
 
    bool divides(Monomial id1, Monomial id2) { // id2 divides id1
@@ -428,13 +447,61 @@ private:
 
    const char* (*varName) (int idx);
 
+   int resolve (int id) {
+      int r = _uniq.findOrAdd(id, _pool.at(id).countHash());
+      if (r != id)
+         _pool.remove(id);
+      refInc(r);
+      return r;
+   }
+
+   int refInc (int id) {
+      return ++refcnt.findOrInsert(id, 0);
+   }
+
+   int refDec (int id) {
+      int& v = refcnt.at(id);
+      if (v <= 0)
+         throw new Exception("Reference counter less than zero");
+      return --v;
+   }
+
+   int checkLeaks (bool printem) {
+      int total = 0;
+      for (int i = refcnt.begin(); i < refcnt.end(); i = refcnt.next(i)) {
+         if (refcnt.value(i) == 0)
+            continue;
+         total += refcnt.value(i);
+         if (printem)
+            _pool.at(refcnt.key(i)).print(),printf(": %d\n", refcnt.value(i));
+      }
+   }
+
+//   int collectUnused () {
+//      for (int i = refcnt.begin(); i < refcnt.end(); i = refcnt.next(i)) {
+//         if (refcnt.value(i) == 0) {
+//            int id = refcnt.key(i);
+//            _uniq.remove(id, _pool.at(id).countHash());
+//            _pool.remove(id);
+//         }
+//      }
+//   }
+
 private:
+   static int cb_cmp (int a, int b, void* context) {
+      ((MonoPool*)context)->cmp(a, b);
+   }
+   HashSet _uniq;
+   RedBlackMap<int, int> refcnt;
    ObjPool<_Mon> _pool;
    int (*_cmp) (const _Mon& a, const _Mon& b);
    ORDER _order;
    static MonoPool _inst;
 
-   MonoPool () {}
+   MonoPool () {
+      _uniq.context = this;
+      _uniq.eq = cb_cmp;
+   }
    MonoPool (const MonoPool&);
 };
 

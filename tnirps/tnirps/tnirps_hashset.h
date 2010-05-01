@@ -6,6 +6,8 @@
 
 typedef unsigned long HASHTYPE;
 
+// This class is to identify whether two items are similiar or distinct
+//    by means of a hash value and a comparsion function provided.
 class HashSet {
 public:
    HashSet () {}
