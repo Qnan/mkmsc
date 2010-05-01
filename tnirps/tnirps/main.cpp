@@ -13,6 +13,7 @@
 #include "tnirps_poly_evaluator_i.h"
 #include "tnirps_poly_printer.h"
 #include "tnirps_script.h"
+#include "tnirps_hashset.h"
 #include "scanner.h"
 
 #include <gmp.h>
@@ -387,6 +388,22 @@ void testScript() {
    interpreter.execute(scanner);
 }
 
+int eq_str (int a, int b, void* context) {
+   const char** ss = (const char**)context;
+   return strcmp(ss[a], ss[b]);
+}
+
+void testHashSet() {
+   const char* ss[] = {"alpha", "beta", "aqua", "baum", "astra", "aqua", "alpha", "aqua", "astra", "baum", "beta"};
+
+   HashSet set;
+   set.eq = eq_str;
+   set.context = ss;
+
+   for (int i = 0; i < NELEM(ss); ++i)
+      printf("%s --- %d\n", ss[i], set.findOrAdd(i, (int)ss[i][0]));
+}
+
 int main (int argc, const char** argv)
 {
    MP.setOrder(MonoPool::LEX);
@@ -395,7 +412,8 @@ int main (int argc, const char** argv)
 //   MP.varName = varNameXYZ;
    //testReduce();
 //   testGorner();
-   testScript();
+   //testScript();
+   testHashSet();
 //   testGMP();
    
    //testPolySum();

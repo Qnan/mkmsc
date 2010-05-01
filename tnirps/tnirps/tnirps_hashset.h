@@ -6,14 +6,14 @@
 
 typedef unsigned long HASHTYPE;
 
-template<typename T>
 class HashSet {
 public:
    HashSet () {}
 
    int (*eq) (int a, int b, void* context);
+   void* context;
 
-   int findOrAdd (int a, HASHTYPE hash, void *context) {
+   int findOrAdd (int a, HASHTYPE hash) {
       Array<int>& arr = map.findOrInsert(hash);
       for (int i = 0; i < arr.size(); ++i)
          if (eq(a, arr[i], context) == 0)
@@ -23,7 +23,6 @@ public:
    }
 
    RedBlackObjMap<HASHTYPE, Array<int> > map;
-   //Pool<List<int>::Elem> listPool;
 };
 
 
