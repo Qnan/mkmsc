@@ -466,7 +466,7 @@ private:
    int refDec (int id) {
       int& v = refcnt.at(id);
       if (v <= 0)
-         throw new Exception("Reference counter less than zero");
+         throw Exception("Reference counter less than zero");
       return --v;
    }
 
@@ -481,12 +481,19 @@ private:
          if (rc == 0)
             continue;
          none = false;
-         total += refcnt.value(i);
+         total += rc;
          if (printem)
-            _pool.at(refcnt.key(i)).print(sout),printf(": %d\n", refcnt.value(i));
+            _pool.at(refcnt.key(i)).print(sout),printf(": %d\n", rc);
       }
       if (none)
          printf("\tnone.\n");
+   }
+
+   int printRefs () {
+      printf("\n\nReferences:\n");
+      for (int i = refcnt.begin(); i < refcnt.end(); i = refcnt.next(i)) {
+         _pool.at(refcnt.key(i)).print(sout),printf(": %d\n", refcnt.value(i));
+      }
    }
 
 //   int collectUnused () {

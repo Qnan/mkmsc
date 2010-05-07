@@ -71,8 +71,8 @@ public:
 
    void sort ()
    {          
-      for (int i = 0; i < _terms.size(); ++i)
-         for (int j = _terms.begin(), k = i + 1; k < _terms.size(); ++k)
+      for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
+         for (int j = _terms.begin(); _terms.next(j) < _terms.end();)
             if (MP.cmp(_terms.at(j).m, _terms.at(_terms.next(j)).m) < 0)
                _terms.swap(j);
             else
@@ -109,7 +109,7 @@ public:
 
    void clear ()
    {
-      for (int i = 0; i < _terms.size(); ++i)
+      for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
          MP.release(_terms[i].m);
       _terms.clear();
    }
@@ -155,6 +155,7 @@ public:
                int t = ri;
                ri = r.next(ri);
                ai = a.next(ai);
+               MP.release(r._terms.at(t).m);
                r._terms.remove(t);
             } else {
                ri = r.next(ri);
@@ -175,7 +176,7 @@ public:
    }
 
    void mulnum (const CFTYPE& f) {
-      for (int i = 0; i < _terms.size(); ++i)
+      for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
          _terms[i].f *= f;
    }
 

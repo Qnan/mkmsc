@@ -132,11 +132,19 @@ void testPoly (void)
    if (strcmp(buf.ptr(), s2) != 0)
       throw Exception("%s: Polynomial sorting error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), s2);
 
+   p1.init("5 x - x*y^2 + 17 z^3 - 10 z^2 - 10 x*y + 5 y - 1 + x*y*z", 0,0,"xyz");
+   p1.sort();
+   Polynomial::add(p, p1);
+   output.clear();
+   p.print(output);
+   output.writeChar(0);
+   printf("%s\n", buf.ptr());
    // test
    //    addition
    //    multiplication
    //    copy
    printf("%s succeeded\n", name);
+   printf("\n");
 }
 
 void testPolyLoad (void) {
@@ -238,8 +246,8 @@ int main (int argc, const char** argv)
 {
    MP.setOrder(MonoPool::LEX);
    try {
-      testMonome();
-      testMonDiv();
+//      testMonome();
+//      testMonDiv();
       testPoly();
    } catch (Exception ex) {
       printf("Error: %s", ex.message());
@@ -255,7 +263,11 @@ int main (int argc, const char** argv)
 //   testGMP();
 //   testScript();
    
-   MP.checkLeaks(true);
+   try {
+      MP.checkLeaks(true);
+   } catch (Exception ex) {
+      printf("Error: %s", ex.message());
+   }
    return 0;
 }
 
