@@ -475,7 +475,10 @@ private:
       bool none = true;
       printf("\n\nLeaks:\n");
       for (int i = refcnt.begin(); i < refcnt.end(); i = refcnt.next(i)) {
-         if (refcnt.value(i) == 0)
+         int rc = refcnt.value(i);
+         if (_pool.at(refcnt.key(i)).length() == 0)
+            rc--; // leave one out for the _munit
+         if (rc == 0)
             continue;
          none = false;
          total += refcnt.value(i);
@@ -518,6 +521,7 @@ private:
       _munit = resolve(id);
       _msingle.clear();
    }
+
    MonoPool (const MonoPool&);
 };
 

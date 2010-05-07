@@ -222,11 +222,12 @@ void testHashSet() {
 
 int main (int argc, const char** argv)
 {
+   MP.checkLeaks(true);
    MP.setOrder(MonoPool::LEX);
    try {
-      testMonome();
-      testMonDiv();
-      testPoly();
+      //testMonome();
+      //testMonDiv();
+      //testPoly();
    } catch (Exception ex) {
       printf("Error: %s", ex.message());
    }
