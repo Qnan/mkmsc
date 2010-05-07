@@ -112,25 +112,27 @@ void testMonDiv ()
 
 void testPoly (void)
 {
-   const char* name = "testMonDiv";
+   const char* name = "testPoly";
    Array<char> buf;
    ArrayOutput output(buf);
-   Polynomial p;
-   p.init("4x2yz+13xy2+10xy-71x-y+z3+y2z", 0, 0, "xyz");
-   p.print(output);output.writeChar(0);
-
-   //printf(buf.ptr());
-   const char* s1 = "4 [0]^2*[1]*[2] + 13 [0]*[1]^2 + 10 [0]*[1] - 71 [0] - [1] + [2]^3 + [1]^2*[2]";
+   Polynomial p, p1;
+   p.init("13xy2+z3-71x+10xy+4x2yz-y+y2z", 0, 0, "xyz");
+   MP.varName = varNameXYZ;
+   p.print(output);
+   output.writeChar(0);
+   const char* s1 = "13 x*y^2 + z^3 - 71 x + 10 x*y + 4 x^2*y*z - y + y^2*z";
    if (strcmp(buf.ptr(), s1) != 0)
-      throw Exception("%s: Polynomial intialization error: %s != %s", name, buf.ptr(), s1);
-   
+      throw Exception("%s: Polynomial intialization error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), s1);
 
-   //p.print(sout);
+   p.sort();
+   const char* s2 = "4 x^2*y*z + 13 x*y^2 + 10 x*y - 71 x + y^2*z - y + z^3";
+   output.clear();
+   p.print(output);
+   output.writeChar(0);
+   if (strcmp(buf.ptr(), s2) != 0)
+      throw Exception("%s: Polynomial sorting error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), s2);
 
    // test
-   //    initialization
-   //    printing
-   //    sorting
    //    addition
    //    multiplication
    //    copy
