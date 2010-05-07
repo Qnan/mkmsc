@@ -112,9 +112,20 @@ void testMonDiv ()
 
 void testPoly (void)
 {
+   const char* name = "testMonDiv";
+   Array<char> buf;
+   ArrayOutput output(buf);
    Polynomial p;
-   p.init("4x2yz+13xy2+10xy-71x+z3+y2z", 0, 0, "xyz");
-   p.print(sout);
+   p.init("4x2yz+13xy2+10xy-71x-y+z3+y2z", 0, 0, "xyz");
+   p.print(output);output.writeChar(0);
+
+   //printf(buf.ptr());
+   const char* s1 = "4 [0]^2*[1]*[2] + 13 [0]*[1]^2 + 10 [0]*[1] - 71 [0] - [1] + [2]^3 + [1]^2*[2]";
+   if (strcmp(buf.ptr(), s1) != 0)
+      throw Exception("%s: Polynomial intialization error: %s != %s", name, buf.ptr(), s1);
+   
+
+   //p.print(sout);
 
    // test
    //    initialization
@@ -123,6 +134,7 @@ void testPoly (void)
    //    addition
    //    multiplication
    //    copy
+   printf("%s succeeded\n", name);
 }
 
 void testPolyLoad (void) {
@@ -222,12 +234,11 @@ void testHashSet() {
 
 int main (int argc, const char** argv)
 {
-   MP.checkLeaks(true);
    MP.setOrder(MonoPool::LEX);
    try {
-      //testMonome();
-      //testMonDiv();
-      //testPoly();
+      testMonome();
+      testMonDiv();
+      testPoly();
    } catch (Exception ex) {
       printf("Error: %s", ex.message());
    }

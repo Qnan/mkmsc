@@ -34,13 +34,19 @@ public:
          if (i == end || expr[i] == '+' || expr[i] == '-') {
             while (isspace(expr[p0]))
                ++p0;
+            int sgn = 1;
+            if (expr[p0] == '-') {
+               sgn = -1;
+               ++p0;
+            }
             if (sscanf(expr+p0, "%d", &val) != 1)
                val = 1;
+            val *= sgn;
             while (!isalpha(expr[p0]))
                ++p0;
             Monomial m = MP.init(expr, p0, i, vnames);
             addTerm(m,val);
-            p0 = ++i;
+            p0 = i;
          }
       }
    }
@@ -85,13 +91,14 @@ public:
    
    void print (Output& output) const {
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i)) {
-         if (i != _terms.begin())
-            output.printf(" + ");
          const Term& t = _terms.at(i);
+         if (i != _terms.begin())
+            output.printf(" %c ", t.f >= 0 ? '+' : '-');
          bool showVars = MP.length(t.m) > 0;
-         bool showCf = (t.f != 1 || !showVars);
+         CFTYPE f = abs(t.f);
+         bool showCf = (f != 1 || !showVars);
          if (showCf)
-            output.printf("%lld", t.f);
+            output.printf("%lld", f);
          if (showVars) {
             if (showCf)
                output.printf(" ");
