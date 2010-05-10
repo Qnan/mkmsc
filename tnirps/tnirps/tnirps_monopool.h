@@ -369,7 +369,11 @@ private:
    int length (Monomial id) const {
       return _pool.at(id).length();
    }
-   
+
+   void alloc (Monomial id) {
+      refInc(id);
+   }
+
    void release (Monomial id) {
       refDec(id);
    }
@@ -455,7 +459,6 @@ private:
       int r = _uniq.findOrAdd(id, _pool.at(id).countHash());
       if (r != id)
          _pool.remove(id);
-      refInc(r);
       return r;
    }
 
@@ -476,8 +479,6 @@ private:
       printf("\n\nLeaks:\n");
       for (int i = refcnt.begin(); i < refcnt.end(); i = refcnt.next(i)) {
          int rc = refcnt.value(i);
-         if (_pool.at(refcnt.key(i)).length() == 0)
-            rc--; // leave one out for the _munit
          if (rc == 0)
             continue;
          none = false;

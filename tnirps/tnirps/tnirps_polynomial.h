@@ -26,6 +26,7 @@ public:
    }
 
    void init (const char* expr, int begin, int end, const char* vnames) {
+      clear();
       int val = 0;
       if (end <= 0)
          end = strlen(expr);
@@ -57,6 +58,7 @@ public:
       Term& t = _terms.at(id);
       t.f = f;
       t.m = MP.clone(m);
+      MP.alloc(t.m);
       return id;
    }
 
@@ -66,6 +68,7 @@ public:
       Term& t = _terms.at(id);
       t.f = f;
       t.m = MP.clone(m);
+      MP.alloc(t.m);
       return id;
    }
 

@@ -80,11 +80,6 @@ void testMonome (void) {
    if (strcmp(buf.ptr(), s5) != 0)
       throw Exception("%s: Monomial GCD calculation error: %s != %s", name, buf.ptr(), s5);
 
-   MP.release(m1);
-   MP.release(m2);
-   MP.release(m3);
-   MP.release(m4);
-   MP.release(m5);
    printf("%s succeeded\n", name);
 }
 
@@ -105,8 +100,6 @@ void testMonDiv ()
             || MP.divides(m[1],m[0])  || MP.divides(m[2],m[0])  || MP.divides(m[2],m[1]))
       throw Exception("%s: Divisibility check failed", name);
 
-   for (int i = 0; i < 3; ++i)
-      MP.release(m[i]);
    printf("%s succeeded\n", name);
 }
 
@@ -116,31 +109,47 @@ void testPoly (void)
    Array<char> buf;
    ArrayOutput output(buf);
    Polynomial p, p1;
-   p.init("13xy2+z3-71x+10xy+4x2yz-y+y2z", 0, 0, "xyz");
+   const char *s1 = "13xy2+z3-71x+10xy+4x2yz-y+y2z";
+   p.init(s1, 0, 0, "xyz");
    MP.varName = varNameXYZ;
    p.print(output);
    output.writeChar(0);
-   const char* s1 = "13 x*y^2 + z^3 - 71 x + 10 x*y + 4 x^2*y*z - y + y^2*z";
-   if (strcmp(buf.ptr(), s1) != 0)
-      throw Exception("%s: Polynomial intialization error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), s1);
+   const char* r1 = "13 x*y^2 + z^3 - 71 x + 10 x*y + 4 x^2*y*z - y + y^2*z";
+   if (strcmp(buf.ptr(), r1) != 0)
+      throw Exception("%s: Polynomial intialization error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), r1);
 
    p.sort();
-   const char* s2 = "4 x^2*y*z + 13 x*y^2 + 10 x*y - 71 x + y^2*z - y + z^3";
+   const char* r2 = "4 x^2*y*z + 13 x*y^2 + 10 x*y - 71 x + y^2*z - y + z^3";
    output.clear();
    p.print(output);
    output.writeChar(0);
-   if (strcmp(buf.ptr(), s2) != 0)
-      throw Exception("%s: Polynomial sorting error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), s2);
+   if (strcmp(buf.ptr(), r2) != 0)
+      throw Exception("%s: Polynomial sorting error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), r2);
 
-   p1.init("5 x - x*y^2 + 17 z^3 - 10 z^2 - 10 x*y + 5 y - 1 + x*y*z", 0,0,"xyz");
+   const char *s2 = "5 x - x*y^2 + 17 z^3 - 10 z^2 - 10 x*y + 5 y - 1 + x*y*z";
+   p1.init(s2, 0,0,"xyz");
    p1.sort();
    Polynomial::add(p, p1);
    output.clear();
    p.print(output);
    output.writeChar(0);
-   printf("%s\n", buf.ptr());
+
+   const char *r3 = "4 x^2*y*z + 12 x*y^2 + x*y*z - 66 x + y^2*z + 2 z^3 - 10 z^2 - 1";
+   if (strcmp(buf.ptr(), r3) != 0)
+      throw Exception("%s: Polynomial addition error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), r3);
+
+   const char* s3 = "10 z^2 - x*y + 7";
+   p1.init(s3, 0,0,"xyz");
+   p1.sort();
+   Polynomial::add(p, p1, 3, -6);
+   output.clear();
+   p.print(output);
+   output.writeChar(0);
+
+   const char *r4 = "12 x^2*y*z + 36 x*y^2 + 3 x*y*z + 6 x*y - 198 x + 3 y^2*z + 6 z^3 - 90 z^2 - 9";
+   if (strcmp(buf.ptr(), r4) != 0)
+      throw Exception("%s: Polynomial addition error:\n\t3 * (%s) \n\t- 2 * (%s)\n\t!=\n\t%s\n", name, r3, s3, r4);
    // test
-   //    addition
    //    multiplication
    //    copy
    printf("%s succeeded\n", name);
@@ -246,8 +255,8 @@ int main (int argc, const char** argv)
 {
    MP.setOrder(MonoPool::LEX);
    try {
-//      testMonome();
-//      testMonDiv();
+      testMonome();
+      testMonDiv();
       testPoly();
    } catch (Exception ex) {
       printf("Error: %s", ex.message());
