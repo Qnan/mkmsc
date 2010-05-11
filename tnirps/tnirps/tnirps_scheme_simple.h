@@ -21,7 +21,7 @@ private:
       int n = p.size();
       initial.reserve(n);
       for (int i = 0; i < n; ++i) {
-         Monomial m = MP.clone(p.at(i).m);
+         Monomial m = MP.clone(p.m(i));
          initial.push(m);
       }
 

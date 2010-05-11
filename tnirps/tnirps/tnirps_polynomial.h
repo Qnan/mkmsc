@@ -13,7 +13,7 @@ public:
    struct Term {
       Term () : f(1) {
       }
-      Monomial m;
+      MonoPtr m;
       CFTYPE f;
    private:
       Term (const Term& t);
@@ -57,8 +57,7 @@ public:
       int id = _terms.add();
       Term& t = _terms.at(id);
       t.f = f;
-      t.m = MP.clone(m);
-      MP.alloc(t.m);
+      t.m.set(MP.clone(m));
       return id;
    }
 
@@ -67,8 +66,7 @@ public:
       int id = _terms.insertBefore(before);
       Term& t = _terms.at(id);
       t.f = f;
-      t.m = MP.clone(m);
-      MP.alloc(t.m);
+      t.m.set(MP.clone(m));
       return id;
    }
 
@@ -76,7 +74,7 @@ public:
    {          
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
          for (int j = _terms.begin(); _terms.next(j) < _terms.end();)
-            if (MP.cmp(_terms.at(j).m, _terms.at(_terms.next(j)).m) < 0)
+            if (MP.cmp(_terms.at(j).m.get(), _terms.at(_terms.next(j)).m.get()) < 0)
                _terms.swap(j);
             else
                j = _terms.next(j);
@@ -87,8 +85,9 @@ public:
    int end () const { return _terms.end(); }
    const Term& at (int i) const { return _terms.at(i); }
    Term& at (int i) { return _terms.at(i); }
+   Monomial m (int i) const { return _terms.at(i).m.get(); }
    int size () const { return _terms.size(); }
-   int lm () const { return _terms.at(_terms.begin()).m; }
+   int lm () const { return _terms.at(_terms.begin()).m.get(); }
    CFTYPE lc () const { return _terms.at(_terms.begin()).f; }
    Term& lt () const { return _terms.at(_terms.begin()); }
    
@@ -97,7 +96,9 @@ public:
          const Term& t = _terms.at(i);
          if (i != _terms.begin())
             output.printf(" %c ", t.f >= 0 ? '+' : '-');
-         bool showVars = MP.length(t.m) > 0;
+         else if (t.f < 0)
+            output.printf("-");
+         bool showVars = MP.length(t.m.get()) > 0;
          CFTYPE f = abs(t.f);
          bool showCf = (f != 1 || !showVars);
          if (showCf)
@@ -105,25 +106,28 @@ public:
          if (showVars) {
             if (showCf)
                output.printf(" ");
-            MP.print(output, t.m);
+            MP.print(output, t.m.get());
          }
       }
    }
 
    void clear ()
    {
-      for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
-         MP.release(_terms[i].m);
       _terms.clear();
    }
 
-   static void mul (Polynomial& r, const Polynomial& a, Monomial m) {
-      r.clear();
-      int t;
-      for (int i = a.begin(); i < a.end(); i = a.next(i)) {
-         const Term& ta = a.at(i);
-         t = MP.mul(ta.m, m);
-         r.addTerm(t, ta.f);
+   static void mul (Polynomial& r, const Polynomial& a, Monomial m, const CFTYPE& cf) {
+      r.copy(a);
+      r.mul(m);
+      r.mulnum(cf);
+   }
+
+   void mul (Monomial m) {
+      if (MP.totalDeg(m) == 0)
+         return;
+      for (int i = begin(); i < end(); i = next(i)) {
+         Term& t = _terms.at(i);
+         t.m.set(MP.mul(t.m.get(), m));
       }
    }
 
@@ -145,12 +149,12 @@ public:
       while (ri < r.end() && ai < a.end()) {
          Term& tr = r.at(ri);
          const Term& ta = a.at(ai);
-         int c = MP.cmp(tr.m, ta.m);
+         int c = MP.cmp(tr.m.get(), ta.m.get());
          if (c > 0) {
             tr.f *= fr;
             ri = r.next(ri);
          } else if (c < 0) {
-            r.insertTerm(ta.m, ta.f * fa, ri);
+            r.insertTerm(ta.m.get(), ta.f * fa, ri);
             ai = a.next(ai);
          } else {
             tr.f = tr.f * fr + ta.f * fa;
@@ -158,7 +162,6 @@ public:
                int t = ri;
                ri = r.next(ri);
                ai = a.next(ai);
-               MP.release(r._terms.at(t).m);
                r._terms.remove(t);
             } else {
                ri = r.next(ri);
@@ -173,7 +176,7 @@ public:
       }
       while (ai < a.end()) {
          const Term& ta = a.at(ai);
-         r.addTerm(ta.m, ta.f * fa);
+         r.addTerm(ta.m.get(), ta.f * fa);
          ai = a.next(ai);
       }
    }
@@ -187,7 +190,7 @@ public:
       clear();
       for (int i = a.begin(); i < a.end(); i = a.next(i)) {
          const Term& t = a.at(i);
-         addTerm(t.m, t.f);
+         addTerm(t.m.get(), t.f);
       }
    }
 

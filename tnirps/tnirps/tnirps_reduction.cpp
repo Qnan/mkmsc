@@ -21,7 +21,7 @@ void reduce (Polynomial* g, int num, const Polynomial& p) {
             printf("q: "), g[i].print(sout), printf("\n");
             printf("lm: "), MP.print(sout,lm), printf("\n");
             printf("m: "), MP.print(sout, m), printf("\n");
-            Polynomial::mul(t, g[i], MP.div(lm, m));
+            Polynomial::mul(t, g[i], MP.div(lm, m), 1);
             printf("t: "), t.print(sout), printf("\n");
             Polynomial::add(r, t, t.lc(), -r.lc());
             printf("r: "), r.print(sout), printf("\n");

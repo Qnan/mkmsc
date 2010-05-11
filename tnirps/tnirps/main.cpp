@@ -149,7 +149,19 @@ void testPoly (void)
    const char *r4 = "12 x^2*y*z + 36 x*y^2 + 3 x*y*z + 6 x*y - 198 x + 3 y^2*z + 6 z^3 - 90 z^2 - 9";
    if (strcmp(buf.ptr(), r4) != 0)
       throw Exception("%s: Polynomial addition error:\n\t3 * (%s) \n\t- 2 * (%s)\n\t!=\n\t%s\n", name, r3, s3, r4);
-   // test
+
+   const char *s4 = "z^2";
+   Monomial m = MP.init(s4, 0, 0, "xyz");
+   p.mul(m);
+   p.mulnum(-2);
+   output.clear();
+   p.print(output);
+   output.writeChar(0);
+
+   const char *r5 = "-24 x^2*y*z^3 - 72 x*y^2*z^2 - 6 x*y*z^3 - 12 x*y*z^2 + 396 x*z^2 - 6 y^2*z^3 - 12 z^5 + 180 z^4 + 18 z^2";
+   if (strcmp(buf.ptr(), r5) != 0)
+      throw Exception("%s: Polynomial addition error:\n\t%s * (%s) \n\t!=\n\t%s\n", name, s4, r4, r5);
+// test
    //    multiplication
    //    copy
    printf("%s succeeded\n", name);

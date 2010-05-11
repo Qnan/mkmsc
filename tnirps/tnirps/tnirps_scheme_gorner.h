@@ -50,7 +50,6 @@ private:
       int r;
       if (monomials.find(m)) {
          r = monomials.at(m);
-         MP.release(m);
       } else {
          r = monomialCounter++;
          monomials.insert(m, r);
@@ -60,25 +59,23 @@ private:
 
    int build (const Polynomial& p) {
       int i = p.begin();
-      Monomial m = MP.clone(p.at(i).m), m2;
+      Monomial m = MP.clone(p.m(i)), m2;
       CFTYPE f = p.at(i).f;
       for (i = p.next(i); i < p.end(); i = p.next(i)) {
          const Polynomial::Term& t = p.at(i);
-         Monomial m2 = MP.gcd(m, t.m);
+         Monomial m2 = MP.gcd(m, t.m.get());
          // TODO: also find gcd of coefficients
          if (MP.length(m2) == 0)
             break;
-         MP.release(m);
          m = m2;
       }
       Polynomial p1, p2;
-      for (i = p.begin(); i < p.end() && MP.divides(p.at(i).m, m); i = p.next(i)) {
-         m2 = MP.div(p.at(i).m, m); 
+      for (i = p.begin(); i < p.end() && MP.divides(p.m(i), m); i = p.next(i)) {
+         m2 = MP.div(p.m(i), m);
          p1.addTerm(m2, p.at(i).f);
-         MP.release(m2);
       }
       for (; i < p.end(); i = p.next(i)) {
-         p2.addTerm(p.at(i).m, p.at(i).f);
+         p2.addTerm(p.m(i), p.at(i).f);
       }
       MP.print(sout, m, 1);
       int id0 = addMonomial(m), id1 = -1, id2 = -1;

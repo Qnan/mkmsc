@@ -43,7 +43,7 @@ private:
       edges.reserve(p.size() * 3);
       for (int i = 0; i < p.size(); ++i) {
          for (int j = i+1; j < p.size(); ++j) {
-            Monomial mi = p.at(i).m, mj = p.at(j).m, m;
+            Monomial mi = p.at(i).m.get(), mj = p.at(j).m.get(), m;
             if (MP.divides(mi, mj)) {
                m = MP.div(mi, mj);
                edges.push().set(i, j, MP.maxDeg(m), m); // XXX: check the weight
@@ -130,7 +130,6 @@ private:
       int r;
       if (monomialMap.find(m)) {
          r = monomialMap.at(m);
-         MP.release(m);
       } else {
          r = monomialCounter++;
          monomialMap.insert(m, r);
@@ -157,7 +156,7 @@ private:
       // store monomials
       for (int i = 0; i < n; ++i)
          if (map[i] == 0)
-            map[i] = addMonomial(_poly.at(i).m);
+            map[i] = addMonomial(_poly.m(i));
          else
             map[i] = -1;
       Array<int> mstMap;

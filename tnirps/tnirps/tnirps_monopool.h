@@ -536,4 +536,31 @@ private:
 typedef MonoPool::_Mon MData;
 extern MonoPool& MP; // global!
 
+class MonoPtr {
+public:
+   MonoPtr () : _m(-1) {
+   }
+   MonoPtr (Monomial m) : _m(-1) {
+      set(m);
+   }
+   void reset () {
+      set(-1);
+   }
+   void set (Monomial m) {
+      if (_m >= 0)
+         MP.release(_m);
+      if (m >= 0)
+         MP.alloc(m);
+      _m = m;
+   }
+   Monomial get () const {
+      return _m;
+   }
+   ~MonoPtr() {
+      set(-1);
+   }
+private:
+   Monomial _m;
+};
+
 #endif //__TNIRPS_MONOPOOL_H__
