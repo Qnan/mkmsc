@@ -103,6 +103,24 @@ void testMonDiv ()
    printf("%s succeeded\n", name);
 }
 
+void testPolyInit (void)
+{
+   const char* name = "testPolyInit";
+   Array<char> buf;
+   ArrayOutput output(buf);
+   Polynomial p;
+   const char *s = "13xy2+z3-71x+10xy+4x2yz-y+y2z";
+   p.init(s, 0, 0, "xyz");
+   MP.varName = varNameXYZ;
+   p.print(output);
+   output.writeChar(0);
+   const char* r1 = "13 x*y^2 + z^3 - 71 x + 10 x*y + 4 x^2*y*z - y + y^2*z";
+   if (strcmp(buf.ptr(), r1) != 0)
+      throw Exception("%s: Polynomial intialization error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), r1);
+   printf("%s succeeded\n", name);
+   printf("\n");
+}
+
 void testPoly (void)
 {
    const char* name = "testPoly";
@@ -138,29 +156,29 @@ void testPoly (void)
    if (strcmp(buf.ptr(), r3) != 0)
       throw Exception("%s: Polynomial addition error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), r3);
 
-   const char* s3 = "10 z^2 - x*y + 7";
-   p1.init(s3, 0,0,"xyz");
-   p1.sort();
-   Polynomial::add(p, p1, 3, -6);
-   output.clear();
-   p.print(output);
-   output.writeChar(0);
-
-   const char *r4 = "12 x^2*y*z + 36 x*y^2 + 3 x*y*z + 6 x*y - 198 x + 3 y^2*z + 6 z^3 - 90 z^2 - 9";
-   if (strcmp(buf.ptr(), r4) != 0)
-      throw Exception("%s: Polynomial addition error:\n\t3 * (%s) \n\t- 2 * (%s)\n\t!=\n\t%s\n", name, r3, s3, r4);
-
-   const char *s4 = "z^2";
-   Monomial m = MP.init(s4, 0, 0, "xyz");
-   p.mul(m);
-   p.mulnum(-2);
-   output.clear();
-   p.print(output);
-   output.writeChar(0);
-
-   const char *r5 = "-24 x^2*y*z^3 - 72 x*y^2*z^2 - 6 x*y*z^3 - 12 x*y*z^2 + 396 x*z^2 - 6 y^2*z^3 - 12 z^5 + 180 z^4 + 18 z^2";
-   if (strcmp(buf.ptr(), r5) != 0)
-      throw Exception("%s: Polynomial addition error:\n\t%s * (%s) \n\t!=\n\t%s\n", name, s4, r4, r5);
+//   const char* s3 = "10 z^2 - x*y + 7";
+//   p1.init(s3, 0,0,"xyz");
+//   p1.sort();
+//   Polynomial::add(p, p1, 3, -6);
+//   output.clear();
+//   p.print(output);
+//   output.writeChar(0);
+//
+//   const char *r4 = "12 x^2*y*z + 36 x*y^2 + 3 x*y*z + 6 x*y - 198 x + 3 y^2*z + 6 z^3 - 90 z^2 - 9";
+//   if (strcmp(buf.ptr(), r4) != 0)
+//      throw Exception("%s: Polynomial addition error:\n\t3 * (%s) \n\t- 2 * (%s)\n\t!=\n\t%s\n", name, r3, s3, r4);
+//
+//   const char *s4 = "z^2";
+//   Monomial m = MP.init(s4, 0, 0, "xyz");
+//   p.mul(m);
+//   p.mulnum(-2);
+//   output.clear();
+//   p.print(output);
+//   output.writeChar(0);
+//
+//   const char *r5 = "-24 x^2*y*z^3 - 72 x*y^2*z^2 - 6 x*y*z^3 - 12 x*y*z^2 + 396 x*z^2 - 6 y^2*z^3 - 12 z^5 + 180 z^4 + 18 z^2";
+//   if (strcmp(buf.ptr(), r5) != 0)
+//      throw Exception("%s: Polynomial addition error:\n\t%s * (%s) \n\t!=\n\t%s\n", name, s4, r4, r5);
 // test
    //    multiplication
    //    copy
@@ -267,9 +285,9 @@ int main (int argc, const char** argv)
 {
    MP.setOrder(MonoPool::LEX);
    try {
-      testMonome();
-      testMonDiv();
-      testPoly();
+//      testMonome();
+//      testMonDiv();
+      testPolyInit();
    } catch (Exception ex) {
       printf("Error: %s", ex.message());
    }

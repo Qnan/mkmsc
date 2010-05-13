@@ -561,6 +561,7 @@ public:
    }
 private:
    Monomial _m;
+   MonoPtr (const MonoPtr& mp);
 };
 
 #endif //__TNIRPS_MONOPOOL_H__
