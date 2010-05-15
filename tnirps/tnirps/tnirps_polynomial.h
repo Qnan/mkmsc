@@ -39,6 +39,8 @@ public:
             if (expr[p0] == '-') {
                sgn = -1;
                ++p0;
+            } else if (expr[p0] == '+') {
+               ++p0;
             }
             if (sscanf(expr+p0, "%d", &val) != 1)
                val = 1;
@@ -71,10 +73,21 @@ public:
    }
 
    void sort ()
-   {          
+   {
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
          for (int j = _terms.begin(); _terms.next(j) < _terms.end();)
             if (MP.cmp(_terms.at(j).m.get(), _terms.at(_terms.next(j)).m.get()) < 0)
+               _terms.swap(j);
+            else
+               j = _terms.next(j);
+   }
+   
+   void sort (MonoPool::ORDER o, bool inverse = false)
+   {          
+      for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
+         for (int j = _terms.begin(); _terms.next(j) < _terms.end();)
+            if (MP.cmp(_terms.at(j).m.get(), _terms.at(_terms.next(j)).m.get(), o)
+                    * (inverse ? -1 : 1) < 0)
                _terms.swap(j);
             else
                j = _terms.next(j);

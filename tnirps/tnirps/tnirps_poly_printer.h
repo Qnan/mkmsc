@@ -27,7 +27,7 @@ private:
          output.printf("1");
       for (int i = 0; i < m.length(); ++i) {
          if (i != 0)
-            output.printf(" * ");
+            output.printf("*");
          output.printf("%s", MP.varName(m.var(i)));
          if (m.deg(i) > 1)
             output.printf("^%i", m.deg(i));

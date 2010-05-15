@@ -293,16 +293,21 @@ private:
       return _inst;
    }
    enum ORDER {LEX, DRL};
+   typedef int (*mcmp_t) (const _Mon& a, const _Mon& b);
+
    void setOrder (ORDER o) {
       _order = o;
-      if (_order == LEX)
-         _cmp = _Mon::cmpLex;
-      else if (_order == DRL)
-         _cmp = _Mon::cmpDegRevLex;
+      _cmp = getCmp(o);
+   }
+
+   mcmp_t getCmp (ORDER o) const {
+      if (o == LEX)
+         return _Mon::cmpLex;
+      else if (o == DRL)
+         return _Mon::cmpDegRevLex;
       else
          throw Exception("Order unknown");
    }
-
    Monomial unit () {
       return _munit;
    }
@@ -425,6 +430,10 @@ private:
       return _Mon::equals(_pool.at(id1), _pool.at(id2));
    }
 
+   int cmp (Monomial id1, Monomial id2, ORDER o) const {
+      return getCmp(o)(_pool.at(id1), _pool.at(id2));
+   }
+
    int cmp (Monomial id1, Monomial id2) const {
       return _cmp(_pool.at(id1), _pool.at(id2));
    }
@@ -520,7 +529,7 @@ private:
    HashSet _uniq;
    RedBlackMap<int, int> refcnt;
    ObjPool<_Mon> _pool;
-   int (*_cmp) (const _Mon& a, const _Mon& b);
+   mcmp_t _cmp;
    ORDER _order;
    static MonoPool _inst;
    Monomial _munit;

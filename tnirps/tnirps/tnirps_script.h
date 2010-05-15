@@ -5,7 +5,7 @@
 #include "obj_array.h"
 #include "tnirps_scheme_gorner.h"
 #include "tnirps_scheme_simple.h"
-#include "tnirps_scheme_mst.h"
+#include "tnirps_scheme_tree.h"
 #include "tnirps_poly_evaluator.h"
 #include "nano.h"
 
@@ -18,7 +18,7 @@ public:
       int r = 0;
       while (!sc.isEOF() && r == 0) {
          sc.readWord(line, "\n\r");
-         printf("%s\n", line.ptr());
+         printf("\t%s\n", line.ptr());
          BufferScanner lsc(line);
          r = executeLine(lsc);
          sc.skipSpace();
@@ -44,16 +44,16 @@ private:
    int setPoly (const char* name, const char* body) {
       Polynomial& p = poly.value(poly.insert(name));
       p.init(body, 0, 0, vars.ptr());
-      printf("%s = ", name), p.print(sout), printf("\n");
+      printf("\t%s = ", name), p.print(sout), printf("\n");
       return 0;
    }
    int buildScheme(const char* schname, const char* name, const char* arg) {
       if (scheme.find(schname)) {
-         printf("scheme \"%s\" already defined\n", schname);
+         printf("\tERROR: scheme \"%s\" already defined\n", schname);
          return 1;
       }
       if (!poly.find(name)) {
-         printf("polynomial \"%s\" not defined\n", name);
+         printf("\tERROR: polynomial \"%s\" not defined\n", name);
          return 1;
       }
       float time = 0.0f;
@@ -70,24 +70,24 @@ private:
          sg.build();
          qword t1 = nanoClock();
          time = 1000.0f * nanoHowManySeconds(t1 - t0);
-      } else if (!strcmp(arg, "mst")) {
-         SchemeMst sm(s, poly.at(name));
+      } else if (!strcmp(arg, "tree")) {
+         SchemeHangingTree sm(s, poly.at(name));
          qword t0 = nanoClock();
          sm.build();
          qword t1 = nanoClock();
          time = 1000.0f * nanoHowManySeconds(t1 - t0);
       } else {
-         printf("scheme \"%s\" unknwon\n", arg);
+         printf("\tERROR: scheme \"%s\" unknwon\n", arg);
          return 1;
       }
       printf("\n");
-      printf("time: %.3f ms\n", time);
-      printf("scheme built\n");
+      printf("\ttime: %.3f ms\n", time);
+      printf("\tscheme built\n");
       return 0;
    }
    int evaluate(const char* schname, const char* arg) {
       if (!scheme.find(schname)) {
-         printf("scheme \"%s\" not defined\n", schname);
+         printf("\tERROR: scheme \"%s\" not defined\n", schname);
          return 1;
       }
 
@@ -103,7 +103,7 @@ private:
          }
       }
       if (vvals.size() != strlen(vars.ptr())) {
-         printf("invalid number of values provided for arguments, %i expected\n", strlen(vars.ptr()));
+         printf("\tERROR: invalid number of values provided for arguments, %i expected\n", strlen(vars.ptr()));
          return 1;
       }
       Evaluator eval;
@@ -114,8 +114,8 @@ private:
       eval.evaluate(res, scheme.at(schname), vvals);
       qword t1 = nanoClock();
       time = 1000.0f * nanoHowManySeconds(t1 - t0);
-      printf("time: %.3f ms\n", time);
-      gmp_printf("result: %Zd\n", res);
+      printf("\ttime: %.3f ms\n", time);
+      gmp_printf("\tresult: %Zd\n", res);
       BigInt::clear(res);
       return 0;
    }
@@ -149,7 +149,7 @@ private:
 //      } else if (!strcmp(command.ptr(), "prnp")) {
 //         //sc.readWord(name);
       } else {
-         printf("command unknown: \"%s\"", command.ptr());
+         printf("\tERROR: command unknown: \"%s\"", command.ptr());
          return 1;
       }
       return r;

@@ -12,17 +12,10 @@ bool SimpleReductor::reduceStep (Polynomial& r, const Polynomial& p) {
    for (i = 0; i < g.size(); ++i) {
       Monomial m = g[i].lm();
       if (MP.divides(lm, m)) {
-         int deg = MP.totalDeg(m);
-         // choose the element with highest leading monomial degree
-         if (deg > maxDeg) { 
-            maxDeg = deg;
-            i0 = i;
-         }
+         Polynomial::mul(t, g[i], MP.div(lm, m), 1);
+         Polynomial::add(r, t, t.lc(), -r.lc());
+         return true;
       }
    }
-   if (i0 < 0)
-      return false;
-   Polynomial::mul(t, g[i0], MP.div(lm, g[i0].lm()), 1);
-   Polynomial::add(r, t, t.lc(), -r.lc());
-   return true;
+   return false;
 }

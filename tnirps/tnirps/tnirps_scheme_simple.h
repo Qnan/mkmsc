@@ -18,26 +18,40 @@ private:
    int build (const Polynomial& p) {
       Array<Monomial>& initial = _scheme.monomials;
       initial.clear();
-      int n = p.size();
-      initial.reserve(n);
-      for (int i = 0; i < n; ++i) {
+      initial.reserve(p.size());
+      RedBlackMap<int, int> terms;
+      for (int i = p.begin(); i < p.end(); i = p.next(i)) {
          Monomial m = MP.clone(p.m(i));
+         terms.insert(i, initial.size());
          initial.push(m);
       }
 
       Array<Scheme::Op>& ops = _scheme.ops;
       // multiply monomials by coefficients
-      for (int i = 0; i < n; ++i)
-         ops.push().init(Scheme::OP_MULNUM, i + n, i, p.at(i).f);
-      int r = 2 * n;
-      // multiply sum up terms
-      int r0 = n;
-      for (int i = 1; i < n; ++i) {
-         int r1 = i + r - 1;
-         ops.push().init(Scheme::OP_ADD, r1, r0, n + i);
-         r0 = r1;
+      int cnt = p.size();
+      for (int i = p.begin(); i < p.end(); i = p.next(i)) {
+         CFTYPE f = p.at(i).f;
+         if (f != 1) {
+            int r = cnt++;
+            ops.push().init(Scheme::OP_MULNUM, r, terms.at(i), f);
+            terms.at(i) = r;
+         }
       }
-      return r0;
+      for (int i = p.begin(); i < p.end(); i = p.next(i)) {
+         CFTYPE f = p.at(i).f;
+         if (f != 1) {
+            int r = cnt++;
+            ops.push().init(Scheme::OP_MULNUM, r, terms.at(i), f);
+            terms.at(i) = r;
+         }
+      }
+      int s = terms.at(p.begin());
+      for (int i = p.next(p.begin()); i < p.end(); i = p.next(i)) {
+         int r = cnt++;
+         ops.push().init(Scheme::OP_ADD, r, s, terms.at(i));
+         s = r;
+      }
+      return s;
    }
    
    const Polynomial& _poly;

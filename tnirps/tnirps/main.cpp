@@ -8,7 +8,7 @@
 #include "tnirps_reduction.h"
 #include "tnirps_scheme_gorner.h"
 #include "tnirps_scheme_simple.h"
-#include "tnirps_scheme_mst.h"
+#include "tnirps_scheme_tree.h"
 #include "tnirps_bigint.h"
 #include "tnirps_poly_evaluator.h"
 #include "tnirps_poly_evaluator_i.h"
@@ -148,7 +148,7 @@ void testPolyAdd (void)
 
    Polynomial::add(p, p1);
    p.toStr(buf);
-   CHECK_MATCH("4 x^2*y*z + 12 x*y^2 + x*y*z - 66 x + y^2*z + 2 z^3 - 10 z^2 - 1");
+   CHECK_MATCH("4 x^2*y*z + 12 x*y^2 + x*y*z - 66 x + y^2*z + 4 y + 18 z^3 - 10 z^2 - 1");
    TEST_POST();
 }
 
@@ -166,7 +166,7 @@ void testPolyAdd2 (void)
 
    Polynomial::add(p, p1, 3, -6);
    p.toStr(buf);
-   CHECK_MATCH("12 x^2*y*z + 39 x*y^2 + 36 x*y - 213 x + 3 y^2*z - 3 y + 3 z^3 - 60 z^2 - 6");
+   CHECK_MATCH("12 x^2*y*z + 39 x*y^2 + 36 x*y - 213 x + 3 y^2*z - 3 y + 3 z^3 - 60 z^2 - 42");
    TEST_POST();
 }
 
@@ -194,35 +194,37 @@ void testPolyLoad (void) {
 }
 
 void testReduce (void) {
+   TEST_PRE("testReduce");
+   MP.varName = varNameXYZ;
+   MP.setOrder(MonoPool::DRL);
    const char *sg[] = {
       "y^3+x*y",
-      "y^2*x+x^2",
+      "x*y^2+x^2",
       "x^2*y-2*y^2+x",
       "x^3-3*x*y"};
    ObjArray<Polynomial> g;
    for (int i = 0; i < NELEM(sg); ++i) {
       Polynomial& gi = g.push();
-      gi.init(sg[i], 0, 0, "xyz");
+      gi.init(sg[i], 0, 0, "xy");
       gi.sort();
    }
 
-   Polynomial p, r, t;
-   p.init("x^3-2*y^2*x^2+7*y^5", 0, 0, "xyz");
+   Polynomial p, r;
+   p.init("x^7 - 2 x^4*y^3 + 3 y^6 + x*y^3 + 3 y", 0, 0, "xy");
    p.sort();
 
    SimpleReductor sr(g);
-   p.print(sout);
-   sout.printf("\n");
-   while (sr.reduceStep(r, p)) {
-      r.print(sout);
-      sout.printf("\n");
+   while (sr.reduceStep(r, p))
       p.copy(r);
-   }
+   r.toStr(buf);
+   CHECK_MATCH("-92 y^2 - 9 x*y + 3 y + 46 x");
+   TEST_POST();
 }
 
 void testGorner (void)
 {
    TEST_PRE("testGorner");
+   MP.varName = varNameXYZ;
    Polynomial p;
 
    p.init("x2y+13xy2+xy+x+y3+y2", 0, 0, "xyz");
@@ -249,33 +251,77 @@ void testGorner (void)
    TEST_POST();
 }
 
+void testTree (void)
+{
+   TEST_PRE("testMST");
+   MP.varName = varNameXYZ;
+   Polynomial p;
+
+   p.init("x2y+13xy2+xy+x2+y3+y2", 0, 0, "xyz");
+   p.sort();
+//   p.print(sout);
+//   printf("\n");
+
+   Scheme scheme;
+   SchemeHangingTree mst(scheme, p);
+   mst.build();
+   Printer prn;
+   ArrayOutput output(buf);
+   prn.evaluate(&output, scheme);
+   output.writeChar(0);
+   //printf("%s\n", buf.ptr());
+   CHECK_MATCH("(((((x^2 + x*y) + y^2) + x * x*y) + 13 * x * y^2) + y * y^2)");
+   Evaluator eval;
+   Array<int> values;
+   values.push(3);
+   values.push(-1);
+   bigint_t res;
+   BigInt::init(res);
+   eval.evaluate(res, scheme, values);
+      if (BigInt::cmp(res, 36) != 0)
+         throw Exception("%s: Error: Result doesn't match expected value", _name);
+   BigInt::clear(res);
+   TEST_POST();
+}
+
 void testGMP() {
-   bigint_t a, b, c, d;
-   BI::init(a),BI::init(b),BI::init(c),BI::init(d);
+   TEST_PRE("testGMP");
+   bigint_t a, b, c;
+   buf.resize(2048);
+   BI::init(a),BI::init(b),BI::init(c);
    BI::set(a, 19283); BI::set(b, 723890); BI::mul(c, a, b);
-   gmp_printf("%Zd * %Zd = %Zd\n", a, b, c);
+   gmp_sprintf(buf.ptr(), "%Zd", c);
+   CHECK_MATCH("13958770870");
    BI::set(a, 232111124); BI::set(b, 342123); BI::mul(c, a, b);
-   gmp_printf("%Zd * %Zd = %Zd\n", a, b, c);
+   gmp_sprintf(buf.ptr(), "%Zd", c);
+   CHECK_MATCH("79410554076252");
    BI::set(a, "1298371928379482364826482364"); BI::set(b, "123812389162"); BI::add(c, a, b);
-   gmp_printf("%Zd + %Zd = %Zd\n", a, b, c);
+   gmp_sprintf(buf.ptr(), "%Zd", c);
+   CHECK_MATCH("1298371928379482488638871526");
    BI::pow(c, 123, 4);
-   gmp_printf("123 ^ 4 = %Zd\n", c);
-   BI::clear(a),BI::clear(b),BI::clear(c),BI::clear(d);
+   gmp_sprintf(buf.ptr(), "%Zd", c);
+   CHECK_MATCH("228886641");
+   BI::clear(a),BI::clear(b),BI::clear(c);
+   TEST_POST();
 }
 
 void testScript() {
+   TEST_PRE("testScript");
+   MP.varName = varNameXYZ;
+   printf("\n%s:\n", _name);
    ScriptInterpreter interpreter;
    const char* input = "vars xyz             \n\
       set p1 x3yz+x2y+13xy2+67xyz+x+11y3+26y2\n\
       build sg p1 gorner                     \n\
       build ss p1 simple                     \n\
-      build sm p1 mst                        \n\
+      build sm p1 tree                       \n\
       eval sg 23,-112,7                      \n\
       eval ss 23,-112,7                      \n\
       eval sm 23,-112,7                      \n\
    ";
    BufferScanner scanner(input);
    interpreter.execute(scanner);
+   TEST_POST();
 }
 
 int eq_str (int a, int b, void* context) {
@@ -305,22 +351,16 @@ int main (int argc, const char** argv)
       testPolyAdd();
       testPolyAdd2();
       testPolyMul();
+      testGMP();
 
       testGorner();
+      testTree();
       testReduce();
+
+      testScript();
    } catch (Exception ex) {
       printf("Error: %s", ex.message());
    }
-//   testMonSort();
-//   ;
-//   testListSort();
-//   testPolyPrint();
-//   testPolyMul();
-//   testPolySum();
-//   testReduce();
-//   testGorner();
-//   testGMP();
-//   testScript();
    
    try {
       MP.checkLeaks(true);
