@@ -221,6 +221,36 @@ void testReduce (void) {
    TEST_POST();
 }
 
+void testSimple (void)
+{
+   TEST_PRE("testSimple");
+   MP.varName = varNameXYZ;
+   Polynomial p;
+
+   p.init("x2y+13xy2+xy+x+y3+y2", 0, 0, "xyz");
+   p.sort();
+
+   Scheme scheme;
+   SchemeSimple strategy(scheme, p);
+   strategy.build();
+   Printer prn;
+   ArrayOutput output(buf);
+   prn.evaluate(&output, scheme);
+   output.writeChar(0);
+   CHECK_MATCH("(((((x^2*y + 13 * x*y^2) + x*y) + x) + y^3) + y^2)");
+   Evaluator eval;
+   Array<int> values;
+   values.push(3);
+   values.push(-1);
+   bigint_t res;
+   BigInt::init(res);
+   eval.evaluate(res, scheme, values);
+      if (BigInt::cmp(res, 30) != 0)
+         throw Exception("%s: Error: Result doesn't match expected value", _name);
+   BigInt::clear(res);
+   TEST_POST();
+}
+
 void testGorner (void)
 {
    TEST_PRE("testGorner");
@@ -231,8 +261,8 @@ void testGorner (void)
    p.sort();
 
    Scheme scheme;
-   SchemeGorner gorner(scheme, p);
-   gorner.build();
+   SchemeGorner strategy(scheme, p);
+   strategy.build();
    Printer prn;
    ArrayOutput output(buf);
    prn.evaluate(&output, scheme);
@@ -259,17 +289,14 @@ void testTree (void)
 
    p.init("x2y+13xy2+xy+x2+y3+y2", 0, 0, "xyz");
    p.sort();
-//   p.print(sout);
-//   printf("\n");
 
    Scheme scheme;
-   SchemeHangingTree mst(scheme, p);
-   mst.build();
+   SchemeHangingTree strategy(scheme, p);
+   strategy.build();
    Printer prn;
    ArrayOutput output(buf);
    prn.evaluate(&output, scheme);
    output.writeChar(0);
-   //printf("%s\n", buf.ptr());
    CHECK_MATCH("(((((x^2 + x*y) + y^2) + x * x*y) + 13 * x * y^2) + y * y^2)");
    Evaluator eval;
    Array<int> values;
@@ -353,6 +380,7 @@ int main (int argc, const char** argv)
       testPolyMul();
       testGMP();
 
+      testSimple();
       testGorner();
       testTree();
       testReduce();

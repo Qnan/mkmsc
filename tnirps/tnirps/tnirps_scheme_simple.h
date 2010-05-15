@@ -37,14 +37,7 @@ private:
             terms.at(i) = r;
          }
       }
-      for (int i = p.begin(); i < p.end(); i = p.next(i)) {
-         CFTYPE f = p.at(i).f;
-         if (f != 1) {
-            int r = cnt++;
-            ops.push().init(Scheme::OP_MULNUM, r, terms.at(i), f);
-            terms.at(i) = r;
-         }
-      }
+      // sum up
       int s = terms.at(p.begin());
       for (int i = p.next(p.begin()); i < p.end(); i = p.next(i)) {
          int r = cnt++;
