@@ -90,7 +90,13 @@ public:
    int lm () const { return _terms.at(_terms.begin()).m.get(); }
    CFTYPE lc () const { return _terms.at(_terms.begin()).f; }
    Term& lt () const { return _terms.at(_terms.begin()); }
-   
+
+   void toStr(Array<char>& buf) const {
+      ArrayOutput output(buf);
+      print(output);
+      output.writeByte(0);
+   }
+
    void print (Output& output) const {
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i)) {
          const Term& t = _terms.at(i);

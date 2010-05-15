@@ -11,7 +11,8 @@ class Printer {
 public:
    Printer () {}
 
-   void evaluate (const Scheme& scheme) {
+   void evaluate (Output* output, const Scheme& scheme) {
+      _output = output;
       SCHEME_CALLBACKS_SET(scheme);
       scheme.proceed(this);
    }
@@ -57,10 +58,10 @@ private:
       output.writeChar(0);
    }
    void yield (int id) {
-      printf("%s", intermediateValues[id].ptr());
+      _output->printf("%s", intermediateValues[id].ptr());
    }
 
-//   Array<int> varValues;
+   Output *_output;
    ObjArray< Array<char> > intermediateValues;
 };
 

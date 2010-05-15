@@ -77,20 +77,20 @@ private:
       for (; i < p.end(); i = p.next(i)) {
          p2.addTerm(p.m(i), p.at(i).f);
       }
-      MP.print(sout, m, 1);
+//      MP.print(sout, m, 1);
       int id0 = addMonomial(m), id1 = -1, id2 = -1;
       bool hasFactor = MP.length(p1.lm()) > 0;
       if (hasFactor) {
-         printf(" * ");
-         if (p1.size() > 1) printf("(");
+//         printf(" * ");
+//         if (p1.size() > 1) printf("(");
          id1 = build(p1);
-         if (p1.size() > 1) printf(")");
+//         if (p1.size() > 1) printf(")");
       } else if (p1.lc() != 1) {
-         printf(" * %d", p1.lc());
+//         printf(" * %d", p1.lc());
       }
       bool hasSummand = p2.size() > 0;
       if (hasSummand) {
-         printf(" + ");
+//         printf(" + ");
          id2 = build(p2);
       }
       Array<Scheme::Op>& ops = _scheme.ops;

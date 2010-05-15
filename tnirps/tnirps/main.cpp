@@ -34,12 +34,21 @@ const char* varNameXYZ (int idx) {
 
 const char* vv = "abcdefghkmnpqrstuvwxyz";
 
-void testMonome (void) {
-   const char* name = "testMonome";
+#define TEST_PRE(name) \
+   const char* _name = name; \
+   MP.setOrder(MonoPool::LEX); \
+   Array<char> buf
 
-   MP.setOrder(MonoPool::LEX);
-   Array<char> buf;
-   ArrayOutput output(buf);
+#define TEST_POST() \
+   printf("%s succeeded\n", _name)
+
+#define CHECK_MATCH(str) \
+   if (strcmp(buf.ptr(), str) != 0) \
+      throw Exception("%s: Error:\n\t%s\n\t!=\n\t%s\n", _name, buf.ptr(), str)
+
+void testMonome (void) {
+   TEST_PRE("testMonome");
+
    Monomial m1, m2, m3, m4, m5;
    const int i1[] = {1,2,3,5}, d1[] = {3,5,7,11};
    const char* s1 = "[1]^3*[2]^5*[3]^7*[5]^11";
@@ -52,35 +61,31 @@ void testMonome (void) {
              * s4 = "[2]^21*[3]^22*[4]^23*[6]^24",
              * s5 = "[2]^5*[3]^7";
    m1 = MP.init(i1, d1, 4);
-   output.clear();
-   MP.print(output, m1);output.writeChar(0);
+   MP.toStr(buf, m1);
    if (strcmp(buf.ptr(), s1) != 0)
-      throw Exception("%s: Monomial printing mismatch: %s != %s", name, buf.ptr(), s1);
+      throw Exception("%s: Monomial printing mismatch: %s != %s", _name, buf.ptr(), s1);
 
    int h = MP.countHash(m1);
    if (h != h1)
-      throw Exception("%s: Hash mismatch: %X != %X", name, h, h1);
+      throw Exception("%s: Hash mismatch: %X != %X", _name, h, h1);
 
    m2 = MP.init(i2, d2, 4);
    m3 = MP.mul(m1, m2);
-   output.clear();
-   MP.print(output, m3);output.writeChar(0);
+   MP.toStr(buf, m3);
    if (strcmp(buf.ptr(), s3) != 0)
-      throw Exception("%s: Monomial multiplication error: %s != %s", name, buf.ptr(), s3);
+      throw Exception("%s: Monomial multiplication error: %s != %s", _name, buf.ptr(), s3);
 
    m4 = MP.div(m3, m1);
-   output.clear();
-   MP.print(output, m4);output.writeChar(0);
+   MP.toStr(buf, m4);
    if (strcmp(buf.ptr(), s4) != 0)
-      throw Exception("%s: Monomial division error: %s != %s", name, buf.ptr(), s4);
+      throw Exception("%s: Monomial division error: %s != %s", _name, buf.ptr(), s4);
 
    m5 = MP.gcd(m1, m2);
-   output.clear();
-   MP.print(output, m5);output.writeChar(0);
+   MP.toStr(buf, m5);
    if (strcmp(buf.ptr(), s5) != 0)
-      throw Exception("%s: Monomial GCD calculation error: %s != %s", name, buf.ptr(), s5);
+      throw Exception("%s: Monomial GCD calculation error: %s != %s", _name, buf.ptr(), s5);
 
-   printf("%s succeeded\n", name);
+   TEST_POST();
 }
 
 void testMonLoad (void) {
@@ -89,7 +94,7 @@ void testMonLoad (void) {
 
 void testMonDiv ()
 {
-   const char* name = "testMonDiv";
+   TEST_PRE("testMonDiv");
    Monomial m[3];
    const int dd[3][2] = {{5, 7}, {6, 5}, {5, 5}};
 
@@ -98,92 +103,88 @@ void testMonDiv ()
 
    if (!MP.divides(m[0],m[2]) || !MP.divides(m[1],m[2]) || MP.divides(m[0],m[1])
             || MP.divides(m[1],m[0])  || MP.divides(m[2],m[0])  || MP.divides(m[2],m[1]))
-      throw Exception("%s: Divisibility check failed", name);
+      throw Exception("%s: Divisibility check failed", _name);
 
-   printf("%s succeeded\n", name);
+   TEST_POST();
 }
 
 void testPolyInit (void)
 {
-   const char* name = "testPolyInit";
-   Array<char> buf;
-   ArrayOutput output(buf);
+   TEST_PRE("testPolyInit");
+   MP.varName = varNameXYZ;
    Polynomial p;
    const char *s = "13xy2+z3-71x+10xy+4x2yz-y+y2z";
    p.init(s, 0, 0, "xyz");
-   MP.varName = varNameXYZ;
-   p.print(output);
-   output.writeChar(0);
-   const char* r1 = "13 x*y^2 + z^3 - 71 x + 10 x*y + 4 x^2*y*z - y + y^2*z";
-   if (strcmp(buf.ptr(), r1) != 0)
-      throw Exception("%s: Polynomial intialization error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), r1);
-   printf("%s succeeded\n", name);
-   printf("\n");
+   p.toStr(buf);
+   CHECK_MATCH("13 x*y^2 + z^3 - 71 x + 10 x*y + 4 x^2*y*z - y + y^2*z");
+   TEST_POST();
 }
 
-void testPoly (void)
+void testPolySort (void)
 {
-   const char* name = "testPoly";
-   Array<char> buf;
-   ArrayOutput output(buf);
+   TEST_PRE("testPolySort");
+   MP.varName = varNameXYZ;
+   Polynomial p;
+   const char *s = "13xy2+z3-71x+10xy+4x2yz-y+y2z";
+   p.init(s, 0, 0, "xyz");
+   p.sort();
+   p.toStr(buf);
+   CHECK_MATCH("4 x^2*y*z + 13 x*y^2 + 10 x*y - 71 x + y^2*z - y + z^3");
+   TEST_POST();
+}
+
+void testPolyAdd (void)
+{
+   TEST_PRE("testPolyAdd");
+   MP.varName = varNameXYZ;
    Polynomial p, p1;
    const char *s1 = "13xy2+z3-71x+10xy+4x2yz-y+y2z";
    p.init(s1, 0, 0, "xyz");
-   MP.varName = varNameXYZ;
-   p.print(output);
-   output.writeChar(0);
-   const char* r1 = "13 x*y^2 + z^3 - 71 x + 10 x*y + 4 x^2*y*z - y + y^2*z";
-   if (strcmp(buf.ptr(), r1) != 0)
-      throw Exception("%s: Polynomial intialization error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), r1);
-
    p.sort();
-   const char* r2 = "4 x^2*y*z + 13 x*y^2 + 10 x*y - 71 x + y^2*z - y + z^3";
-   output.clear();
-   p.print(output);
-   output.writeChar(0);
-   if (strcmp(buf.ptr(), r2) != 0)
-      throw Exception("%s: Polynomial sorting error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), r2);
-
    const char *s2 = "5 x - x*y^2 + 17 z^3 - 10 z^2 - 10 x*y + 5 y - 1 + x*y*z";
    p1.init(s2, 0,0,"xyz");
    p1.sort();
+
    Polynomial::add(p, p1);
-   output.clear();
-   p.print(output);
-   output.writeChar(0);
+   p.toStr(buf);
+   CHECK_MATCH("4 x^2*y*z + 12 x*y^2 + x*y*z - 66 x + y^2*z + 2 z^3 - 10 z^2 - 1");
+   TEST_POST();
+}
 
-   const char *r3 = "4 x^2*y*z + 12 x*y^2 + x*y*z - 66 x + y^2*z + 2 z^3 - 10 z^2 - 1";
-   if (strcmp(buf.ptr(), r3) != 0)
-      throw Exception("%s: Polynomial addition error:\n\t%s\n\t!=\n\t%s\n", name, buf.ptr(), r3);
+void testPolyAdd2 (void)
+{
+   TEST_PRE("testPolyAdd2");
+   MP.varName = varNameXYZ;
+   Polynomial p, p1;
+   const char *s1 = "13xy2+z3-71x+10xy+4x2yz-y+y2z";
+   p.init(s1, 0, 0, "xyz");
+   p.sort();
+   const char *s2 = "10 z^2 - x*y + 7";
+   p1.init(s2, 0,0,"xyz");
+   p1.sort();
 
-//   const char* s3 = "10 z^2 - x*y + 7";
-//   p1.init(s3, 0,0,"xyz");
-//   p1.sort();
-//   Polynomial::add(p, p1, 3, -6);
-//   output.clear();
-//   p.print(output);
-//   output.writeChar(0);
-//
-//   const char *r4 = "12 x^2*y*z + 36 x*y^2 + 3 x*y*z + 6 x*y - 198 x + 3 y^2*z + 6 z^3 - 90 z^2 - 9";
-//   if (strcmp(buf.ptr(), r4) != 0)
-//      throw Exception("%s: Polynomial addition error:\n\t3 * (%s) \n\t- 2 * (%s)\n\t!=\n\t%s\n", name, r3, s3, r4);
-//
-//   const char *s4 = "z^2";
-//   Monomial m = MP.init(s4, 0, 0, "xyz");
-//   p.mul(m);
-//   p.mulnum(-2);
-//   output.clear();
-//   p.print(output);
-//   output.writeChar(0);
-//
-//   const char *r5 = "-24 x^2*y*z^3 - 72 x*y^2*z^2 - 6 x*y*z^3 - 12 x*y*z^2 + 396 x*z^2 - 6 y^2*z^3 - 12 z^5 + 180 z^4 + 18 z^2";
-//   if (strcmp(buf.ptr(), r5) != 0)
-//      throw Exception("%s: Polynomial addition error:\n\t%s * (%s) \n\t!=\n\t%s\n", name, s4, r4, r5);
-// test
-   //    multiplication
-   //    copy
-   printf("%s succeeded\n", name);
-   printf("\n");
+   Polynomial::add(p, p1, 3, -6);
+   p.toStr(buf);
+   CHECK_MATCH("12 x^2*y*z + 39 x*y^2 + 36 x*y - 213 x + 3 y^2*z - 3 y + 3 z^3 - 60 z^2 - 6");
+   TEST_POST();
+}
+
+void testPolyMul (void)
+{
+   TEST_PRE("testPolyMul");
+   MP.varName = varNameXYZ;
+   Polynomial p;
+   const char *s1 = "13xy2+z3-71x+10xy+4x2yz-y+y2z";
+   p.init(s1, 0, 0, "xyz");
+   p.sort();
+   const char *s2 = "z^2";
+   Monomial m = MP.init(s2, 0, 0, "xyz");
+
+   p.mul(m);
+   p.mulnum(-2);
+   p.toStr(buf);
+   CHECK_MATCH("-8 x^2*y*z^3 - 26 x*y^2*z^2 - 20 x*y*z^2 + 142 x*z^2 - 2 y^2*z^3 + 2 y*z^2 - 2 z^5");
+   TEST_POST();
 }
 
 void testPolyLoad (void) {
@@ -192,49 +193,51 @@ void testPolyLoad (void) {
 }
 
 void testReduce (void) {
-   // TODO: test simple reduction
-//   Polynomial g[4],p;
-//   //const char* pp[] = {"y^3+x*y", "y^2*x+x^2"};
-//   g[0].init("y^3+x*y", 0, 0, vv);
-//   g[1].init("y^2*x+x^2", 0, 0, vv);
-//   g[2].init("x^2*y-2*y^2+x", 0, 0, vv);
-//   g[3].init("x^3-3*x*y", 0, 0, vv);
-//   g[0].sort();
-//   g[1].sort();
-//   g[2].sort();
-//   g[3].sort();
-//
-//   p.init("x^3-2*y^2*x^2+7*y^5", 0, 0, vv);
-//   p.sort();
-//
-//   reduce(g, NELEM(g), p);
-//
+   Polynomial g[4],p;
+   g[0].init("y^3+x*y", 0, 0, vv);
+   g[1].init("y^2*x+x^2", 0, 0, vv);
+   g[2].init("x^2*y-2*y^2+x", 0, 0, vv);
+   g[3].init("x^3-3*x*y", 0, 0, vv);
+   g[0].sort();
+   g[1].sort();
+   g[2].sort();
+   g[3].sort();
+
+   p.init("x^3-2*y^2*x^2+7*y^5", 0, 0, vv);
+   p.sort();
+
+   reduce(g, NELEM(g), p);
+
 }
 
-//void testGorner (void)
-//{
-//   Polynomial p;
-//
-//   p.init("x2y+13xy2+xy+x+y3+y2", 0, 0, "xyz");
-//   p.sort();
-//
-//   p.print(),printf("\n");
-//   Scheme scheme;
-//   SchemeGorner gorner(scheme, p);
-//   gorner.build();
-//   printf("\n\n");
-//   Printer prn;
-//   prn.evaluate(scheme);
-//   printf("\n");
-//   Printer prn1;
-//   prn1.evaluate(scheme);
-//   printf("\n");
-//   Evaluator eval;
-//   Array<int> values;
-//   values.push(3);
-//   values.push(-1);
-//   eval.evaluate(scheme, values);
-//}
+void testGorner (void)
+{
+   TEST_PRE("testGorner");
+   Polynomial p;
+
+   p.init("x2y+13xy2+xy+x+y3+y2", 0, 0, "xyz");
+   p.sort();
+
+   Scheme scheme;
+   SchemeGorner gorner(scheme, p);
+   gorner.build();
+   Printer prn;
+   ArrayOutput output(buf);
+   prn.evaluate(&output, scheme);
+   output.writeChar(0);
+   CHECK_MATCH("(x * (y * (x + (13 * y + 1)) + 1) + y^2 * (y + 1))");   
+   Evaluator eval;
+   Array<int> values;
+   values.push(3);
+   values.push(-1);
+   bigint_t res;
+   BigInt::init(res);
+   eval.evaluate(res, scheme, values);
+      if (BigInt::cmp(res, 30) != 0)
+         throw Exception("%s: Error: Result doesn't match expected value", _name);
+   BigInt::clear(res);
+   TEST_POST();
+}
 
 void testGMP() {
    bigint_t a, b, c, d;
@@ -285,9 +288,15 @@ int main (int argc, const char** argv)
 {
    MP.setOrder(MonoPool::LEX);
    try {
-//      testMonome();
-//      testMonDiv();
+      testMonome();
+      testMonDiv();
       testPolyInit();
+      testPolySort();
+      testPolyAdd();
+      testPolyAdd2();
+      testPolyMul();
+
+      testGorner();
    } catch (Exception ex) {
       printf("Error: %s", ex.message());
    }

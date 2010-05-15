@@ -108,11 +108,15 @@ private:
       }
       Evaluator eval;
       float time;
+      bigint_t res;
+      BigInt::init(res);
       qword t0 = nanoClock();
-      eval.evaluate(scheme.at(schname), vvals);
+      eval.evaluate(res, scheme.at(schname), vvals);
       qword t1 = nanoClock();
       time = 1000.0f * nanoHowManySeconds(t1 - t0);
       printf("time: %.3f ms\n", time);
+      gmp_printf("result: %Zd\n", res);
+      BigInt::clear(res);
       return 0;
    }
    int executeLine (Scanner& sc) {

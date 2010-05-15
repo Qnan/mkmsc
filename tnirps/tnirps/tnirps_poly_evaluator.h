@@ -18,10 +18,11 @@ public:
       BI::clear(result);
    }
 
-   void evaluate (const Scheme& scheme, const Array<int>& varValues) {
+   void evaluate (bigint_t& res, const Scheme& scheme, const Array<int>& varValues) {
       SCHEME_CALLBACKS_SET(scheme);
       this->varValues.copy(varValues);
       scheme.proceed(this);
+      BigInt::set(res, result);
    }
 
    SCHEME_CALLBACKS_DEFINE(Evaluator);
@@ -67,7 +68,7 @@ private:
    void yield (int id) {
       DBG(printf("yield %i\n", id));
       BI::set(result, values[id]);
-      gmp_printf("result: %Zd\n", result);
+      //gmp_printf("result: %Zd\n", result);
       DBG(printf("yield done\n"));
    }
 

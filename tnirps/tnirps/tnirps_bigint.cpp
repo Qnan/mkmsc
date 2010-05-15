@@ -7,6 +7,12 @@
 void BigInt::init (bigint_t& a) {
    mpz_init(a);
 }
+int BigInt::cmp (const bigint_t& a, const bigint_t& b) {
+   return mpz_cmp(a, b);
+}
+int BigInt::cmp (const bigint_t& a, int b) {
+   return mpz_cmp_si(a, b);
+}
 void BigInt::clear (bigint_t& a) {
    mpz_clear(a);
 }

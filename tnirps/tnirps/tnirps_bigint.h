@@ -7,6 +7,8 @@ typedef mpz_t bigint_t;
 class BigInt {
 public:
    static void init (bigint_t& a);
+   static int  cmp (const bigint_t& a, const bigint_t& b);
+   static int  cmp (const bigint_t& a, int b);
    static void clear (bigint_t& a);
    static void printf (const char* format, ...);
    static void set (bigint_t& r, const bigint_t& a);

@@ -382,6 +382,12 @@ private:
       _pool.at(id).print(output, varName);
    }
 
+   void toStr(Array<char>& buf, Monomial id) const {
+      ArrayOutput output(buf);
+      print(output, id);
+      output.writeByte(0);
+   }
+
    void print(Output& output, Monomial id, int coeff) const {
       bool empty = _pool.at(id).length() == 0;
       if (coeff != 1 || empty)
