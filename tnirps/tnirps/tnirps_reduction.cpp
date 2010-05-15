@@ -1,35 +1,28 @@
 #include "tnirps_common.h"
 #include "tnirps_monomial.h"
 #include "tnirps_polynomial.h"
+#include "obj_array.h"
+#include "tnirps_reduction.h"
 
-void reduce (Polynomial* g, int num, const Polynomial& p) {
-   printf("G:\n");
-   for (int i = 0; i < num; ++i)
-      g[i].print(sout),printf("\n");
-   printf("p:\n");
-   p.print(sout),printf("\n");
-
-   Polynomial r, t;
+bool SimpleReductor::reduceStep (Polynomial& r, const Polynomial& p) {
+   Polynomial t;
    r.copy(p);
-
-   do {
-      Monomial lm = r.lm();
-      int i;
-      for (i = 0; i < num; ++i) {
-         Monomial m = g[i].lm();
-         if (MP.divides(lm, m)) {
-            printf("q: "), g[i].print(sout), printf("\n");
-            printf("lm: "), MP.print(sout,lm), printf("\n");
-            printf("m: "), MP.print(sout, m), printf("\n");
-            Polynomial::mul(t, g[i], MP.div(lm, m), 1);
-            printf("t: "), t.print(sout), printf("\n");
-            Polynomial::add(r, t, t.lc(), -r.lc());
-            printf("r: "), r.print(sout), printf("\n");
-            printf("\n");
-            break;
+   Monomial lm = r.lm();
+   int i, i0 = -1, maxDeg = 0;
+   for (i = 0; i < g.size(); ++i) {
+      Monomial m = g[i].lm();
+      if (MP.divides(lm, m)) {
+         int deg = MP.totalDeg(m);
+         // choose the element with highest leading monomial degree
+         if (deg > maxDeg) { 
+            maxDeg = deg;
+            i0 = i;
          }
       }
-      if (i == num)
-         break;
-   } while (true);
+   }
+   if (i0 < 0)
+      return false;
+   Polynomial::mul(t, g[i0], MP.div(lm, g[i0].lm()), 1);
+   Polynomial::add(r, t, t.lc(), -r.lc());
+   return true;
 }

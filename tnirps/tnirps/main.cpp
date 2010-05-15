@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "array.h"
+#include "obj_array.h"
 #include "pool.h"
 #include "list.h"
 #include "tnirps_monomial.h"
@@ -193,21 +194,30 @@ void testPolyLoad (void) {
 }
 
 void testReduce (void) {
-   Polynomial g[4],p;
-   g[0].init("y^3+x*y", 0, 0, vv);
-   g[1].init("y^2*x+x^2", 0, 0, vv);
-   g[2].init("x^2*y-2*y^2+x", 0, 0, vv);
-   g[3].init("x^3-3*x*y", 0, 0, vv);
-   g[0].sort();
-   g[1].sort();
-   g[2].sort();
-   g[3].sort();
+   const char *sg[] = {
+      "y^3+x*y",
+      "y^2*x+x^2",
+      "x^2*y-2*y^2+x",
+      "x^3-3*x*y"};
+   ObjArray<Polynomial> g;
+   for (int i = 0; i < NELEM(sg); ++i) {
+      Polynomial& gi = g.push();
+      gi.init(sg[i], 0, 0, "xyz");
+      gi.sort();
+   }
 
-   p.init("x^3-2*y^2*x^2+7*y^5", 0, 0, vv);
+   Polynomial p, r, t;
+   p.init("x^3-2*y^2*x^2+7*y^5", 0, 0, "xyz");
    p.sort();
 
-   reduce(g, NELEM(g), p);
-
+   SimpleReductor sr(g);
+   p.print(sout);
+   sout.printf("\n");
+   while (sr.reduceStep(r, p)) {
+      r.print(sout);
+      sout.printf("\n");
+      p.copy(r);
+   }
 }
 
 void testGorner (void)
@@ -297,6 +307,7 @@ int main (int argc, const char** argv)
       testPolyMul();
 
       testGorner();
+      testReduce();
    } catch (Exception ex) {
       printf("Error: %s", ex.message());
    }
