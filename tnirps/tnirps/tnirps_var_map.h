@@ -1,9 +1,23 @@
 #ifndef __TNIRPS_VAR_MAP_H__
 #define __TNIRPS_VAR_MAP_H__
 
+#include "red_black.h"
+#include "scanner.h"
+#include "output.h"
+
 class VarMap {
 public:
-   VarMap (const char* str) { // receives a comma-separated list of variables
+   VarMap () {
+      
+   }
+
+   VarMap (const char* str) {
+      set(str);
+   }
+
+   void set (const char* str) { // receives a comma-separated list of variables
+      id2name.clear();
+      name2id.clear();
       Array<char> buf;
       BufferScanner s(str);
       s.skipSpace();
@@ -29,19 +43,27 @@ public:
       }
    }
 
-   bool isName (const char* name) {
+   bool isName (const char* name) const {
       return name2id.find(name);
    }
 
-   int id (const char* name) {
+   int id (const char* name) const {
       return name2id.at(name);
    }
 
-   const char* name (int id) {
+   const char* name (int id) const {
       return id2name.at(id).ptr();
    }
 
-   void print(Output& output) {
+   bool isEmpty () const {
+      return id2name.size() == 0;
+   }
+
+   int size () const {
+      return id2name.size();
+   }
+
+   void print(Output& output) const {
       for (int i = id2name.begin(); i < id2name.end(); i = id2name.next(i))
          output.printf(i == id2name.begin() ? "%s" : ", %s", id2name.value(i).ptr());
    }
@@ -49,6 +71,7 @@ public:
 private:
    RedBlackStringMap<int> name2id;
    RedBlackObjMap<int, Array<char> > id2name;
+   VarMap (const VarMap&);
 };
 
 #endif /* __TNIRPS_VAR_MAP_H__ */

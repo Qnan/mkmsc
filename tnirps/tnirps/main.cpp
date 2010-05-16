@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include "array.h"
+#include "scanner.h"
+#include "output.h"
 #include "obj_array.h"
+#include "red_black.h"
 #include "pool.h"
 #include "list.h"
+#include "tnirps_var_map.h"
 #include "tnirps_monomial.h"
 #include "tnirps_polynomial.h"
 #include "tnirps_reduction.h"
@@ -16,24 +20,9 @@
 #include "tnirps_script.h"
 #include "tnirps_hashset.h"
 #include "scanner.h"
+#include "tnirps_var_map.h"
 
 #include <gmp.h>
-
-const char* varName (int idx) {
-   static const char* vars[] = {"a", "b", "c", "d", "e", "f", "g", "h", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
-   if (idx < 0 || idx >= NELEM(vars))
-      throw Exception("Variable index %i out of range!", idx);
-   return vars[idx];
-}
-
-const char* varNameXYZ (int idx) {
-   static const char* vars[] = {"x", "y", "z"};
-   if (idx < 0 || idx >= NELEM(vars))
-      throw Exception("Variable index %i out of range!", idx);
-   return vars[idx];
-}
-
-const char* vv = "abcdefghkmnpqrstuvwxyz";
 
 #define TEST_PRE(name) \
    const char* _name = name; \
@@ -47,21 +36,27 @@ const char* vv = "abcdefghkmnpqrstuvwxyz";
    if (strcmp(buf.ptr(), str) != 0) \
       throw Exception("%s: Error:\n\t%s\n\t!=\n\t%s\n", _name, buf.ptr(), str)
 
+void testVarMap (void) {
+   TEST_PRE("testVarMap");
+   VarMap map("x1, y2, xxx3");
+
+   if (strcmp(map.name(1), "y2") != 0 || map.id("xxx3") != 2)
+      throw Exception("%s: Error", _name);
+
+   TEST_POST();
+}
+
 void testMonome (void) {
    TEST_PRE("testMonome");
-
+   MP.setVarMap("x0,x1,x2,x3,x4,x5,x6,x7");
    Monomial m1, m2, m3, m4, m5;
-   const int i1[] = {1,2,3,5}, d1[] = {3,5,7,11};
-   const char* s1 = "[1]^3*[2]^5*[3]^7*[5]^11";
    const int h1 = 11564336; // hash
-
-   const int i2[] = {2,3,4,6};
-   const int d2[] = {21,22,23,24};
-   
-   const char* s3 = "[1]^3*[2]^26*[3]^29*[4]^23*[5]^11*[6]^24",
-             * s4 = "[2]^21*[3]^22*[4]^23*[6]^24",
-             * s5 = "[2]^5*[3]^7";
-   m1 = MP.init(i1, d1, 4);
+   const char *s1 = "x1^3*x2^5*x3^7*x5^11",
+           *s2 = "x2^21*x3^22*x4^23*x6^24",
+           *s3 = "x1^3*x2^26*x3^29*x4^23*x5^11*x6^24",
+           *s4 = "x2^21*x3^22*x4^23*x6^24",
+           *s5 = "x2^5*x3^7";
+   m1 = MP.init(s1);
    MP.toStr(buf, m1);
    if (strcmp(buf.ptr(), s1) != 0)
       throw Exception("%s: Monomial printing mismatch: %s != %s", _name, buf.ptr(), s1);
@@ -70,7 +65,7 @@ void testMonome (void) {
    if (h != h1)
       throw Exception("%s: Hash mismatch: %X != %X", _name, h, h1);
 
-   m2 = MP.init(i2, d2, 4);
+   m2 = MP.init(s2);
    m3 = MP.mul(m1, m2);
    MP.toStr(buf, m3);
    if (strcmp(buf.ptr(), s3) != 0)
@@ -96,11 +91,12 @@ void testMonLoad (void) {
 void testMonDiv ()
 {
    TEST_PRE("testMonDiv");
+   MP.setVarMap("x,y");
    Monomial m[3];
-   const int dd[3][2] = {{5, 7}, {6, 5}, {5, 5}};
+   const char* dd[] = {"x^5 * y^7", "x^6 * y^5", "x^5 * y^5"};
 
    for (int i = 0; i < 3; ++i)
-      m[i] = MP.init(dd[i], 2);
+      m[i] = MP.init(dd[i]);
 
    if (!MP.divides(m[0],m[2]) || !MP.divides(m[1],m[2]) || MP.divides(m[0],m[1])
             || MP.divides(m[1],m[0])  || MP.divides(m[2],m[0])  || MP.divides(m[2],m[1]))
@@ -112,79 +108,78 @@ void testMonDiv ()
 void testPolyInit (void)
 {
    TEST_PRE("testPolyInit");
-   MP.varName = varNameXYZ;
+   MP.setVarMap("x,y,z");
    Polynomial p;
-   const char *s = "13xy2+z3-71x+10xy+4x2yz-y+y2z";
-   p.init(s, 0, 0, "xyz");
+   const char *s = "13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z";
+   p.init(s);
    p.toStr(buf);
-   CHECK_MATCH("13 x*y^2 + z^3 - 71 x + 10 x*y + 4 x^2*y*z - y + y^2*z");
+   CHECK_MATCH("13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z");
    TEST_POST();
 }
 
 void testPolySort (void)
 {
    TEST_PRE("testPolySort");
-   MP.varName = varNameXYZ;
+   MP.setVarMap("x,y,z");
    Polynomial p;
-   const char *s = "13xy2+z3-71x+10xy+4x2yz-y+y2z";
-   p.init(s, 0, 0, "xyz");
+   const char *s = "13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z";
+   p.init(s);
    p.sort();
    p.toStr(buf);
-   CHECK_MATCH("4 x^2*y*z + 13 x*y^2 + 10 x*y - 71 x + y^2*z - y + z^3");
+   CHECK_MATCH("4*x^2*y*z + 13*x*y^2 + 10*x*y - 71*x + y^2*z - y + z^3");
    TEST_POST();
 }
 
 void testPolyAdd (void)
 {
    TEST_PRE("testPolyAdd");
-   MP.varName = varNameXYZ;
+   MP.setVarMap("x,y,z");
    Polynomial p, p1;
-   const char *s1 = "13xy2+z3-71x+10xy+4x2yz-y+y2z";
-   p.init(s1, 0, 0, "xyz");
+   const char *s1 = "13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z";
+   p.init(s1);
    p.sort();
-   const char *s2 = "5 x - x*y^2 + 17 z^3 - 10 z^2 - 10 x*y + 5 y - 1 + x*y*z";
-   p1.init(s2, 0,0,"xyz");
+   const char *s2 = "5*x - x*y^2 + 17*z^3 - 10*z^2 - 10*x*y + 5*y - 1 + x*y*z";
+   p1.init(s2);
    p1.sort();
 
    Polynomial::add(p, p1);
    p.toStr(buf);
-   CHECK_MATCH("4 x^2*y*z + 12 x*y^2 + x*y*z - 66 x + y^2*z + 4 y + 18 z^3 - 10 z^2 - 1");
+   CHECK_MATCH("4*x^2*y*z + 12*x*y^2 + x*y*z - 66*x + y^2*z + 4*y + 18*z^3 - 10*z^2 - 1");
    TEST_POST();
 }
 
 void testPolyAdd2 (void)
 {
    TEST_PRE("testPolyAdd2");
-   MP.varName = varNameXYZ;
+   MP.setVarMap("x,y,z");
    Polynomial p, p1;
-   const char *s1 = "13xy2+z3-71x+10xy+4x2yz-y+y2z";
-   p.init(s1, 0, 0, "xyz");
+   const char *s1 = "13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z";
+   p.init(s1);
    p.sort();
-   const char *s2 = "10 z^2 - x*y + 7";
-   p1.init(s2, 0,0,"xyz");
+   const char *s2 = "10*z^2 - x*y + 7";
+   p1.init(s2);
    p1.sort();
 
    Polynomial::add(p, p1, 3, -6);
    p.toStr(buf);
-   CHECK_MATCH("12 x^2*y*z + 39 x*y^2 + 36 x*y - 213 x + 3 y^2*z - 3 y + 3 z^3 - 60 z^2 - 42");
+   CHECK_MATCH("12*x^2*y*z + 39*x*y^2 + 36*x*y - 213*x + 3*y^2*z - 3*y + 3*z^3 - 60*z^2 - 42");
    TEST_POST();
 }
 
 void testPolyMul (void)
 {
    TEST_PRE("testPolyMul");
-   MP.varName = varNameXYZ;
    Polynomial p;
-   const char *s1 = "13xy2+z3-71x+10xy+4x2yz-y+y2z";
-   p.init(s1, 0, 0, "xyz");
+   const char *s1 = "13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z";
+   p.init(s1, 0, 0);
    p.sort();
    const char *s2 = "z^2";
-   Monomial m = MP.init(s2, 0, 0, "xyz");
+   Monomial m = MP.init(s2, 0, 0);
 
    p.mul(m);
    p.mulnum(-2);
    p.toStr(buf);
-   CHECK_MATCH("-8 x^2*y*z^3 - 26 x*y^2*z^2 - 20 x*y*z^2 + 142 x*z^2 - 2 y^2*z^3 + 2 y*z^2 - 2 z^5");
+   CHECK_MATCH("-8*x^2*y*z^3 - 26*x*y^2*z^2 - 20*x*y*z^2 + 142*x*z^2 - 2*y^2*z^3 + 2*y*z^2 - 2*z^5");
    TEST_POST();
 }
 
@@ -195,7 +190,7 @@ void testPolyLoad (void) {
 
 void testReduce (void) {
    TEST_PRE("testReduce");
-   MP.varName = varNameXYZ;
+   MP.setVarMap("x,y");
    MP.setOrder(MonoPool::DRL);
    const char *sg[] = {
       "y^3+x*y",
@@ -205,29 +200,30 @@ void testReduce (void) {
    ObjArray<Polynomial> g;
    for (int i = 0; i < NELEM(sg); ++i) {
       Polynomial& gi = g.push();
-      gi.init(sg[i], 0, 0, "xy");
+      gi.init(sg[i]);
       gi.sort();
    }
 
    Polynomial p, r;
-   p.init("x^7 - 2 x^4*y^3 + 3 y^6 + x*y^3 + 3 y", 0, 0, "xy");
+   p.init("x^7 - 2*x^4*y^3 + 3*y^6 + x*y^3 + 3*y");
    p.sort();
 
    SimpleReductor sr(g);
    while (sr.reduceStep(r, p))
       p.copy(r);
    r.toStr(buf);
-   CHECK_MATCH("-92 y^2 - 9 x*y + 3 y + 46 x");
+   CHECK_MATCH("-92*y^2 - 9*x*y + 3*y + 46*x");
    TEST_POST();
 }
 
 void testSimple (void)
 {
    TEST_PRE("testSimple");
-   MP.varName = varNameXYZ;
+   MP.setVarMap("x,y");
+
    Polynomial p;
 
-   p.init("x2y+13xy2+xy+x+y3+y2", 0, 0, "xyz");
+   p.init("x^2*y + 13*x*y^2 + x*y + x + y^3 + y^2");
    p.sort();
 
    Scheme scheme;
@@ -254,10 +250,10 @@ void testSimple (void)
 void testGorner (void)
 {
    TEST_PRE("testGorner");
-   MP.varName = varNameXYZ;
+   MP.setVarMap("x,y");
    Polynomial p;
 
-   p.init("x2y+13xy2+xy+x+y3+y2", 0, 0, "xyz");
+   p.init("x^2*y + 13*x*y^2 + x*y + x + y^3 + y^2");
    p.sort();
 
    Scheme scheme;
@@ -283,11 +279,11 @@ void testGorner (void)
 
 void testTree (void)
 {
-   TEST_PRE("testMST");
-   MP.varName = varNameXYZ;
+   TEST_PRE("testTree");
+   MP.setVarMap("x,y");
    Polynomial p;
 
-   p.init("x2y+13xy2+xy+x2+y3+y2", 0, 0, "xyz");
+   p.init("x^2*y + 13*x*y^2 + x*y + x^2 + y^3 + y^2");
    p.sort();
 
    Scheme scheme;
@@ -334,11 +330,11 @@ void testGMP() {
 
 void testScript() {
    TEST_PRE("testScript");
-   MP.varName = varNameXYZ;
+   MP.setVarMap("");
    printf("\n%s:\n", _name);
    ScriptInterpreter interpreter;
-   const char* input = "vars xyz             \n\
-      set p1 x3yz+x2y+13xy2+67xyz+x+11y3+26y2\n\
+   const char* input = "vars x,y,z             \n\
+      set p1 x^3*y*z+x^2*y+13*x*y^2+67*x*y*z+x+11*y^3+26*y^2\n\
       build sg p1 gorner                     \n\
       build ss p1 simple                     \n\
       build sm p1 tree                       \n\
@@ -371,6 +367,7 @@ int main (int argc, const char** argv)
 {
    MP.setOrder(MonoPool::LEX);
    try {
+      testVarMap();
       testMonome();
       testMonDiv();
       testPolyInit();

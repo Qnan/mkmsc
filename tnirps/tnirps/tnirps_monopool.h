@@ -5,7 +5,9 @@
 #include "obj_pool.h"
 #include "tnirps_hashset.h"
 #include "tnirps_common.h"
+#include "tnirps_var_map.h"
 class Exception;
+class VarMap;
 
 typedef int Monomial;
 
@@ -31,28 +33,33 @@ public:
          vars.copy(a.vars);
       }
 
-      void init (const int* idcs, const int* degs, int length)
+      void init ()
       {
          vars.clear();
-         for (int i = 0; i < length; ++i)
+      }
+
+      void init (const Array<int>& idcs, const Array<int>& degs)
+      {
+         vars.clear();
+         for (int i = 0; i < idcs.size(); ++i)
             vars.push(Var(idcs[i], degs[i]));
       }
 
-      void init (const int* degs, int length)
+      void init (const Array<int>& degs)
       {
          vars.clear();
-         for (int i = 0; i < length; ++i)
+         for (int i = 0; i < degs.size(); ++i)
             if (degs[i] > 0)
                vars.push(Var(i, degs[i]));
       }
 
-      void print (Output& output, const char* (*vnames) (int) = NULL) const
+      void print (Output& output, const VarMap& vmap) const
       {
          for (int i = 0; i < vars.size(); ++i) {
             if (i > 0)
                output.printf("*");
-            if (vnames)
-               output.printf("%s", vnames(vars[i].idx));
+            if (!vmap.isEmpty())
+               output.printf("%s", vmap.name(vars[i].idx));
             else
                output.printf("[%i]", vars[i].idx);
             if (vars[i].deg > 1)
@@ -325,50 +332,59 @@ private:
       return _msingle[var];
    }
 
-   Monomial init (const int* idcs, const int* degs, const int length) {
+   Monomial init (const Array<int>& degs) {
       int id = _pool.add();
-      _pool.at(id).init(idcs, degs, length);
+      _pool.at(id).init(degs);
       return resolve(id);
    }
 
-   Monomial init (const int* degs, const int length) {
+   Monomial init (const Array<int>& vars, const Array<int>& degs) {
       int id = _pool.add();
-      _pool.at(id).init(degs, length);
+      _pool.at(id).init(vars, degs);
       return resolve(id);
    }
 
-   Monomial init (const char* expr, int begin, int end, const char* vnames) {
-      int var = -1, deg = 0;
-      static int degs[1024];
-      int len = strlen(vnames);
-      for (int j = 0; j < len; ++j)
-         degs[j] = 0;
+   Monomial init (const char* expr, int begin = 0, int end = 0) {
+      static Array<int> vars, degs;
+
       if (end <= 0)
          end = strlen(expr);
-      char c;
-      for (int i = begin; i < end; ++i) {
-         c = expr[i];
-         if (isalpha(c)) {
-            if (var >= 0)
-               degs[var]++;
-            for (var = 0; var < len && vnames[var] != c; ++var);
-            if (var == len)
-               throw Exception("Variable name unrecognized: %c", c);
-         } else if (isdigit(c)) {
-            if (sscanf(expr+i, "%d", &deg) != 1 || var < 0)
-               throw Exception("Error parsing expression %s, starting %s", expr, expr+i);
-            degs[var] += deg;
-            var = -1;
-            deg = 0;
-            while (i+1 < end && isdigit(expr[i+1]))
-               ++i;
-         } else if (isspace(c) || c == '*' || c == '^') {
-         } else
-            throw Exception("Unexpected symbol at %s, starting %s", expr, expr+i);
+      BufferScanner sc(expr + begin, end - begin);
+      static Array<char> buf;
+      vars.clear();
+      degs.clear();
+      while (!sc.isEOF()) {
+         sc.skipSpace();
+         sc.readWord(buf, "*^");
+         buf.rstrip();
+         if (strlen(buf.ptr()) == 0)
+            throw Exception("Error parsing expression %s, starting %s", expr, expr+begin);
+         buf.push(0);
+         int id = _varMap.id(buf.ptr());
+
+         int deg = 1;
+         char c;
+         if (!sc.isEOF()) {
+            c = sc.lookNext();
+            if (c == '^') {
+               sc.readChar();
+               sc.skipSpace();
+               deg = sc.readInt();
+               if (deg <= 0)
+                  throw Exception("Degree must be strictly positive");
+            }
+            sc.skipSpace();
+         }
+         sc.skipSpace();
+         if (!sc.isEOF()) {
+            c = sc.readChar();
+            if (c != '*')
+               throw Exception("Invalid monomial string, expected \"*\"");
+         }
+         vars.push(id);
+         degs.push(deg);
       }
-      if (var >= 0)
-         degs[var]++;
-      return init(degs, len);
+      return init(vars, degs);
    }
 
    int length (Monomial id) const {
@@ -384,7 +400,7 @@ private:
    }
 
    void print(Output& output, Monomial id) const {
-      _pool.at(id).print(output, varName);
+      _pool.at(id).print(output, _varMap);
    }
 
    void toStr(Array<char>& buf, Monomial id) const {
@@ -396,8 +412,8 @@ private:
    void print(Output& output, Monomial id, int coeff) const {
       bool empty = _pool.at(id).length() == 0;
       if (coeff != 1 || empty)
-         printf(empty ? "%i" : "%i ", coeff);
-      _pool.at(id).print(output, varName);
+         output.printf(empty ? "%i" : "%i*", coeff);
+      _pool.at(id).print(output, _varMap);
    }
 
    Monomial clone(Monomial id) {
@@ -468,8 +484,6 @@ private:
       return _pool.at(id);
    }
 
-   const char* (*varName) (int idx);
-
    int resolve (int id) {
       int r = _uniq.findOrAdd(id, _pool.at(id).countHash());
       if (r != id)
@@ -499,7 +513,7 @@ private:
          none = false;
          total += rc;
          if (printem)
-            _pool.at(refcnt.key(i)).print(sout),printf(": %d\n", rc);
+            _pool.at(refcnt.key(i)).print(sout, _varMap),printf(": %d\n", rc);
       }
       if (none)
          printf("\tnone.\n");
@@ -508,7 +522,7 @@ private:
    int printRefs () {
       printf("\n\nReferences:\n");
       for (int i = refcnt.begin(); i < refcnt.end(); i = refcnt.next(i)) {
-         _pool.at(refcnt.key(i)).print(sout),printf(": %d\n", refcnt.value(i));
+         _pool.at(refcnt.key(i)).print(sout, _varMap),printf(": %d\n", refcnt.value(i));
       }
    }
 
@@ -522,6 +536,14 @@ private:
 //      }
 //   }
 
+   void setVarMap (const char* vars) {
+      _varMap.set(vars);
+   }
+
+   const VarMap& getVarMap () {
+      return _varMap;
+   }
+
 private:
    static int cb_cmp (int a, int b, void* context) {
       ((MonoPool*)context)->cmp(a, b);
@@ -531,6 +553,7 @@ private:
    ObjPool<_Mon> _pool;
    mcmp_t _cmp;
    ORDER _order;
+   VarMap _varMap;
    static MonoPool _inst;
    Monomial _munit;
    Array<Monomial> _msingle;
@@ -540,7 +563,7 @@ private:
       _uniq.eq = cb_cmp;
 
       int id = _pool.add();
-      _pool.at(id).init(NULL, 0);
+      _pool.at(id).init();
       _munit = resolve(id);
       _msingle.clear();
    }

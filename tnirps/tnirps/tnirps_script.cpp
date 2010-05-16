@@ -1,3 +1,6 @@
+#include "scanner.h"
+#include "output.h"
+#include "array.h"
+#include "red_black.h"
+#include "tnirps_var_map.h"
 #include "tnirps_script.h"
-
-ObjArray<Array<char> > ScriptInterpreter::vars1;

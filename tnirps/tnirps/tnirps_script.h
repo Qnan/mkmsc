@@ -9,6 +9,8 @@
 #include "tnirps_poly_evaluator.h"
 #include "nano.h"
 
+class VarMap;
+
 class ScriptInterpreter {
 public:
    ScriptInterpreter () {}
@@ -27,23 +29,9 @@ public:
    }
 
 private:
-   static const char* varName (int i) {
-      return vars1[i].ptr();
-   }
-   int setVars (const Array<char>& str) {
-      vars.copy(str);
-      vars1.clear();
-      for (int i = 0; i < strlen(vars.ptr()); ++i) {
-         Array<char>& a = vars1.push();
-         a.push(vars[i]);
-         a.push(0);
-      }
-      MP.varName = varName;
-      return 0;
-   }
    int setPoly (const char* name, const char* body) {
       Polynomial& p = poly.value(poly.insert(name));
-      p.init(body, 0, 0, vars.ptr());
+      p.init(body);
       printf("\t%s = ", name), p.print(sout), printf("\n");
       return 0;
    }
@@ -102,21 +90,22 @@ private:
             bs.readChar();
          }
       }
-      if (vvals.size() != strlen(vars.ptr())) {
-         printf("\tERROR: invalid number of values provided for arguments, %i expected\n", strlen(vars.ptr()));
+      int nvars = MP.getVarMap().size();
+      if (vvals.size() != nvars) {
+         printf("\tERROR: invalid number of values provided for arguments, %i expected\n", nvars);
          return 1;
       }
       Evaluator eval;
       float time;
       bigint_t res;
-      BigInt::init(res);
+      BI::init(res);
       qword t0 = nanoClock();
       eval.evaluate(res, scheme.at(schname), vvals);
       qword t1 = nanoClock();
       time = 1000.0f * nanoHowManySeconds(t1 - t0);
       printf("\ttime: %.3f ms\n", time);
       gmp_printf("\tresult: %Zd\n", res);
-      BigInt::clear(res);
+      BI::clear(res);
       return 0;
    }
    int executeLine (Scanner& sc) {
@@ -133,7 +122,13 @@ private:
          r = setPoly(name.ptr(), arg.ptr());
       } else if (!strcmp(command.ptr(), "vars")) {
          sc.readWord(arg, 0);
-         r = setVars(arg);
+         try {
+            MP.setVarMap(arg.ptr());
+            r = 0;
+         } catch (Exception& ex) {
+            printf("\tERROR: can't parse variable names: %s\n", arg.ptr());
+            r = 1;
+         }
       } else if (!strcmp(command.ptr(), "build")) {
          sc.readWord(schname, 0);
          sc.skipSpace();
@@ -155,8 +150,6 @@ private:
       return r;
    }
 private:
-   Array<char> vars;
-   static ObjArray<Array<char> > vars1; // TODO: remove the static hack
    RedBlackStringObjMap<Polynomial> poly;
    RedBlackStringObjMap<Scheme> scheme;
 };

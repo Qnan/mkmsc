@@ -25,32 +25,55 @@ public:
       clear();
    }
 
-   void init (const char* expr, int begin, int end, const char* vnames) {
+   void init (const char* expr, int begin = 0, int end = 0) {
       clear();
-      int val = 0;
       if (end <= 0)
          end = strlen(expr);
-      int p0 = 0;
-      for (int i = begin; i <= end; ++i) {
-         if (i == end || expr[i] == '+' || expr[i] == '-') {
-            while (isspace(expr[p0]))
-               ++p0;
-            int sgn = 1;
-            if (expr[p0] == '-') {
-               sgn = -1;
-               ++p0;
-            } else if (expr[p0] == '+') {
-               ++p0;
-            }
-            if (sscanf(expr+p0, "%d", &val) != 1)
-               val = 1;
-            val *= sgn;
-            while (!isalpha(expr[p0]))
-               ++p0;
-            Monomial m = MP.init(expr, p0, i, vnames);
-            addTerm(m,val);
-            p0 = i;
+
+      BufferScanner sc(expr + begin, end - begin);
+      static Array<char> buf;
+      while (!sc.isEOF()) {
+         sc.skipSpace();
+         char c = sc.lookNext();
+         if (c == '+' || c == '-') {
+            sc.readChar();
+            sc.skipSpace();
          }
+         int sgn = c == '-' ? -1 : 1;
+
+         int coeff = 1;
+         bool hasCoeff = false, variablesExpected = false;
+         // read coefficient, if present
+         if (isdigit(sc.lookNext())) {
+            hasCoeff = true;
+            coeff = sc.readInt();
+            sc.skipSpace();
+            if (!sc.isEOF() && sc.lookNext() == '*') {
+               variablesExpected = true;
+               sc.readChar();
+               sc.skipSpace();
+            }
+         } else {
+            variablesExpected = true;
+         }
+         coeff *= sgn;
+
+         // read variables, if any
+         sc.readWord(buf, "+-");
+         buf.rstrip();
+         Monomial m;
+         if (strlen(buf.ptr()) > 0) {
+            if (!variablesExpected)
+               throw Exception("For non-trivial monomials, coefficient should be followed by multiplication sign:\n\t%s", expr + begin);
+            m = MP.init(buf.ptr());
+         } else {
+            if (variablesExpected)
+               throw Exception("Variables are expected at this point:\n\t%s", expr + begin);
+               
+            m = MP.unit();
+         }
+
+         addTerm(m, coeff);
       }
    }
 
@@ -124,7 +147,7 @@ public:
             output.printf("%lld", f);
          if (showVars) {
             if (showCf)
-               output.printf(" ");
+               output.printf("*");
             MP.print(output, t.m.get());
          }
       }
