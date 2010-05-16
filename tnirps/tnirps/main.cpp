@@ -17,6 +17,7 @@
 #include "tnirps_poly_evaluator.h"
 #include "tnirps_poly_evaluator_i.h"
 #include "tnirps_poly_printer.h"
+#include "tnirps_poly_reduction.h"
 #include "tnirps_script.h"
 #include "tnirps_hashset.h"
 #include "scanner.h"
