@@ -217,6 +217,36 @@ void testReduce (void) {
    TEST_POST();
 }
 
+void testReduceIncr (void) {
+   TEST_PRE("testReduceIncr");
+   MP.setVarMap("x,y");
+   MP.setOrder(MonoPool::DRL);
+   const char *sg[] = {
+      "y^3+x*y",
+      "x*y^2+x^2",
+      "x^2*y-2*y^2+x",
+      "x^3-3*x*y"};
+   ObjArray<Polynomial> g;
+   for (int i = 0; i < NELEM(sg); ++i) {
+      Polynomial& gi = g.push();
+      gi.init(sg[i]);
+      gi.sort();
+   }
+
+   Polynomial p, r;
+   p.init("x^7 - 2*x^4*y^3 + 3*y^6 + x*y^3 + 3*y");
+   p.sort();
+
+   Scheme scheme;
+   SchemeHangingTree strategy(scheme, p);
+   strategy.build();
+   Reductor reductor(g);
+   reductor.reduce(r, scheme);
+   r.toStr(buf);
+   CHECK_MATCH("-92*y^2 - 9*x*y + 3*y + 46*x");
+   TEST_POST();
+}
+
 void testSimple (void)
 {
    TEST_PRE("testSimple");
@@ -383,6 +413,7 @@ int main (int argc, const char** argv)
       testTree();
       testReduce();
 
+      testReduceIncr();
       testScript();
    } catch (Exception ex) {
       printf("Error: %s", ex.message());

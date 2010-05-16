@@ -20,6 +20,7 @@ public:
 
    void reduce (Polynomial& res, const Scheme& scheme) {
       SCHEME_CALLBACKS_SET(scheme);
+      values.resize(scheme.totalCount);
       scheme.proceed(this);
       res.copy(result);            
    }
@@ -85,7 +86,7 @@ private:
 
 
    const ObjArray<Polynomial>& basis;
-   Array<Polynomial> values;
+   ObjArray<Polynomial> values;
    Polynomial result;
    SimpleReductor sr;
 };
