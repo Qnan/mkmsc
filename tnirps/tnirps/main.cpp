@@ -184,6 +184,29 @@ void testPolyMul (void)
    TEST_POST();
 }
 
+void testPolySimplify (void)
+{
+   TEST_PRE("testPolyMul");
+   Polynomial p1, p2, p3;
+   const char *s1 = "13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z",
+           *s2 = "x - x*y*z",
+           *s3 = "x - 4*x*y^2 + 2 + 13";
+   p1.init(s1, 0, 0);
+   p2.init(s2, 0, 0);
+   p3.init(s3, 0, 0);
+   p1.append(p2, 70);
+   p1.append(p3);
+   p1.toStr(buf);
+   CHECK_MATCH("13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z + 70*x - 70*x*y*z + x - 4*x*y^2 + 2 + 13");
+//   p1.sort();
+//   p1.toStr(buf);
+//   CHECK_MATCH("4*x^2*y*z + 13*x*y^2 - 70*x*y*z - 4*x*y^2 + 10*x*y - 71*x + 70*x + x + y^2*z - y + z^3 + 2 + 13");
+   p1.simplify();
+   p1.toStr(buf);
+   CHECK_MATCH("4*x^2*y*z + 9*x*y^2 - 70*x*y*z + 10*x*y + y^2*z - y + z^3 + 15");
+   TEST_POST();
+}
+
 void testPolyLoad (void) {
    // test
    //    initialization
@@ -285,7 +308,7 @@ void testGorner (void)
    Polynomial p;
 
    p.init("x^2*y + 13*x*y^2 + x*y + x + y^3 + y^2");
-   p.sort();
+   p.simplify();
 
    Scheme scheme;
    SchemeGorner strategy(scheme, p);
@@ -315,7 +338,7 @@ void testTree (void)
    Polynomial p;
 
    p.init("x^2*y + 13*x*y^2 + x*y + x^2 + y^3 + y^2");
-   p.sort();
+   p.simplify();
 
    Scheme scheme;
    SchemeHangingTree strategy(scheme, p);
@@ -406,6 +429,7 @@ int main (int argc, const char** argv)
       testPolyAdd();
       testPolyAdd2();
       testPolyMul();
+      testPolySimplify();
       testGMP();
 
       testSimple();

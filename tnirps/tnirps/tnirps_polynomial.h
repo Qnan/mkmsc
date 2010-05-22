@@ -95,6 +95,14 @@ public:
       return id;
    }
 
+   bool isSorted ()
+   {
+      for (int i = begin(); i < end(); i = next(i))
+         if (MP.cmp(m(i), m(next(i))) < 0)
+            return false;
+      return true;
+   }
+
    void sort ()
    {
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
@@ -217,13 +225,15 @@ public:
 
    void simplify () {
       sort();
-      for (int i = begin(), j; next(i) < end(); i = next(i)) {
-         while (MP.equals(m(i), m(j = next(i)))) {
+      for (int i = begin(), j; i < end() && next(i) < end();) {
+         while ((j = next(i)) < end() && MP.equals(m(i), m(j))) {
             _terms.at(i).f += _terms.at(j).f;
             _terms.remove(j);
          }
+         j = next(i);
          if (_terms.at(i).f == 0)
             _terms.remove(i);
+         i = j;
       }
    }
 
