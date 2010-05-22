@@ -103,25 +103,26 @@ public:
       return true;
    }
 
+   static int cmpDefault (const Term& a, const Term& b) {
+      return MP.cmp(a.m.get(), b.m.get());
+   }
+
+   static MonoPool::ORDER specOrder;
+   static bool specInvert;
+   static int cmpSpec (const Term& a, const Term& b) {
+      return (specInvert ? -1 : 1) * MP.cmp(a.m.get(), b.m.get(), specOrder);
+   }
+
    void sort ()
    {
-      for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
-         for (int j = _terms.begin(); _terms.next(j) < _terms.end();)
-            if (MP.cmp(_terms.at(j).m.get(), _terms.at(_terms.next(j)).m.get()) < 0)
-               _terms.swap(j);
-            else
-               j = _terms.next(j);
+      _terms.bubbleSort(cmpDefault);
    }
    
    void sort (MonoPool::ORDER o, bool inverse = false)
-   {          
-      for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
-         for (int j = _terms.begin(); _terms.next(j) < _terms.end();)
-            if (MP.cmp(_terms.at(j).m.get(), _terms.at(_terms.next(j)).m.get(), o)
-                    * (inverse ? -1 : 1) < 0)
-               _terms.swap(j);
-            else
-               j = _terms.next(j);
+   {
+      specOrder = o;
+      specInvert = inverse;
+      _terms.bubbleSort(cmpSpec);
    }
 
    int begin () const { return _terms.begin(); }

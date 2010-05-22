@@ -417,7 +417,7 @@ void testHashSet() {
       printf("%s --- %d\n", ss[i], set.findOrAdd(i, (int)ss[i][0]));
 }
 
-int main (int argc, const char** argv)
+int tests ()
 {
    MP.setOrder(MonoPool::LEX);
    try {
@@ -462,4 +462,45 @@ int script (int argc, const char** argv)
       FileScanner scanner(argv[1]);
       interpreter.execute(scanner);
    }
+}
+
+int cmp (const int& a, const int& b) {
+   return b-a;
+}
+
+void testSort ()
+{
+   Pool<List<int>::Elem> pool;
+   Array<int> ids;
+   srand(70036);
+   for (int i = 0; i < 1000; ++i)
+      ids.push(pool.add());
+
+   List<int> a(pool);
+   for (int i = 0; i < 10; ++i) {
+      int j = rand() % ids.size();
+      if (ids[j] >= 0) {
+         pool.remove(j);
+         ids[j] = -1;
+      }
+
+      a.add(rand() % 100);
+   }
+   for (int i = a.begin(); i < a.end(); i = a.next(i))
+      printf(" %d", a.at(i));
+   printf("\n");
+   a.bubbleSort(cmp);
+   bool error = false;
+   for (int i = a.begin(); a.next(i) < a.end(); i = a.next(i))
+      if (a.at(i) > a.at(a.next(i)))
+         error = true;
+   if (error)
+      for (int i = a.begin(); i < a.end(); i = a.next(i))
+         printf(" %d", a.at(i));
+   printf("\n");
+
+}
+
+int main (int argc, const char** argv) {
+   tests();
 }
