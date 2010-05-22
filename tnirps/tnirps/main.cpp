@@ -143,7 +143,7 @@ void testPolyAdd (void)
    p1.init(s2);
    p1.sort();
 
-   Polynomial::add(p, p1);
+   p.add(p1);
    p.toStr(buf);
    CHECK_MATCH("4*x^2*y*z + 12*x*y^2 + x*y*z - 66*x + y^2*z + 4*y + 18*z^3 - 10*z^2 - 1");
    TEST_POST();
@@ -161,7 +161,7 @@ void testPolyAdd2 (void)
    p1.init(s2);
    p1.sort();
 
-   Polynomial::add(p, p1, 3, -6);
+   p.add(p1, 3, -6);
    p.toStr(buf);
    CHECK_MATCH("12*x^2*y*z + 39*x*y^2 + 36*x*y - 213*x + 3*y^2*z - 3*y + 3*z^3 - 60*z^2 - 42");
    TEST_POST();

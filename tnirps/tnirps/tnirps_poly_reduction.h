@@ -36,13 +36,13 @@ private:
          t.copy(r);
    }
 
-   void promote (Polynomial& r, Polynomial p, Monomial d) {
+   void promote (Polynomial& r, const Polynomial& p, Monomial d) {
       Polynomial t, s; // temporary polynomials are cheap, no need to reuse
       for (int i = 0; i < p.size(); ++i) {
          t.clear();
          t.addTerm(MP.mul(p.m(i), d), p.at(i).f);
          crop(s, t);
-         Polynomial::add(r, s);
+         r.add(s);
       }
    }
 
@@ -62,7 +62,7 @@ private:
          evaluateMonomial(mm, i);
    }
    void add (int id, int a, int b) {
-      Polynomial::sum(values[id], values[a], values[b]);
+      values[id].sum(values[a], values[b]);
    }
    void mul (int id, int a, int b) {
       const Polynomial& pa = values[a], &pb = values[b];
@@ -70,9 +70,9 @@ private:
       Polynomial& r = values[id];
       r.clear();
       for (int i = pb.begin(); i < pb.end(); i = pb.next(i)) {
-         Polynomial::mul(t, pa, pb.m(i), pb.at(i).f);
+         t.mul(pa, pb.m(i), pb.at(i).f);
          crop(s, t);
-         Polynomial::add(r, s);
+         r.add(s);
       }
    }
    void mulnum (int id, int a, int num) {
@@ -84,9 +84,26 @@ private:
       result.copy(values[id]);
    }
 
+   void normalize (Polynomial p, Monomial m) {
+      Polynomial t;
+      t.copy(p);
+
+      while (sr.reduceStep(p, t)) {
+         t.clear();
+         for (int i = p.begin(); i < p.end(); i = p.next(i)) {
+            const Polynomial::Term& term = p.at(i);
+            if (normalForms.find(term.m.get()))
+               t.append(normalForms.at(term.m.get()), term.f);
+            else
+               t.append(term);
+         }
+         t.simplify();
+      }
+   }
 
    const ObjArray<Polynomial>& basis;
    ObjArray<Polynomial> values;
+   RedBlackObjMap<Monomial, Polynomial> normalForms;
    Polynomial result;
    SimpleReductor sr;
 };

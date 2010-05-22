@@ -158,10 +158,10 @@ public:
       _terms.clear();
    }
 
-   static void mul (Polynomial& r, const Polynomial& a, Monomial m, const CFTYPE& cf) {
-      r.copy(a);
-      r.mul(m);
-      r.mulnum(cf);
+   void mul (const Polynomial& a, Monomial m, CFTYPE cf) {
+      copy(a);
+      mul(m);
+      mulnum(cf);
    }
 
    void mul (Monomial m) {
@@ -173,72 +173,90 @@ public:
       }
    }
 
-   static void sum (Polynomial& r, const Polynomial& a, const Polynomial& b) {
-      r.copy(a);
-      add(r, b);
+   void sum (const Polynomial& a, const Polynomial& b, CFTYPE fr = 1, CFTYPE fa = 1) {
+      copy(a);
+      add(b);
    }
 
-   static void add (Polynomial& r, const Polynomial& a) {
-      add(r, a, 1, 1);
-   }
-
-   static void add (Polynomial& r, const Polynomial& a, const CFTYPE& f) {
-      add(r, a, 1, f);
-   }
-
-   static void add (Polynomial& r, const Polynomial& a, const CFTYPE& fr, const CFTYPE& fa) {
-      int ri = r.begin(), ai = a.begin();
-      while (ri < r.end() && ai < a.end()) {
-         Term& tr = r.at(ri);
+   void add (const Polynomial& a, CFTYPE fr = 1, CFTYPE fa = 1) {
+      int ri = begin(), ai = a.begin();
+      while (ri < end() && ai < a.end()) {
+         Term& tr = at(ri);
          const Term& ta = a.at(ai);
          int c = MP.cmp(tr.m.get(), ta.m.get());
          if (c > 0) {
             tr.f *= fr;
-            ri = r.next(ri);
+            ri = next(ri);
          } else if (c < 0) {
-            r.insertTerm(ta.m.get(), ta.f * fa, ri);
+            insertTerm(ta.m.get(), ta.f * fa, ri);
             ai = a.next(ai);
          } else {
             tr.f = tr.f * fr + ta.f * fa;
             if (tr.f == 0) {
                int t = ri;
-               ri = r.next(ri);
+               ri = next(ri);
                ai = a.next(ai);
-               r._terms.remove(t);
+               _terms.remove(t);
             } else {
-               ri = r.next(ri);
+               ri = next(ri);
                ai = a.next(ai);
             }
          }
       }
-      while (ri < r.end()) {
-         Term& tr = r.at(ri);
+      while (ri < end()) {
+         Term& tr = at(ri);
          tr.f *= fr;
-         ri = r.next(ri);
+         ri = next(ri);
       }
       while (ai < a.end()) {
          const Term& ta = a.at(ai);
-         r.addTerm(ta.m.get(), ta.f * fa);
+         addTerm(ta.m.get(), ta.f * fa);
          ai = a.next(ai);
       }
    }
 
-   void mulnum (const CFTYPE& f) {
+   void simplify () {
+      sort();
+      for (int i = begin(), j; next(i) < end(); i = next(i)) {
+         while (MP.equals(m(i), m(j = next(i)))) {
+            _terms.at(i).f += _terms.at(j).f;
+            _terms.remove(j);
+         }
+         if (_terms.at(i).f == 0)
+            _terms.remove(i);
+      }
+   }
+
+   void mulnum (CFTYPE f) {
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
          _terms[i].f *= f;
    }
 
    void copy (const Polynomial& a) {
       clear();
+      append (a, 1);
+   }
+
+   void append (const Polynomial& a, CFTYPE f) {
+      for (int i = a.begin(); i < a.end(); i = a.next(i)) {
+         const Term& t = a.at(i);
+         addTerm(t.m.get(), t.f * f);
+      }
+   }
+
+   void append (const Polynomial& a) {
       for (int i = a.begin(); i < a.end(); i = a.next(i)) {
          const Term& t = a.at(i);
          addTerm(t.m.get(), t.f);
       }
    }
 
+   void append (const Term& t) {
+      addTerm(t.m.get(), t.f);
+   }
 private:
    static Pool<ObjList<Term>::Elem> _pool;
-   ObjList<Term> _terms; // XXX: shouldn't we be usinig simple List<> here?
+   ObjList<Term> _terms;
    Polynomial (const Polynomial&);
 };
 
