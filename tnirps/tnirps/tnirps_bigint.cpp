@@ -1,5 +1,6 @@
 #include "tnirps_bigint.h"
 #include "exception.h"
+#include "tnirps_common.h"
 #include <stdarg.h>
 
 #define TO_UNSIGNED(a) (a >= 0 ? (unsigned long)(a) : throw Exception("Positive value expected"))
@@ -29,6 +30,17 @@ void BigInt::set (bigint_t& r, const bigint_t& a) {
 }
 void BigInt::set (bigint_t& r, const long a) {
    mpz_set_si(r, a);
+}
+void BigInt::set64 (bigint_t& r, const long long a) {
+   long long b = ABS(a);
+   unsigned u = b >> 32, l = b & 0xFFFFFFFFlu;
+   if (u != 0) {
+      mpz_set_ui(r, u);
+      mpz_mul_2exp(r, r, 32);
+   }
+   mpz_add_ui(r, r, l);
+   if (a < 0)
+      mpz_mul_si(r, r, -1);
 }
 void BigInt::set (bigint_t& r, const char* str) {
    mpz_set_str(r, str, 10);

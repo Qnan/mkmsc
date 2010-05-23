@@ -13,6 +13,7 @@ public:
    static void printf (const char* format, ...);
    static void set (bigint_t& r, const bigint_t& a);
    static void set (bigint_t& r, const long a);
+   static void set64 (bigint_t& r, const long long a);
    static void set (bigint_t& r, const char* str);
    static void swap (bigint_t& a, bigint_t& b);
    static void add (bigint_t& r, const bigint_t& a, const bigint_t& b);

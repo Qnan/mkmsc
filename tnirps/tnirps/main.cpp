@@ -7,6 +7,7 @@
 #include "pool.h"
 #include "list.h"
 #include "tnirps_var_map.h"
+#include "tnirps_numpool.h"
 #include "tnirps_monomial.h"
 #include "tnirps_polynomial.h"
 #include "tnirps_reduction.h"
@@ -501,6 +502,45 @@ void testSort ()
 
 }
 
+void testInt64Gmp ()
+{
+   long long a = 0;
+   bigint_t b;
+   BI::init(b);
+
+   printf("%lld\n", a), gmp_printf("%Zd\n\n", b);
+   a = 1; BI::set(b, a);
+   printf("%lld\n", a), gmp_printf("%Zd\n\n", b);
+   a = -192834; BI::set(b, a);
+   printf("%lld\n", a), gmp_printf("%Zd\n\n", b);
+   a = 50000000000ll; BI::set64(b, a);
+   printf("%lld\n", a), gmp_printf("%Zd\n\n", b);
+   a = -59238457812ll; BI::set64(b, a);
+   printf("%lld\n", a), gmp_printf("%Zd\n\n", b);
+}
+
+void testNumber ()
+{
+   long long a = 50000000000ll, b = 61111111111ll;
+
+   printf("%lld + %lld = ", a, b), NP.print(NP.sum(NP.init(a), NP.init(b))), printf("\n");
+   printf("%lld - %lld = ", a, a), NP.print(NP.diff(NP.init(a), NP.init(a))), printf("\n");
+   printf("%lld - %lld = ", b, a), NP.print(NP.diff(NP.init(b), NP.init(a))), printf("\n");
+   printf("%lld * %lld = ", a, a), NP.print(NP.mul(NP.init(a), NP.init(a))), printf("\n");
+   printf("%lld * %lld = ", a, a), NP.print(NP.mul(NP.init(a), NP.init(a))), printf("\n");
+   NP.print(NP.init("1234567890")), printf("\n");
+   NP.print(NP.init("123456789012345678901234567890")), printf("\n");
+
+//   printf("%lld\n", a), NP.print(NP.init(a)), printf("\n\n");
+//   a = -192834;
+//   printf("%lld\n", a), NP.print(NP.init(a)), printf("\n\n");
+//   a = 50000000000ll;
+//   printf("%lld\n", a), NP.print(NP.init(a)), printf("\n\n");
+//   a = -59238457812ll;
+//   printf("%lld\n", a), NP.print(NP.init(a)), printf("\n\n");
+}
+
 int main (int argc, const char** argv) {
-   tests();
+   testNumber();
+   //tests();
 }
