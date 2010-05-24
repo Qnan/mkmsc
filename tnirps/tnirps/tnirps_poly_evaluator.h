@@ -55,7 +55,6 @@ private:
    }
    void mulnum (int id, int a, const NumPtr& num) {
       DBG(printf("mulnum %i %i \n", id, a); NP.print(num.get()); printf("\n"));
-      throw Exception("TODO");
       values[id].set(NP.mul(values[a].get(), num.get()));
    }
    void yield (int id) {

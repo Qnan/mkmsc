@@ -137,7 +137,7 @@ public:
       if (isSmall(a))
          printf("%lld", decodeSmall(a));
       else
-         gmp_printf("%i:%Zd", decodeBig(a), pool.at(decodeBig(a)).bigVal);
+         gmp_printf("%Zd", pool.at(decodeBig(a)).bigVal);
    }
 
    void print (Output& output, Number a) {
@@ -148,6 +148,7 @@ public:
          int sz = mpz_sizeinbase(v, 10) + 2;
          buf.resize(sz);
          gmp_sprintf(buf.ptr(), "%Zd", v);
+         output.printf("%s", buf.ptr());
       }
    }
 private:

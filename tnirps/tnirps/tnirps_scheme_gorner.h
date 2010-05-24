@@ -94,13 +94,14 @@ private:
          id2 = build(p2);
       }
       Array<Scheme::Op>& ops = _scheme.ops;
+      ObjPool<NumPtr>& coeffs = _scheme.coeffs;
       if (hasFactor) {
          int r = intermediateCounter++;
          ops.push().init(Scheme::OP_MUL, r, id0, id1);
          id0 = r;
       } else if (NP.cmp(p1.lc().get(), 1) != 0) {
          int r = intermediateCounter++;
-         int f = _coeffs.add(p1.lc().get());
+         int f = coeffs.add(p1.lc().get());
          ops.push().init(Scheme::OP_MULNUM, r, id0, f);
          id0 = r;
       }
@@ -119,7 +120,6 @@ private:
 
    const Polynomial& _poly;
    Scheme& _scheme;
-   ObjPool<NumPtr> _coeffs;
 
    SchemeGorner (const SchemeGorner&); // no implicit copy
 };
