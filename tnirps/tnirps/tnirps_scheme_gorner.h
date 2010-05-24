@@ -60,7 +60,7 @@ private:
    int build (const Polynomial& p) {
       int i = p.begin();
       Monomial m = MP.clone(p.m(i)), m2;
-      CFTYPE f = p.at(i).f;
+      //NumPtr f(p.at(i).f.get());
       for (i = p.next(i); i < p.end(); i = p.next(i)) {
          const Polynomial::Term& t = p.at(i);
          Monomial m2 = MP.gcd(m, t.m.get());
@@ -85,7 +85,7 @@ private:
 //         if (p1.size() > 1) printf("(");
          id1 = build(p1);
 //         if (p1.size() > 1) printf(")");
-      } else if (p1.lc() != 1) {
+      } else if (NP.cmp(p1.lc().get(), 1) != 0) {
 //         printf(" * %d", p1.lc());
       }
       bool hasSummand = p2.size() > 0;
@@ -98,9 +98,10 @@ private:
          int r = intermediateCounter++;
          ops.push().init(Scheme::OP_MUL, r, id0, id1);
          id0 = r;
-      } else if (p1.lc() != 1) {
+      } else if (NP.cmp(p1.lc().get(), 1) != 0) {
          int r = intermediateCounter++;
-         ops.push().init(Scheme::OP_MULNUM, r, id0, p1.lc());
+         int f = _coeffs.add(p1.lc().get());
+         ops.push().init(Scheme::OP_MULNUM, r, id0, f);
          id0 = r;
       }
       if (hasSummand) {
@@ -118,6 +119,7 @@ private:
 
    const Polynomial& _poly;
    Scheme& _scheme;
+   ObjPool<NumPtr> _coeffs;
 
    SchemeGorner (const SchemeGorner&); // no implicit copy
 };

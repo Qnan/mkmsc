@@ -162,7 +162,10 @@ void testPolyAdd2 (void)
    p1.init(s2);
    p1.sort();
 
-   p.add(p1, 3, -6);
+   NumPtr c1(NP.init(3));
+   NumPtr c2(NP.init(-6));
+
+   p.add(p1, &c1, &c2);
    p.toStr(buf);
    CHECK_MATCH("12*x^2*y*z + 39*x*y^2 + 36*x*y - 213*x + 3*y^2*z - 3*y + 3*z^3 - 60*z^2 - 42");
    TEST_POST();
@@ -179,7 +182,8 @@ void testPolyMul (void)
    Monomial m = MP.init(s2, 0, 0);
 
    p.mul(m);
-   p.mulnum(-2);
+   NumPtr c(NP.init(-2));
+   p.mulnum(c);
    p.toStr(buf);
    CHECK_MATCH("-8*x^2*y*z^3 - 26*x*y^2*z^2 - 20*x*y*z^2 + 142*x*z^2 - 2*y^2*z^3 + 2*y*z^2 - 2*z^5");
    TEST_POST();
@@ -187,7 +191,7 @@ void testPolyMul (void)
 
 void testPolySimplify (void)
 {
-   TEST_PRE("testPolyMul");
+   TEST_PRE("testPolySimplify");
    Polynomial p1, p2, p3;
    const char *s1 = "13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z",
            *s2 = "x - x*y*z",
@@ -195,7 +199,8 @@ void testPolySimplify (void)
    p1.init(s1, 0, 0);
    p2.init(s2, 0, 0);
    p3.init(s3, 0, 0);
-   p1.append(p2, 70);
+   NumPtr c(NP.init(70));
+   p1.append(p2, c);
    p1.append(p3);
    p1.toStr(buf);
    CHECK_MATCH("13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z + 70*x - 70*x*y*z + x - 4*x*y^2 + 2 + 13");
@@ -293,12 +298,10 @@ void testSimple (void)
    Array<int> values;
    values.push(3);
    values.push(-1);
-   bigint_t res;
-   BigInt::init(res);
+   NumPtr res;
    eval.evaluate(res, scheme, values);
-      if (BigInt::cmp(res, 30) != 0)
-         throw Exception("%s: Error: Result doesn't match expected value", _name);
-   BigInt::clear(res);
+   if (NP.cmp(res.get(), 30) != 0)
+      throw Exception("%s: Error: Result doesn't match expected value", _name);
    TEST_POST();
 }
 
@@ -323,12 +326,10 @@ void testGorner (void)
    Array<int> values;
    values.push(3);
    values.push(-1);
-   bigint_t res;
-   BigInt::init(res);
+   NumPtr res;
    eval.evaluate(res, scheme, values);
-      if (BigInt::cmp(res, 30) != 0)
-         throw Exception("%s: Error: Result doesn't match expected value", _name);
-   BigInt::clear(res);
+   if (NP.cmp(res.get(), 30) != 0)
+      throw Exception("%s: Error: Result doesn't match expected value", _name);
    TEST_POST();
 }
 
@@ -353,12 +354,10 @@ void testTree (void)
    Array<int> values;
    values.push(3);
    values.push(-1);
-   bigint_t res;
-   BigInt::init(res);
+   NumPtr res;
    eval.evaluate(res, scheme, values);
-      if (BigInt::cmp(res, 36) != 0)
-         throw Exception("%s: Error: Result doesn't match expected value", _name);
-   BigInt::clear(res);
+   if (NP.cmp(res.get(), 36) != 0)
+      throw Exception("%s: Error: Result doesn't match expected value", _name);
    TEST_POST();
 }
 
@@ -541,6 +540,6 @@ void testNumber ()
 }
 
 int main (int argc, const char** argv) {
-   testNumber();
-   //tests();
+   //testNumber();
+   tests();
 }

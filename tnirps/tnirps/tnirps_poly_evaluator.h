@@ -13,16 +13,13 @@ public:
    Evaluator () {}
 
    ~Evaluator () {
-      for (int i = 0; i < values.size(); ++i)
-         BI::clear(values[i]);
-      BI::clear(result);
    }
 
-   void evaluate (bigint_t& res, const Scheme& scheme, const Array<int>& varValues) {
+   void evaluate (NumPtr& res, const Scheme& scheme, const Array<int>& varValues) {
       SCHEME_CALLBACKS_SET(scheme);
       this->varValues.copy(varValues);
       scheme.proceed(this);
-      BigInt::set(res, result);
+      res.set(result.get());
    }
 
    SCHEME_CALLBACKS_DEFINE(Evaluator);
@@ -31,50 +28,46 @@ private:
    void evaluateMonomial (const Array<Monomial>& mm, int i) {
       DBG(printf("init %i\n", i));
       const MData& m = MP.get(mm[i]);
-      bigint_t& v = values[i];
-      BI::set(v, 1);
-      bigint_t t;
-      BI::init(t);
+      NumPtr& v = values[i];
+      v.set(NP.init(1));
+      NumPtr t;
       for (int i = 0; i < m.length(); ++i) {
-         BI::set(t, varValues[m.var(i)]);
-         BI::pow(t, t, m.deg(i));
-         BI::mul(v, v, t);
+         t.set(NP.init(varValues[m.var(i)]));
+         t.set(NP.pow(t.get(), m.deg(i)));
+         v.set(NP.mul(v.get(), t.get()));
       }
-      BI::clear(t);
    }
 
    void init (const Array<Monomial>& mm, int total) {
       values.clear();
       values.resize(total);
-      for (int i = 0; i < values.size(); ++i)
-         BI::init(values[i]);
-      BI::init(result);
 
       for (int i = 0; i < mm.size(); ++i)
          evaluateMonomial(mm, i);
    }
    void add (int id, int a, int b) {
       DBG(printf("add %i %i %i\n", id, a, b));
-      BI::add(values[id], values[a], values[b]);
+      values[id].set(NP.sum(values[a].get(), values[b].get()));
    }
    void mul (int id, int a, int b) {
       DBG(printf("mul %i %i %i\n", id, a, b));
-      BI::mul(values[id], values[a], values[b]);
+      values[id].set(NP.mul(values[a].get(), values[b].get()));
    }
-   void mulnum (int id, int a, int num) {
-      DBG(printf("mulnum %i %i %i\n", id, a, num));
-      BI::mul(values[id], values[a], num);
+   void mulnum (int id, int a, const NumPtr& num) {
+      DBG(printf("mulnum %i %i \n", id, a); NP.print(num.get()); printf("\n"));
+      throw Exception("TODO");
+      values[id].set(NP.mul(values[a].get(), num.get()));
    }
    void yield (int id) {
       DBG(printf("yield %i\n", id));
-      BI::set(result, values[id]);
+      result.set(values[id].get());
       //gmp_printf("result: %Zd\n", result);
       DBG(printf("yield done\n"));
    }
 
    Array<int> varValues;
-   Array<bigint_t> values;
-   bigint_t result;
+   ObjArray<NumPtr> values;
+   NumPtr result;
 };
 
 #endif /* __TNIRPS_POLY_EVALUATOR_H__ */

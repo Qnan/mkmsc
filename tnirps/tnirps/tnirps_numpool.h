@@ -7,9 +7,10 @@
 #include "tnirps_common.h"
 #include "tnirps_bigint.h"
 
+typedef long long Number;
+
 class NumPool {
 public:
-   typedef long long Number;
    static NumPool& inst () {
       return _inst;
    }
@@ -17,6 +18,7 @@ public:
    Number copy (Number a) {
       if (!isSmall(a))
          pool.at(decodeBig(a)).refcnt++;
+      return a;
    }
    void release (Number a) {
       if (!isSmall(a)) {
@@ -82,14 +84,75 @@ public:
       return mulBig(a, b);
    }
 
+   Number pow (Number a, long b) {
+      if (isSmall(a) && decodeSmall(a) == 1)
+         return copy(a); // TODO: try using simple integers for low powers
+      a = toBig(a);
+      int r = pool.add();
+      Item& ia = pool.at(decodeBig(a)), &ir = pool.at(r);
+      BI::pow(ir.bigVal, ia.bigVal, b);
+      return encodeBig(r);
+   }
+
+   Number abs (Number a) {
+      if (isSmall(a))
+         return init(ABS(decodeSmall(a)));
+      else {
+         int id = decodeBig(a);
+         if (BI::cmp(pool.at(id).bigVal, 0) >= 0)
+            return copy(a);
+         int b = pool.add();
+         BI::abs(pool.at(b).bigVal, pool.at(id).bigVal);
+         return encodeBig(b);
+      }
+   }
+
+   Number neg (Number a) {
+      if (isSmall(a))
+         return init(-decodeSmall(a));
+      else {
+         int id = decodeBig(a);
+         int b = pool.add();
+         BI::abs(pool.at(b).bigVal, pool.at(id).bigVal);
+         return encodeBig(b);
+      }
+   }
+
+   int cmp (Number a, int b) {
+      if (isSmall(a)) {
+         int diff = decodeSmall(a) - b;
+         if (diff > 0)
+            return 1;
+         else if (diff == 0)
+            return 0;
+         else
+            return -1;
+      } else {
+         int id = decodeBig(a);
+         return BI::cmp (pool.at(id).bigVal, b);
+      }
+   }
+
    void print (Number a) {
       if (isSmall(a))
          printf("%lld", decodeSmall(a));
       else
          gmp_printf("%i:%Zd", decodeBig(a), pool.at(decodeBig(a)).bigVal);
    }
-   //Number div (Number a, Number b);
+
+   void print (Output& output, Number a) {
+      if (isSmall(a))
+         output.printf("%lld", decodeSmall(a));
+      else {
+         bigint_t& v = pool.at(decodeBig(a)).bigVal;
+         int sz = mpz_sizeinbase(v, 10) + 2;
+         buf.resize(sz);
+         gmp_sprintf(buf.ptr(), "%Zd", v);
+      }
+   }
 private:
+   Array<char> buf;
+
    NumPool () {
       BI::init(tmp1);
       BI::init(tmp2);
@@ -175,6 +238,36 @@ private:
 };
 
 extern NumPool& NP; // global!
+
+class NumPtr {
+public:
+   NumPtr () : _n(-1), _valid(false) {
+   }
+   explicit NumPtr (Number n) : _n(-1), _valid(false) {
+      set(n);
+   }
+   void reset () {
+      if (_valid)
+         NP.release(_n);
+      _n = -1;
+      _valid = false;
+   }
+   void set (Number n) {
+      reset();
+      _n = NP.copy(n);
+      _valid = true;
+   }
+   Number get () const {
+      return _n;
+   }
+   ~NumPtr() {
+      reset();
+   }
+private:
+   Number _n;
+   bool _valid;
+   NumPtr (const NumPtr& mp);
+};
 
 #endif	/* __TNIRPS_NUMPOOL_H__ */
 

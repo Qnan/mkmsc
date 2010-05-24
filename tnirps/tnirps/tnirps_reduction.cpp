@@ -12,8 +12,9 @@ bool SimpleReductor::reduceStep (Polynomial& r, const Polynomial& p) {
    for (i = 0; i < g.size(); ++i) {
       Monomial m = g[i].lm();
       if (MP.divides(lm, m)) {
-         t.mul(g[i], MP.div(lm, m), 1);
-         r.add(t, t.lc(), -r.lc());
+         t.mul(g[i], MP.div(lm, m));
+         NumPtr f(NP.neg(r.lc().get()));
+         r.add(t, &t.lc(), &f);
          return true;
       }
    }

@@ -49,7 +49,7 @@ private:
    void evaluateMonomial (const Array<Monomial>& mm, int i) {
       const MData& m = MP.get(mm[i]);
       Polynomial t;
-      t.addTerm(mm[i], 1);
+      t.addTerm(mm[i], NumPtr(NP.init(1)));
       crop(values[i], t);
       // TODO: we should initialize these monomials inductively, too
       // TODO: think of alteration between two temporary polynomials on such occasions
@@ -70,12 +70,12 @@ private:
       Polynomial& r = values[id];
       r.clear();
       for (int i = pb.begin(); i < pb.end(); i = pb.next(i)) {
-         t.mul(pa, pb.m(i), pb.at(i).f);
+         t.mul(pa, pb.m(i), &pb.at(i).f);
          crop(s, t);
          r.add(s);
       }
    }
-   void mulnum (int id, int a, int num) {
+   void mulnum (int id, int a, const NumPtr& num) {
       Polynomial& p = values[id];
       p.copy(values[a]);
       p.mulnum(num);

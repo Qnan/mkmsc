@@ -5,16 +5,15 @@
 #include "obj_list.h"
 #include "tnirps_monomial.h"
 #include "tnirps_monopool.h"
-
-typedef long long CFTYPE;
+#include "tnirps_numpool.h"
 
 class Polynomial {
 public:
    struct Term {
-      Term () : f(1) {
+      Term () {
       }
       MonoPtr m;
-      CFTYPE f;
+      NumPtr f;
    private:
       Term (const Term& t);
    };
@@ -73,24 +72,24 @@ public:
             m = MP.unit();
          }
 
-         addTerm(m, coeff);
+         addTerm(m, NumPtr(NP.init(coeff)));
       }
    }
 
-   int addTerm (Monomial m, CFTYPE f)
+   int addTerm (Monomial m, const NumPtr& f)
    {                      
       int id = _terms.add();
       Term& t = _terms.at(id);
-      t.f = f;
+      t.f.set(f.get());
       t.m.set(MP.clone(m));
       return id;
    }
 
-   int insertTerm (int m, CFTYPE f, int before)
+   int insertTerm (int m, const NumPtr&  f, int before)
    {     
       int id = _terms.insertBefore(before);
       Term& t = _terms.at(id);
-      t.f = f;
+      t.f.set(f.get());
       t.m.set(MP.clone(m));
       return id;
    }
@@ -133,7 +132,7 @@ public:
    Monomial m (int i) const { return _terms.at(i).m.get(); }
    int size () const { return _terms.size(); }
    int lm () const { return _terms.at(_terms.begin()).m.get(); }
-   CFTYPE lc () const { return _terms.at(_terms.begin()).f; }
+   const NumPtr& lc () const { return _terms.at(_terms.begin()).f; }
    Term& lt () const { return _terms.at(_terms.begin()); }
 
    void toStr(Array<char>& buf) const {
@@ -145,15 +144,16 @@ public:
    void print (Output& output) const {
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i)) {
          const Term& t = _terms.at(i);
+         int c = NP.cmp(t.f.get(), 0);
          if (i != _terms.begin())
-            output.printf(" %c ", t.f >= 0 ? '+' : '-');
-         else if (t.f < 0)
+            output.printf(" %c ", c >= 0 ? '+' : '-');
+         else if (c < 0)
             output.printf("-");
          bool showVars = MP.length(t.m.get()) > 0;
-         CFTYPE f = abs(t.f);
-         bool showCf = (f != 1 || !showVars);
+         NumPtr f(NP.abs(t.f.get()));
+         bool showCf = (NP.cmp(f.get(), 1) != 0 || !showVars);
          if (showCf)
-            output.printf("%lld", f);
+            NP.print(output, f.get());
          if (showVars) {
             if (showCf)
                output.printf("*");
@@ -167,10 +167,11 @@ public:
       _terms.clear();
    }
 
-   void mul (const Polynomial& a, Monomial m, CFTYPE cf) {
+   void mul (const Polynomial& a, Monomial m, const NumPtr* cf = NULL) {
       copy(a);
       mul(m);
-      mulnum(cf);
+      if (cf != NULL)
+         mulnum(*cf);
    }
 
    void mul (Monomial m) {
@@ -182,26 +183,35 @@ public:
       }
    }
 
-   void sum (const Polynomial& a, const Polynomial& b, CFTYPE fr = 1, CFTYPE fa = 1) {
+   void sum (const Polynomial& a, const Polynomial& b, const NumPtr* fa = NULL, const NumPtr* fb = NULL) {
       copy(a);
-      add(b);
+      add(b, fa, fb);
    }
 
-   void add (const Polynomial& a, CFTYPE fr = 1, CFTYPE fa = 1) {
+   void add (const Polynomial& a, const NumPtr* fr = NULL, const NumPtr* fa = NULL) {
       int ri = begin(), ai = a.begin();
       while (ri < end() && ai < a.end()) {
          Term& tr = at(ri);
          const Term& ta = a.at(ai);
          int c = MP.cmp(tr.m.get(), ta.m.get());
          if (c > 0) {
-            tr.f *= fr;
+            if (fr != NULL)
+               tr.f.set(NP.mul(tr.f.get(), fr->get()));
             ri = next(ri);
          } else if (c < 0) {
-            insertTerm(ta.m.get(), ta.f * fa, ri);
+            NumPtr cf(ta.f.get());
+            if (fa != NULL)
+               cf.set(NP.mul(cf.get(), fa->get()));
+            insertTerm(ta.m.get(), cf, ri);
             ai = a.next(ai);
          } else {
-            tr.f = tr.f * fr + ta.f * fa;
-            if (tr.f == 0) {
+            NumPtr cfr(tr.f.get()), cfa(ta.f.get());
+            if (fr != NULL)
+               cfr.set(NP.mul(tr.f.get(), fr->get()));
+            if (fa != NULL)
+               cfa.set(NP.mul(ta.f.get(), fa->get()));
+            tr.f.set(NP.sum(cfr.get(), cfa.get()));
+            if (NP.cmp(tr.f.get(), 0) == 0) {
                int t = ri;
                ri = next(ri);
                ai = a.next(ai);
@@ -214,12 +224,18 @@ public:
       }
       while (ri < end()) {
          Term& tr = at(ri);
-         tr.f *= fr;
+         NumPtr cf(tr.f.get());
+         if (fr != NULL)
+            cf.set(NP.mul(cf.get(), fr->get()));
+         tr.f.set(cf.get());
          ri = next(ri);
       }
       while (ai < a.end()) {
          const Term& ta = a.at(ai);
-         addTerm(ta.m.get(), ta.f * fa);
+         NumPtr cf(ta.f.get());
+         if (fa != NULL)
+            cf.set(NP.mul(cf.get(), fa->get()));
+         addTerm(ta.m.get(), cf);
          ai = a.next(ai);
       }
    }
@@ -227,31 +243,33 @@ public:
    void simplify () {
       sort();
       for (int i = begin(), j; i < end() && next(i) < end();) {
+         Term& t = _terms.at(i);
          while ((j = next(i)) < end() && MP.equals(m(i), m(j))) {
-            _terms.at(i).f += _terms.at(j).f;
+            t.f.set(NP.sum(t.f.get(), _terms.at(j).f.get()));
             _terms.remove(j);
          }
          j = next(i);
-         if (_terms.at(i).f == 0)
+         if (NP.cmp(t.f.get(), 0) == 0)
             _terms.remove(i);
          i = j;
       }
    }
 
-   void mulnum (CFTYPE f) {
+   void mulnum (const NumPtr& f) {
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
-         _terms[i].f *= f;
+         _terms[i].f.set(NP.mul(_terms[i].f.get(), f.get()));
    }
 
    void copy (const Polynomial& a) {
       clear();
-      append (a, 1);
+      append(a);
    }
 
-   void append (const Polynomial& a, CFTYPE f) {
+   void append (const Polynomial& a, const NumPtr& f) {
       for (int i = a.begin(); i < a.end(); i = a.next(i)) {
          const Term& t = a.at(i);
-         addTerm(t.m.get(), t.f * f);
+         NumPtr cf(NP.mul(t.f.get(), f.get()));
+         addTerm(t.m.get(), cf);
       }
    }
 

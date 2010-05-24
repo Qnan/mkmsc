@@ -27,13 +27,15 @@ private:
       }
 
       Array<Scheme::Op>& ops = _scheme.ops;
+      ObjPool<NumPtr>& coeffs = _scheme.coeffs;
       // multiply monomials by coefficients
       int cnt = p.size();
       for (int i = p.begin(); i < p.end(); i = p.next(i)) {
-         CFTYPE f = p.at(i).f;
-         if (f != 1) {
+         const Polynomial::Term& t = p.at(i);
+         int id = coeffs.add(t.f.get());
+         if (NP.cmp(t.f.get(), 1)) {
             int r = cnt++;
-            ops.push().init(Scheme::OP_MULNUM, r, terms.at(i), f);
+            ops.push().init(Scheme::OP_MULNUM, r, terms.at(i), id);
             terms.at(i) = r;
          }
       }
@@ -49,7 +51,7 @@ private:
    
    const Polynomial& _poly;
    Scheme& _scheme;
-
+   
    SchemeSimple (const SchemeSimple&); // no implicit copy
 };
 

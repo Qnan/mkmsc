@@ -105,3 +105,10 @@ void BigInt::gcd (bigint_t& r, const bigint_t& a, const bigint_t& b) {
 void BigInt::gcd (bigint_t& r, const bigint_t& a, const long b) {
    mpz_gcd_ui(r, a, TO_UNSIGNED(b));
 }
+void BigInt::abs (bigint_t& r, const bigint_t& a) {
+   mpz_abs(r, a);
+}
+
+void BigInt::neg (bigint_t& r, const bigint_t& a) {
+   mpz_neg(r, a);
+}

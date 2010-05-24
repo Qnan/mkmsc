@@ -34,6 +34,8 @@ public:
    static void powmod (bigint_t& r, const bigint_t& base, const long exp, const bigint_t& mod);
    static void gcd (bigint_t& r, const bigint_t& a, const bigint_t& b);
    static void gcd (bigint_t& r, const bigint_t& a, const long b);
+   static void abs (bigint_t& r, const bigint_t& a);
+   static void neg (bigint_t& r, const bigint_t& a);
 };
 typedef BigInt BI;
 

@@ -97,15 +97,13 @@ private:
       }
       Evaluator eval;
       float time;
-      bigint_t res;
-      BI::init(res);
+      NumPtr res;      
       qword t0 = nanoClock();
       eval.evaluate(res, scheme.at(schname), vvals);
       qword t1 = nanoClock();
       time = 1000.0f * nanoHowManySeconds(t1 - t0);
       printf("\ttime: %.3f ms\n", time);
-      gmp_printf("\tresult: %Zd\n", res);
-      BI::clear(res);
+      printf("\tresult: "), NP.print(sout, res.get()), printf("\n");
       return 0;
    }
    int executeLine (Scanner& sc) {

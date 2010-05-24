@@ -43,9 +43,10 @@ private:
       output.printf("%s * %s", intermediateValues[a].ptr(), intermediateValues[b].ptr());
       output.writeChar(0);
    }
-   void mulnum (int id, int a, int num) {
+   void mulnum (int id, int a, const NumPtr& num) {
       ArrayOutput output(intermediateValues[id]);
-      output.printf("%i * %s", num, intermediateValues[a].ptr());
+      NP.print(output, num.get());
+      output.printf(" * %s", intermediateValues[a].ptr());
       output.writeChar(0);
    }
    void yield (int id) {
