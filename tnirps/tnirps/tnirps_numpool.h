@@ -9,6 +9,17 @@
 
 typedef long long Number;
 
+#define BIGNUMOP(name) \
+   Number name##Big (Number a, Number b) { \
+      a = toBig(a); \
+      b = toBig(b); \
+      int r = pool.add(); \
+      Item& ia = pool.at(decodeBig(a)), &ib = pool.at(decodeBig(b)), &ir = pool.at(r); \
+      BI::name(ir.bigVal, ia.bigVal, ib.bigVal); \
+      return encodeBig(r); \
+   }
+
+
 class NumPool {
 public:
    static NumPool& inst () {
@@ -82,6 +93,34 @@ public:
             return init(r);
       }
       return mulBig(a, b);
+   }
+
+   Number div (Number a, Number b) {
+      if (isSmall(a) && isSmall(b)) {
+         long long va = decodeSmall(a), vb = decodeSmall(b), r;
+         r = va / vb;
+         return init(r);
+      }
+      return divBig(a, b);
+   }
+
+   long long euclid (long long a, long long b) {
+      long long t;
+      while (b != 0) {
+         t = a % b;
+         a = b;
+         b = t;
+      }
+      return a;
+   }
+   
+   Number gcd (Number a, Number b) {
+      if (isSmall(a) && isSmall(b)) {
+         long long va = decodeSmall(a), vb = decodeSmall(b), r;
+         r = euclid(va, vb);
+         return init(r);
+      }
+      return gcdBig(a, b);
    }
 
    Number pow (Number a, long b) {
@@ -196,6 +235,16 @@ private:
       BI::mul(ir.bigVal, ia.bigVal, ib.bigVal);
       return encodeBig(r);
    }
+   Number divBig (Number a, Number b) {
+      a = toBig(a);
+      b = toBig(b);
+      int r = pool.add();
+      Item& ia = pool.at(decodeBig(a)), &ib = pool.at(decodeBig(b)), &ir = pool.at(r);
+      BI::div(ir.bigVal, ia.bigVal, ib.bigVal);
+      return encodeBig(r);
+   }
+
+   BIGNUMOP(gcd);
 
    bool isSmall (Number num) {
       return (num & 1) == 0;

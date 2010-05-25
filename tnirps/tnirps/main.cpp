@@ -16,7 +16,6 @@
 #include "tnirps_scheme_tree.h"
 #include "tnirps_bigint.h"
 #include "tnirps_poly_evaluator.h"
-#include "tnirps_poly_evaluator_i.h"
 #include "tnirps_poly_printer.h"
 #include "tnirps_poly_reduction.h"
 #include "tnirps_script.h"
@@ -239,8 +238,9 @@ void testReduce (void) {
    p.sort();
 
    SimpleReductor sr(g);
-   while (sr.reduceStep(r, p))
+   while (sr.reduceStep(r, p)) {
       p.copy(r);
+   }
    r.toStr(buf);
    CHECK_MATCH("-92*y^2 - 9*x*y + 3*y + 46*x");
    TEST_POST();
@@ -540,6 +540,28 @@ void testNumber ()
 }
 
 int main (int argc, const char** argv) {
+//   long long a, b;
+//
+//   a = 3; b = 4;
+//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
+//   a = 11; b = 7;
+//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
+//   a = 12; b = 15;
+//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
+//   a = 15; b = 12;
+//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
+//   a = 16; b = 1;
+//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
+//   a = 1; b = 16;
+//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
+//   a = 0; b = 16;
+//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
+//   a = 16; b = 0;
+//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
+//   a = 23; b = 23;
+//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
+
+   
    //testNumber();
    tests();
 }
