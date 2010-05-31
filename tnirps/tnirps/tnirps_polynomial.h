@@ -59,6 +59,7 @@ public:
 
          // read variables, if any
          sc.readWord(buf, "+-");
+         printf("%s\n", buf.ptr());
          buf.rstrip();
          Monomial m;
          if (strlen(buf.ptr()) > 0) {

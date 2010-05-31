@@ -8,6 +8,7 @@
 #include "tnirps_scheme_tree.h"
 #include "tnirps_poly_evaluator.h"
 #include "nano.h"
+#include "tnirps_poly_reduction.h"
 
 class VarMap;
 
@@ -106,6 +107,35 @@ private:
       printf("\tresult: "), NP.print(sout, res.get()), printf("\n");
       return 0;
    }
+   int reduce(const char* schname, const char* arg) {
+      if (!scheme.find(schname)) {
+         printf("\tERROR: scheme \"%s\" not defined\n", schname);
+         return 1;
+      }
+
+      BufferScanner bs(arg);
+      Array<char> buf;
+      ObjArray<Polynomial> basis;
+      while (!bs.isEOF()) {
+         bs.readWord(buf, ",");
+         buf.push(0);
+         basis.push().init(buf.ptr());
+         if (!bs.isEOF())
+            bs.readChar();
+      }
+
+      Reductor redr(basis);
+      float time;
+      NumPtr resDen;
+      Polynomial res;
+      qword t0 = nanoClock();
+      redr.reduce(res, scheme.at(schname));
+      qword t1 = nanoClock();
+      time = 1000.0f * nanoHowManySeconds(t1 - t0);
+      printf("\ttime: %.3f ms\n", time);
+      printf("\tresult: "), res.print(sout), printf("\n");
+      return 0;
+   }
    int executeLine (Scanner& sc) {
 
       Array<char> command, name, arg, schname;
@@ -139,8 +169,11 @@ private:
          sc.skipSpace();
          sc.readWord(arg, "\n");
          r = evaluate(name.ptr(), arg.ptr());
-//      } else if (!strcmp(command.ptr(), "prnp")) {
-//         //sc.readWord(name);
+      } else if (!strcmp(command.ptr(), "reduce")) {
+         sc.readWord(name, 0);
+         sc.skipSpace();
+         sc.readWord(arg, "\n");
+         r = reduce(name.ptr(), arg.ptr());
       } else {
          printf("\tERROR: command unknown: \"%s\"", command.ptr());
          return 1;

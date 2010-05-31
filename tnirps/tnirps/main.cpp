@@ -384,18 +384,33 @@ void testGMP() {
 
 void testScript() {
    TEST_PRE("testScript");
+   MP.setOrder(MonoPool::DRL);
    MP.setVarMap("");
    printf("\n%s:\n", _name);
    ScriptInterpreter interpreter;
-   const char* input = "vars x,y,z             \n\
-      set p1 x^3*y*z+x^2*y+13*x*y^2+67*x*y*z+x+11*y^3+26*y^2\n\
-      build sg p1 gorner                     \n\
-      build ss p1 simple                     \n\
-      build sm p1 tree                       \n\
-      eval sg 23,-112,7                      \n\
-      eval ss 23,-112,7                      \n\
-      eval sm 23,-112,7                      \n\
-   ";
+   const char* input = "vars x,y,z                             \n\
+      set p1 x^3*y*z+x^2*y+13*x*y^2+67*x*y*z+x+11*y^3+26*y^2   \n\
+      set p2 x^6551*y^6628                                     \n\
+      set p3 x^7 - 2*x^4*y^3 + 3*y^6 + x*y^3 + 3*y             \n\
+      build sg p1 gorner                                       \n\
+      build ss p1 simple                                       \n\
+      build sm p1 tree                                         \n\
+      eval sg 23,-112,7                                        \n\
+      eval ss 23,-112,7                                        \n\
+      eval sm 23,-112,7                                        \n\
+      build ss3 p3 simple                                      \n\
+      build ss2 p2 simple                                      \n\
+      reduce ss2 y^3+x*y, x*y^2+x^2, x^2*y-2*y^2+x, x^3-3*x*y  \n";
+      //reduce ss3 y^3+x*y, x*y^2+x^2, x^2*y-2*y^2+x, x^3-3*x*y  \n\
+
+   //      vars x,y                               \n\
+//      build sg2 p2 gorner                     \n\
+//      build ss2 p2 simple                     \n\
+//      build sm2 p2 tree                       \n\
+//      eval sg2 2,-3                           \n\
+//      eval ss2 2,-3                           \n\
+//      eval sm2 2,-3                           \n\
+//   ";
    BufferScanner scanner(input);
    interpreter.execute(scanner);
    TEST_POST();
@@ -421,23 +436,23 @@ int tests ()
 {
    MP.setOrder(MonoPool::LEX);
    try {
-      testVarMap();
-      testMonome();
-      testMonDiv();
-      testPolyInit();
-      testPolySort();
-      testPolyAdd();
-      testPolyAdd2();
-      testPolyMul();
-      testPolySimplify();
-      testGMP();
-
-      testSimple();
-      testGorner();
-      testTree();
-      testReduce();
-
-      testReduceIncr();
+//      testVarMap();
+//      testMonome();
+//      testMonDiv();
+//      testPolyInit();
+//      testPolySort();
+//      testPolyAdd();
+//      testPolyAdd2();
+//      testPolyMul();
+//      testPolySimplify();
+//      testGMP();
+//
+//      testSimple();
+//      testGorner();
+//      testTree();
+//      testReduce();
+//
+//      testReduceIncr();
       testScript();
    } catch (Exception ex) {
       printf("Error: %s", ex.message());
@@ -539,7 +554,70 @@ void testNumber ()
 //   printf("%lld\n", a), NP.print(NP.init(a)), printf("\n\n");
 }
 
+int testMaple (const char* path) {
+   FileScanner fs(path);
+   Array<char> buf, sub;
+   fs.skipSpace();
+   fs.readChar();fs.readChar();
+   fs.readWord(buf,"\n\r");
+   MP.setVarMap(buf.ptr());
+   fs.skipSpace();
+   fs.readChar();fs.readChar();
+   fs.readWord(buf,"\n\r");
+
+   ObjArray<Polynomial> basis;
+   BufferScanner bs(buf);
+   while (!bs.isEOF()) {
+      bs.readWord(sub, ",");
+      basis.push().init(sub.ptr());
+      if (!bs.isEOF())
+         bs.readChar();
+   }
+
+   Polynomial p;
+   fs.skipSpace();
+   fs.readChar();fs.readChar();
+   fs.readWord(buf,"\n\r");
+   p.init(buf.ptr());
+
+   Polynomial r;
+   fs.skipSpace();
+   fs.readChar();fs.readChar();
+   fs.readWord(buf,"\n\r");
+   r.init(buf.ptr());
+
+   fs.skipSpace();
+   fs.readChar();fs.readChar();
+   int t = fs.readInt();
+
+   printf("G:\n");
+   for (int i = 0; i < basis.size(); ++i) {
+      basis[i].print(sout);printf("\n");
+   }
+   printf("p:\n");
+   p.print(sout);printf("\n");
+   printf("r:\n");
+   p.print(sout);printf("\n");
+   printf("t: %i\n", t);
+
+   Scheme s;
+   SchemeSimple ss(s, p);
+   ss.build();
+
+   Reductor redr(basis);
+   float time;
+   NumPtr resDen;
+   Polynomial res;
+   qword t0 = nanoClock();
+   redr.reduce(res, s);
+   qword t1 = nanoClock();
+   time = 1000.0f * nanoHowManySeconds(t1 - t0);
+   printf("\ttime: %.3f ms\n", time);
+   printf("\tresult: "), res.print(sout), printf("\n");
+}
+
 int main (int argc, const char** argv) {
+   MP.setOrder(MonoPool::DRL);
 //   long long a, b;
 //
 //   a = 3; b = 4;
@@ -563,5 +641,6 @@ int main (int argc, const char** argv) {
 
    
    //testNumber();
-   tests();
+   //tests();
+   testMaple("samples/p1.txt");
 }

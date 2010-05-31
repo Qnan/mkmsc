@@ -7,7 +7,7 @@
 
 //#define DBG(op) op
 #undef DBG
-#define DBG(op)
+#define DBG(op) op
 
 class Reductor {
    struct Item {
@@ -112,13 +112,23 @@ private:
    
    void evaluateMonomial (const Array<Monomial>& mm, int i) {
       const MData& m = MP.get(mm[i]);
-      Item t;
-      t.p.addTerm(mm[i], NumPtr(NP.init(1)));
-      normalize(values[i], t);
+      Item t[2];
+      t[0].p.addTerm(MP.unit(), NumPtr(NP.init(1)));
+      int k = 0;
+      for (int v = 0; v < m.length(); ++v) {
+         Monomial single = MP.single(m.var(v));
+         for (int j = 0; j < m.deg(v); ++j) {
+            int b = (k++) & 1;
+            t[b].mul(MP.single(m.var(v)));
+            normalize(t[1 - b], t[b]);
+         }
+      }
+      
+      values[i].copy(t[k&1]);
       DBG(printf("(%i): ", i); MP.print(sout, mm[i]); printf(" -> "); values[i].p.print(sout); printf("\t/"); NP.print(values[i].d.get()); printf("\n"));
       // TODO: we should initialize these monomials inductively, too
       // TODO: think of alteration between two temporary polynomials on such occasions
-   }
+      }
 
    void init (const Array<Monomial>& mm, int total) {
       values.clear();
@@ -172,6 +182,7 @@ private:
          normalize(res, q);
       }
       normalForms.insert(m).copy(res);
+      printf("NF: "); MP.print(sout, m); printf(" -> "); res.p.print(sout); printf("\t/"); NP.print(res.d.get()); printf("\n");
    }
 
    void normalize (Item& res, const Item& q) {
