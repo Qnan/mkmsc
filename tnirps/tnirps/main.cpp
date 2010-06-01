@@ -393,7 +393,7 @@ void testScript() {
    ScriptInterpreter interpreter;
    const char* input = "vars x,y,z                             \n\
       set p1 x^3*y*z+x^2*y+13*x*y^2+67*x*y*z+x+11*y^3+26*y^2   \n\
-      set p2 x^65*y^66                                         \n\
+      set p2 x^650*y^667                                       \n\
       set p3 x^7 - 2*x^4*y^3 + 3*y^6 + x*y^3 + 3*y             \n\
       build sg p1 gorner                                       \n\
       build ss p1 simple                                       \n\
@@ -557,6 +557,7 @@ int testMaple (const char* path) {
    while (!bs.isEOF()) {
       bs.readWord(sub, ",");
       basis.push().init(sub.ptr());
+      basis.top().simplify();
       if (!bs.isEOF())
          bs.readChar();
    }
@@ -566,12 +567,14 @@ int testMaple (const char* path) {
    fs.readChar();fs.readChar();
    fs.readWord(buf,"\n\r");
    p.init(buf.ptr());
+   p.simplify();
 
    Polynomial r;
    fs.skipSpace();
    fs.readChar();fs.readChar();
    fs.readWord(buf,"\n\r");
    r.init(buf.ptr());
+   r.simplify();
 
    fs.skipSpace();
    fs.readChar();fs.readChar();
@@ -605,29 +608,8 @@ int testMaple (const char* path) {
 
 int main (int argc, const char** argv) {
    MP.setOrder(MonoPool::DRL);
-//   long long a, b;
-//
-//   a = 3; b = 4;
-//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
-//   a = 11; b = 7;
-//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
-//   a = 12; b = 15;
-//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
-//   a = 15; b = 12;
-//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
-//   a = 16; b = 1;
-//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
-//   a = 1; b = 16;
-//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
-//   a = 0; b = 16;
-//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
-//   a = 16; b = 0;
-//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
-//   a = 23; b = 23;
-//   printf("GCD(%lld, %lld) = %lld\n", a, b, NP.euclid(a, b));
-
    
    //testNumber();
-   tests();
-  //testMaple("samples/p1.txt");
+   //tests();
+   testMaple("samples/p2.txt");
 }

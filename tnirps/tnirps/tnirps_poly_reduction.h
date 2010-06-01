@@ -7,7 +7,7 @@
 
 //#define DBG(op) op
 #undef DBG
-#define DBG(op) op
+#define DBG(op)
 
 class Reductor {
    struct Item {
@@ -79,14 +79,14 @@ public:
       values.resize(scheme.totalCount);
       scheme.proceed(this);
       res.copy(result);
-      for (int i = normalForms.begin(); i < normalForms.end(); i = normalForms.next(i)) {
+      DBG(for (int i = normalForms.begin(); i < normalForms.end(); i = normalForms.next(i)) {
          MP.print(sout, normalForms.key(i));
          printf("  :  ");
          normalForms.value(i).p.print(sout);
          printf("  /  ");
          NP.print(normalForms.value(i).d.get());
          printf("\n");
-      }
+      })
    }
 
    SCHEME_CALLBACKS_DEFINE(Reductor);
@@ -99,13 +99,9 @@ private:
       for (i = 0; i < basis.size(); ++i) {
          Monomial m = basis[i].lm();
          if (MP.divides(lm, m)) {
-//            printf("b: ");basis[i].print(sout);printf("\n");
-//            printf("f: ");MP.print(sout,MP.div(lm, m),1);printf("\n");
             t.p.mul(basis[i], MP.div(lm, m));
             t.d.set(t.p.lc().get());
             t.mulnum(NumPtr(NP.neg(p.p.lc().get())));
-//            printf("p: ");p.p.print(sout);printf("\n");
-//            printf("t: ");t.p.print(sout);printf("\n");
             p.add(t);
             p.simplify();
             return true;
@@ -116,10 +112,6 @@ private:
    
    void evaluateMonomial (const Array<Monomial>& mm, int i) {
       const int* degs = MP.getDegs(mm[i]);
-//      MP.print(sout, mm[i]); printf("\n");
-//      for (int v = 0; v < MP.nvars(); ++v)
-//         printf(" %i", degs[v]);
-//      printf("\n");
       Item t[2];
       t[0].p.addTerm(MP.unit(), NumPtr(NP.init(1)));
       int k = 0;
@@ -148,7 +140,11 @@ private:
       values[id].copy(values[a]);
       values[id].add(values[b]);
       values[id].simplify();
-      DBG(printf("(%i) = (%i) + (%i): ", id, a, b); values[id].p.print(sout); printf("\t/"); NP.print(values[id].d.get()); printf("\n"));
+      DBG(printf("(%i) = (%i) + (%i): ", id, a, b); 
+         values[id].p.print(sout);
+         printf("\t/");
+         NP.print(values[id].d.get());
+         printf("\n"));
    }
    void mul (int id, int a, int b) {
       const Item& pa = values[a], &pb = values[b];
@@ -162,19 +158,33 @@ private:
          r.add(s);
       }
       r.simplify();
-      DBG(printf("(%i) = (%i) * (%i): ", id, a, b); values[id].p.print(sout); printf("\t/"); NP.print(values[id].d.get()); printf("\n"));
+      DBG(printf("(%i) = (%i) * (%i): ", id, a, b);
+         values[id].p.print(sout);
+         printf("\t/");
+         NP.print(values[id].d.get());
+         printf("\n"));
    }
    void mulnum (int id, int a, const NumPtr& num) {
       Item& res = values[id];
       res.copy(values[a]);
       res.mulnum(num);
-      DBG(printf("(%i) = (%i) * ", id, a); NP.print(num.get()); printf(": "); values[id].p.print(sout); printf("\t/"); NP.print(values[id].d.get()); printf("\n"));
+      DBG(printf("(%i) = (%i) * ", id, a);
+         NP.print(num.get());
+         printf(": ");
+         values[id].p.print(sout);
+         printf("\t/");
+         NP.print(values[id].d.get());
+         printf("\n"));
    }
 
    void yield (int id) {
       result.copy(values[id].p);
       resDenomiator.set(values[id].d.get());
-      DBG(printf("yield (%i):", id); values[id].p.print(sout); printf("\t/"); NP.print(values[id].d.get()); printf("\n"));
+      DBG(printf("yield (%i):", id);
+         values[id].p.print(sout);
+         printf("\t/");
+         NP.print(values[id].d.get());
+         printf("\n"));
    }
 
    struct NormTask {
@@ -189,24 +199,24 @@ private:
 
    bool procnorm () {
       NormTask& task = stack.top();
-      printf ("%d(%d): ", stack.size() - 1, task.state);
-      MP.print(sout, task.m);
-      printf ("\n");
+      DBG(printf ("%d(%d): ", stack.size() - 1, task.state);
+         MP.print(sout, task.m);
+         printf ("\n"));
       if (task.state < 0) {
          if (normalForms.find(task.m)) {
             task.q.copy(normalForms.at(task.m));
-            printf ("\tcached\n");
+            DBG(printf("\tcached\n"));
             return true;
          }
          task.q.p.addTerm(task.m, NumPtr(NP.init(1)));
          if (!reduceStep(task.q)) {
             normalForms.insert(task.m).copy(task.q);
-            printf ("\tirreducible\n");
+            DBG(printf ("\tirreducible\n"));
             return true;
          }
-         printf ("\t");
-         task.q.p.print(sout);
-         printf ("\n");
+         DBG(printf ("\t"); 
+            task.q.p.print(sout);
+            printf ("\n"));
          task.state = task.q.p.begin();
       } else {
          task.state = task.q.p.next(task.state);
@@ -215,14 +225,14 @@ private:
          task.t.simplify();
          task.q.copy(task.t);
          normalForms.insert(task.m).copy(task.q);
-         printf ("\tdone: ");
-         task.q.p.print(sout);
-         printf ("\n");
+         DBG(printf ("\tdone: ");
+            task.q.p.print(sout);
+            printf ("\n"));
          return true;
       }
-      printf ("\t push: ");
-      MP.print(sout, task.q.p.m(task.state));
-      printf ("\n");
+      DBG(printf ("\t push: ");
+         MP.print(sout, task.q.p.m(task.state));
+         printf ("\n"));
       stack.push(task.q.p.m(task.state), stack.size() - 1);
       return false;
    }
@@ -248,11 +258,16 @@ private:
          stack.pop();         
       }
 
-      //      printf("NF: "); MP.print(sout, m); printf(" -> "); res.p.print(sout); printf("\t/"); NP.print(res.d.get()); printf("\n");
+      DBG(printf("NF: ");
+         MP.print(sout, m);
+         printf(" -> ");
+         res.p.print(sout);
+         printf("\t/");
+         NP.print(res.d.get());
+         printf("\n"));
    }
 
    void normalize (Item& res, const Item& q) {
-//      printf("n-p: "); q.p.print(sout); printf("  /"); NP.print(q.d.get()); printf("\n");
       Item w;
       res.p.clear();
       res.d.set(NP.init(1));
