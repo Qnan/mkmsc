@@ -82,7 +82,7 @@ public:
       int id = _terms.add();
       Term& t = _terms.at(id);
       t.f.set(f.get());
-      t.m.set(MP.clone(m));
+      t.m.set(m);
       return id;
    }
 
@@ -91,7 +91,7 @@ public:
       int id = _terms.insertBefore(before);
       Term& t = _terms.at(id);
       t.f.set(f.get());
-      t.m.set(MP.clone(m));
+      t.m.set(m);
       return id;
    }
 
@@ -150,7 +150,7 @@ public:
             output.printf(" %c ", c >= 0 ? '+' : '-');
          else if (c < 0)
             output.printf("-");
-         bool showVars = MP.length(t.m.get()) > 0;
+         bool showVars = !MP.isUnit(t.m.get());
          NumPtr f(NP.abs(t.f.get()));
          bool showCf = (NP.cmp(f.get(), 1) != 0 || !showVars);
          if (showCf)

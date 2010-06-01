@@ -46,7 +46,7 @@ private:
    }
 
    int addMonomial (const Monomial& m1) {
-      Monomial m = MP.clone(m1);
+      Monomial m = m1;
       int r;
       if (monomials.find(m)) {
          r = monomials.at(m);
@@ -59,13 +59,13 @@ private:
 
    int build (const Polynomial& p) {
       int i = p.begin();
-      Monomial m = MP.clone(p.m(i)), m2;
+      Monomial m = p.m(i), m2;
       //NumPtr f(p.at(i).f.get());
       for (i = p.next(i); i < p.end(); i = p.next(i)) {
          const Polynomial::Term& t = p.at(i);
          Monomial m2 = MP.gcd(m, t.m.get());
          // TODO: also find gcd of coefficients
-         if (MP.length(m2) == 0)
+         if (MP.isUnit(m2))
             break;
          m = m2;
       }
@@ -79,7 +79,7 @@ private:
       }
 //      MP.print(sout, m, 1);
       int id0 = addMonomial(m), id1 = -1, id2 = -1;
-      bool hasFactor = MP.length(p1.lm()) > 0;
+      bool hasFactor = !MP.isUnit(p1.lm());
       if (hasFactor) {
 //         printf(" * ");
 //         if (p1.size() > 1) printf("(");

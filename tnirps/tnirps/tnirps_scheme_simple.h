@@ -21,7 +21,7 @@ private:
       initial.reserve(p.size());
       RedBlackMap<int, int> terms;
       for (int i = p.begin(); i < p.end(); i = p.next(i)) {
-         Monomial m = MP.clone(p.m(i));
+         Monomial m = p.m(i);
          terms.insert(i, initial.size());
          initial.push(m);
       }

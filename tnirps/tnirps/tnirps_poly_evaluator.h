@@ -27,14 +27,16 @@ public:
 private:
    void evaluateMonomial (const Array<Monomial>& mm, int i) {
       DBG(printf("init %i\n", i));
-      const MData& m = MP.get(mm[i]);
+      const int* degs = MP.getDegs(mm[i]);
       NumPtr& v = values[i];
       v.set(NP.init(1));
       NumPtr t;
-      for (int i = 0; i < m.length(); ++i) {
-         t.set(NP.init(varValues[m.var(i)]));
-         t.set(NP.pow(t.get(), m.deg(i)));
-         v.set(NP.mul(v.get(), t.get()));
+      for (int i = 0; i < MP.nvars(); ++i) {
+         if (degs[i] > 0) {
+            t.set(NP.init(varValues[i]));
+            t.set(NP.pow(t.get(), degs[i]));
+            v.set(NP.mul(v.get(), t.get()));
+         }
       }
    }
 

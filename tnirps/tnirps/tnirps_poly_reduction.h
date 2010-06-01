@@ -99,9 +99,13 @@ private:
       for (i = 0; i < basis.size(); ++i) {
          Monomial m = basis[i].lm();
          if (MP.divides(lm, m)) {
+            printf("b: ");basis[i].print(sout);printf("\n");
+            printf("f: ");MP.print(sout,MP.div(lm, m),1);printf("\n");
             t.p.mul(basis[i], MP.div(lm, m));
             t.d.set(t.p.lc().get());
             t.mulnum(NumPtr(NP.neg(p.p.lc().get())));
+            printf("p: ");p.p.print(sout);printf("\n");
+            printf("t: ");t.p.print(sout);printf("\n");
             p.add(t);
             p.simplify();
             return true;
@@ -111,15 +115,19 @@ private:
    }
    
    void evaluateMonomial (const Array<Monomial>& mm, int i) {
-      const MData& m = MP.get(mm[i]);
+      const int* degs = MP.getDegs(mm[i]);
+//      MP.print(sout, mm[i]); printf("\n");
+//      for (int v = 0; v < MP.nvars(); ++v)
+//         printf(" %i", degs[v]);
+//      printf("\n");
       Item t[2];
       t[0].p.addTerm(MP.unit(), NumPtr(NP.init(1)));
       int k = 0;
-      for (int v = 0; v < m.length(); ++v) {
-         Monomial single = MP.single(m.var(v));
-         for (int j = 0; j < m.deg(v); ++j) {
+      for (int v = 0; v < MP.nvars(); ++v) {
+         Monomial single = MP.single(v);
+         for (int j = 0; j < degs[v]; ++j) {
             int b = (k++) & 1;
-            t[b].mul(MP.single(m.var(v)));
+            t[b].mul(single);
             normalize(t[1 - b], t[b]);
          }
       }
@@ -170,6 +178,9 @@ private:
    }
 
    void normalize (Item& res, Monomial m) {
+      static int cnt = 0;
+      printf("n-m %i: ", cnt); MP.print(sout, m); printf("\n");
+      cnt++;
       if (normalForms.find(m)) {
          res.copy(normalForms.at(m));
          return;
@@ -186,6 +197,7 @@ private:
    }
 
    void normalize (Item& res, const Item& q) {
+      printf("n-p: "); q.p.print(sout); printf("  /"); NP.print(q.d.get()); printf("\n");
       Item w;
       res.p.clear();
       res.d.set(NP.init(1));

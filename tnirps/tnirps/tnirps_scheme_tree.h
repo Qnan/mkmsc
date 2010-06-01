@@ -46,7 +46,7 @@ private:
    }
 
    int addMonomial (const Monomial& m1) {
-      Monomial m = MP.clone(m1);
+      Monomial m = m1;
       int r;
       if (initialMonomials.find(m)) {
          r = initialMonomials.at(m);

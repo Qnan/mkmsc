@@ -27,6 +27,7 @@
 
 #define TEST_PRE(name) \
    const char* _name = name; \
+   MP.reset(); \
    MP.setOrder(MonoPool::LEX); \
    Array<char> buf
 
@@ -173,6 +174,7 @@ void testPolyAdd2 (void)
 void testPolyMul (void)
 {
    TEST_PRE("testPolyMul");
+   MP.setVarMap("x,y,z");
    Polynomial p;
    const char *s1 = "13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z";
    p.init(s1, 0, 0);
@@ -191,6 +193,7 @@ void testPolyMul (void)
 void testPolySimplify (void)
 {
    TEST_PRE("testPolySimplify");
+   MP.setVarMap("x,y,z");
    Polynomial p1, p2, p3;
    const char *s1 = "13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z",
            *s2 = "x - x*y*z",
@@ -267,7 +270,7 @@ void testReduceIncr (void) {
    p.sort();
 
    Scheme scheme;
-   SchemeHangingTree strategy(scheme, p);
+   SchemeSimple strategy(scheme, p);
    strategy.build();
    Reductor reductor(g);
    reductor.reduce(r, scheme);
@@ -416,43 +419,27 @@ void testScript() {
    TEST_POST();
 }
 
-int eq_str (int a, int b, void* context) {
-   const char** ss = (const char**)context;
-   return strcmp(ss[a], ss[b]);
-}
-
-void testHashSet() {
-   const char* ss[] = {"alpha", "beta", "aqua", "baum", "astra", "aqua", "alpha", "aqua", "astra", "baum", "beta"};
-
-   HashSet set;
-   set.eq = eq_str;
-   set.context = ss;
-
-   for (int i = 0; i < NELEM(ss); ++i)
-      printf("%s --- %d\n", ss[i], set.findOrAdd(i, (int)ss[i][0]));
-}
-
 int tests ()
 {
    MP.setOrder(MonoPool::LEX);
    try {
-//      testVarMap();
-//      testMonome();
-//      testMonDiv();
-//      testPolyInit();
-//      testPolySort();
-//      testPolyAdd();
-//      testPolyAdd2();
-//      testPolyMul();
-//      testPolySimplify();
-//      testGMP();
-//
-//      testSimple();
-//      testGorner();
-//      testTree();
-//      testReduce();
-//
-//      testReduceIncr();
+      testVarMap();
+      testMonome();
+      testMonDiv();
+      testPolyInit();
+      testPolySort();
+      testPolyAdd();
+      testPolyAdd2();
+      testPolyMul();
+      testPolySimplify();
+      testGMP();
+
+      testSimple();
+      testGorner();
+      testTree();
+      testReduce();
+
+      testReduceIncr();
       testScript();
    } catch (Exception ex) {
       printf("Error: %s", ex.message());
@@ -641,6 +628,6 @@ int main (int argc, const char** argv) {
 
    
    //testNumber();
-   //tests();
-   testMaple("samples/p1.txt");
+   tests();
+  //testMaple("samples/p1.txt");
 }

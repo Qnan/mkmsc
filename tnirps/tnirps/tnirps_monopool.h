@@ -19,288 +19,142 @@ public:
       int deg;
    };
 
-   class _Mon {
-   public:
-      _Mon () {}
+   int init (int* degs)
+   {
+      int tmp[len];
+      memcpy(tmp+1, degs, dim * sizeof(int));
+      _setDeg(tmp);
+      return resolve(tmp);
+   }
 
-      void initSingle (int var) {
-         vars.clear();
-         vars.push(Var(var, 1));
+   void print (Output& output, Monomial id) const
+   {
+      bool first = true;
+      int* data = _get(id);
+      for (int i = 0; i < dim; ++i) {
+         int deg = data[i+1];
+         if (deg == 0)
+            continue;
+         if (!first)
+            output.printf("*");
+         first = false;
+         output.printf("%s", _varMap.name(i));
+         if (deg > 1)
+            output.printf("^%i", deg);
       }
-      
-      void copy (const _Mon& a) {
-         vars.clear();
-         vars.copy(a.vars);
-      }
+   }
 
-      void init ()
-      {
-         vars.clear();
-      }
+   Monomial mul (Monomial a, Monomial b)
+   {
+      int tmp[len];
+      _clear(tmp);
+      int *da = _get(a), *db = _get(b);
+      for (int i = 0; i < dim + 1; ++i)
+         tmp[i] = da[i] + db[i];
+      return resolve(tmp);
+   }
 
-      void init (const Array<int>& idcs, const Array<int>& degs)
-      {
-         vars.clear();
-         for (int i = 0; i < idcs.size(); ++i)
-            vars.push(Var(idcs[i], degs[i]));
-      }
-
-      void init (const Array<int>& degs)
-      {
-         vars.clear();
-         for (int i = 0; i < degs.size(); ++i)
-            if (degs[i] > 0)
-               vars.push(Var(i, degs[i]));
-      }
-
-      void print (Output& output, const VarMap& vmap) const
-      {
-         for (int i = 0; i < vars.size(); ++i) {
-            if (i > 0)
-               output.printf("*");
-            if (!vmap.isEmpty())
-               output.printf("%s", vmap.name(vars[i].idx));
-            else
-               output.printf("[%i]", vars[i].idx);
-            if (vars[i].deg > 1)
-               output.printf("^%i", vars[i].deg);
-         }
-      }
-
-      void mul (const _Mon& a, const _Mon& b)
-      {
-         vars.clear();
-         int i = 0, j = 0, i1 = a.vars.size(), j1 = b.vars.size();
-         while (i < i1 && j < j1) {
-            const Var& va = a.vars[i], vb = b.vars[j];
-            if (va.idx == vb.idx) {
-               vars.push(Var(va.idx, va.deg + vb.deg));
-               ++i;
-               ++j;
-            } else if (va.idx < vb.idx) {
-               vars.push(Var(va.idx, va.deg));
-               ++i;
-            } else {
-               vars.push(Var(vb.idx, vb.deg));
-               ++j;
-            }
-         }
-         while (i < i1) {
-            vars.push(Var(a.vars[i].idx, a.vars[i].deg));
-            ++i;
-         }
-         while (j < j1) {
-            vars.push(Var(b.vars[j].idx, b.vars[j].deg));
-            ++j;
-         }
-      }
-
-      void div (const _Mon& a, const _Mon& b)
-      {
-         vars.clear();
-         int i = 0, j = 0, i1 = a.vars.size(), j1 = b.vars.size(), d;
-         while (i < i1 && j < j1) {
-            const Var& va = a.vars[i], vb = b.vars[j];
-            if (va.idx == vb.idx) {
-               d = va.deg - vb.deg;
-               if (d > 0)
-                  vars.push(Var(va.idx, d));
-               ++i;
-               ++j;
-            } else if (va.idx < vb.idx) {
-               vars.push(Var(va.idx, va.deg));
-               ++i;
-            } else {
-               throw Exception("Monomes don't divide");
-            }
-         }
-         while (i < i1) {
-            vars.push(Var(a.vars[i].idx, a.vars[i].deg));
-            ++i;
-         }
-         if (j < j1)
+   Monomial div (Monomial a, Monomial b)
+   {
+      int tmp[len];
+      _clear(tmp);
+      int *da = _get(a), *db = _get(b);
+      for (int i = 0; i < dim + 1; ++i) {
+         tmp[i] = da[i] - db[i];
+         if (tmp[i] < 0)
             throw Exception("Monomes don't divide");
       }
+      return resolve(tmp);
+   }
 
-      void gcd (const _Mon& a, const _Mon& b)
-      {
-         vars.clear();
-         int i = 0, j = 0, i1 = a.vars.size(), j1 = b.vars.size();
-         while (i < i1 && j < j1) {
-            const Var& va = a.vars[i], vb = b.vars[j];
-            if (va.idx == vb.idx) {
-               vars.push(Var(va.idx, __min(va.deg, vb.deg)));
-               ++i;
-               ++j;
-            } else if (va.idx < vb.idx) {
-               ++i;
-            } else {
-               ++j;
-            }
-         }
-      }
+   Monomial gcd (Monomial a, Monomial b)
+   {
+      int tmp[len];
+      _clear(tmp);
+      int *da = _get(a), *db = _get(b);
+      for (int i = 1; i <= dim; ++i)
+         tmp[i] = __min(da[i], db[i]);
+      _setDeg(tmp);
+      return resolve(tmp);
+   }
+   
+   int countHash(int id) const {
+      countHash(_get(id));
+   }
 
-      int countHash() const
-      {
-         static long k[]={0,4,8,12,16,20,24,28};
-         static int a = 0x7;
-         int hash = 0;
-         for(int i = 0; i < vars.size(); ++i)
-            hash ^= vars[i].deg << k[vars[i].idx & a];
-         return hash;
-      }
-
-      static bool divides (const _Mon& a, const _Mon& b)
-      {
-         int i = 0, j = 0, i1 = a.vars.size(), j1 = b.vars.size();
-         while (i < i1 && j < j1) {
-            const Var& va = a.vars[i], vb = b.vars[j];
-            if (va.idx > vb.idx)
-               return false;
-            if (va.idx == vb.idx)  {
-               if (vb.deg > va.deg)
-                  return false;
-               ++i;
-               ++j;
-            } else {
-               ++i;
-            }
-         }
-         if (j < j1)
+   bool divides (Monomial a, Monomial b)
+   {
+      int *da = _get(a), *db = _get(b);
+      for (int i = 0; i < dim + 1; ++i)
+         if (da[i] < db[i])
             return false;
-         return true;
-      }
+      return true;
+   }
 
-      static bool equals (const _Mon& a, const _Mon& b)
-      {
-         int i1 = a.vars.size();
-         if (i1 != b.vars.size())
+   bool equals (Monomial a, Monomial b)
+   {
+      int *da = _get(a), *db = _get(b);
+      for (int i = 0; i < dim + 1; ++i)
+         if (da[i] != db[i])
             return false;
-         for (int i = 0; i < i1; ++i) {
-            const Var& va = a.vars[i], vb = b.vars[i];
-            if (va.idx != vb.idx)
-               return false;
-            if (va.deg != vb.deg)
-               return false;
-         }
-         return true;
-      }
+      return true;
+   }
 
-      static int cmpLex (const _Mon& a, const _Mon& b)
-      { // 1 if a > b
-         int i = 0, j = 0, i1 = a.vars.size(), j1 = b.vars.size();
-         while (i < i1 && j < j1) {
-            const Var& va = a.vars[i], vb = b.vars[j];
-            if (va.idx < vb.idx)
-               return 1;
-            if (va.idx > vb.idx)
-               return -1;
-            if (va.deg < vb.deg)
-               return -1;
-            if (va.deg > vb.deg)
-               return 1;
-            ++i;
-            ++j;
-         }
-         if (j < j1)
-            return -1;
-         if (i < i1)
-            return 1;
-         return 0;
+   static int cmpLex (int* da, int* db, int dim) {
+      for (int i = 0; i < dim; ++i) {
+         int diff = da[i+1] - db[i+1];
+         if (diff != 0)
+            return diff;
       }
+      return 0;      
+   }
 
-      static int cmpRevLex (const _Mon& a, const _Mon& b)
-      { // 1 if a > b
-         int i = a.vars.size() - 1, j = b.vars.size() - 1;
-         while (i >= 0 && j >= 0) {
-            const Var& va = a.vars[i], vb = b.vars[j];
-            if (va.idx > vb.idx)
-               return 1;
-            if (va.idx < vb.idx)
-               return -1;
-            if (va.deg < vb.deg)
-               return -1;
-            if (va.deg > vb.deg)
-               return 1;
-            --i;
-            --j;
-         }
-         if (j >= 0)
-            return -1;
-         if (i >= 0)
-            return 1;
-         return 0;
+   static int cmpRevLex (int* da, int* db, int dim) {
+      for (int i = dim - 1; i >= 0; --i) {
+         int diff = da[i+1] - db[i+1];
+         if (diff != 0)
+            return diff;
       }
+      return 0;
+   }
 
-      static int cmpDegRevLex (const _Mon& a, const _Mon& b)
-      { // 1 if a > b
-         int da = 0, db = 0;
-         for (int k = 0; k < a.vars.size(); ++k)
-            da += a.vars[k].deg;
-         for (int k = 0; k < b.vars.size(); ++k)
-            db += b.vars[k].deg;
-         if (da > db)
-            return 1;
-         if (db > da)
-            return -1;
-         int i = a.vars.size() - 1, j = b.vars.size() - 1;
-         while (i >= 0 && j >= 0) {
-            const Var& va = a.vars[i], vb = b.vars[j];
-            if (va.idx > vb.idx)
-               return 1;
-            if (va.idx < vb.idx)
-               return -1;
-            if (va.deg < vb.deg)
-               return -1;
-            if (va.deg > vb.deg)
-               return 1;
-            --i;
-            --j;
-         }
-         if (j >= 0)
-            return -1;
-         if (i >= 0)
-            return 1;
-         return 0;
+   static int cmpDegRevLex (int* da, int* db, int dim) {
+      int diff = da[0] - db[0];
+      if (diff != 0)
+         return diff;
+      for (int i = dim - 1; i >= 0; --i) {
+         int diff = da[i+1] - db[i+1];
+         if (diff != 0)
+            return diff;
       }
+      return 0;
+   }
 
-      int length () const {
-         return vars.size();
-      }
+   int* getDegs (Monomial m) const {
+      return _get(m)+1;
+   }
 
-      int var (int i) const {
-         return vars[i].idx;
-      }
+   int deg (Monomial m, int i) const {
+      return _get(m)[i+1];
+   }
 
-      int deg (int i) const {
-         return vars[i].deg;
-      }
+   int totalDeg (Monomial m) const {
+      return _get(m)[0];
+   }
 
-      int maxDeg () const
-      {
-         int d = 0;
-         for (int i = 0; i < length(); ++i)
-            d = __max(d, vars[i].deg);
-         return d;
-      }
+   int isUnit (Monomial m) const {
+      return _get(m)[0] == 0;
+   }
 
-      int totalDeg () const
-      {
-         int d = 0;
-         for (int i = 0; i < length(); ++i)
-            d += vars[i].deg;
-         return d;
-      }
-private:
-      Array<Var> vars;
-      _Mon (const _Mon&);
-   };
+   int nvars () const {
+      return dim;
+   }
 
    static MonoPool& inst () {
       return _inst;
    }
    enum ORDER {LEX, DRL};
-   typedef int (*mcmp_t) (const _Mon& a, const _Mon& b);
+   typedef int (*mcmp_t) (int* da, int* db, int dim);
 
    void setOrder (ORDER o) {
       _order = o;
@@ -309,9 +163,9 @@ private:
 
    mcmp_t getCmp (ORDER o) const {
       if (o == LEX)
-         return _Mon::cmpLex;
+         return cmpLex;
       else if (o == DRL)
-         return _Mon::cmpDegRevLex;
+         return cmpDegRevLex;
       else
          throw Exception("Order unknown");
    }
@@ -320,28 +174,16 @@ private:
    }
 
    Monomial single (int var) {
-      int sz = _msingle.size();
-      if (var >= sz) {
-         _msingle.resize(var + 1);
-         for (int i = sz; i < _msingle.size(); ++i) {
-            int id = _pool.add();
-            _pool.at(id).initSingle(i);
-            _msingle[i] = resolve(id);
-         }
-      }
       return _msingle[var];
    }
 
-   Monomial init (const Array<int>& degs) {
-      int id = _pool.add();
-      _pool.at(id).init(degs);
-      return resolve(id);
-   }
-
    Monomial init (const Array<int>& vars, const Array<int>& degs) {
-      int id = _pool.add();
-      _pool.at(id).init(vars, degs);
-      return resolve(id);
+      int tmp[len];
+      _clear(tmp);
+      for (int i = 0; i < vars.size(); ++i)
+         tmp[vars[i]+1] = degs[i];
+      _setDeg(tmp);
+      return resolve(tmp);
    }
 
    Monomial init (const char* expr, int begin = 0, int end = 0) {
@@ -387,20 +229,12 @@ private:
       return init(vars, degs);
    }
 
-   int length (Monomial id) const {
-      return _pool.at(id).length();
-   }
-
    void alloc (Monomial id) {
       refInc(id);
    }
 
    void release (Monomial id) {
       refDec(id);
-   }
-
-   void print(Output& output, Monomial id) const {
-      _pool.at(id).print(output, _varMap);
    }
 
    void toStr(Array<char>& buf, Monomial id) const {
@@ -410,85 +244,22 @@ private:
    }
 
    void print(Output& output, Monomial id, int coeff) const {
-      bool empty = _pool.at(id).length() == 0;
+      bool empty = totalDeg(id) == 0;
       if (coeff != 1 || empty)
          output.printf(empty ? "%i" : "%i*", coeff);
-      _pool.at(id).print(output, _varMap);
-   }
-
-   Monomial clone(Monomial id) {
-      return id;
-   }
-
-   Monomial mul(Monomial id1, Monomial id2) {
-      int r = _pool.add();
-      _pool.at(r).mul(_pool.at(id1), _pool.at(id2));
-      return resolve(r);
-   }
-
-   Monomial div(Monomial id1, Monomial id2) {
-      int r = _pool.add();
-      _pool.at(r).div(_pool.at(id1), _pool.at(id2));
-      return resolve(r);
-   }
-
-   Monomial gcd(Monomial id1, Monomial id2) {
-      int r = _pool.add();
-      _pool.at(r).gcd(_pool.at(id1), _pool.at(id2));
-      return resolve(r);
-   }
-
-   bool divides(Monomial id1, Monomial id2) { // id2 divides id1
-      return _Mon::divides(_pool.at(id1), _pool.at(id2));
-   }
-
-   bool equals(Monomial id1, Monomial id2) {
-      return _Mon::equals(_pool.at(id1), _pool.at(id2));
+      print(output, id);
    }
 
    int cmp (Monomial id1, Monomial id2, ORDER o) const {
-      return getCmp(o)(_pool.at(id1), _pool.at(id2));
+      return getCmp(o)(_get(id1), _get(id2), dim);
    }
 
    int cmp (Monomial id1, Monomial id2) const {
-      return _cmp(_pool.at(id1), _pool.at(id2));
+      return _cmp(_get(id1), _get(id2), dim);
    }
 
-   int countHash(Monomial id) const
-   {
-      return _pool.at(id).countHash();
-   }
-
-   int var (Monomial id, int i) const
-   {
-      return _pool.at(id).var(i);
-   }
-
-   int deg (Monomial id, int i) const
-   {
-      return _pool.at(id).deg(i);
-   }
-
-   int maxDeg (Monomial id) const
-   {
-      return _pool.at(id).maxDeg();
-   }
-   
-   int totalDeg (Monomial id) const
-   {
-      return _pool.at(id).totalDeg();
-   }
-
-   const _Mon& get (Monomial id) const
-   {
-      return _pool.at(id);
-   }
-
-   int resolve (int id) {
-      int r = _uniq.findOrAdd(id, _pool.at(id).countHash());
-      if (r != id)
-         _pool.remove(id);
-      return r;
+   int resolve (int* data) {
+      return _uniq.findOrAdd(data, countHash(data));
    }
 
    int refInc (int id) {
@@ -513,7 +284,7 @@ private:
          none = false;
          total += rc;
          if (printem)
-            _pool.at(refcnt.key(i)).print(sout, _varMap),printf(": %d\n", rc);
+            print(sout, refcnt.key(i), 1),printf(": %d\n", rc);
       }
       if (none)
          printf("\tnone.\n");
@@ -522,7 +293,7 @@ private:
    int printRefs () {
       printf("\n\nReferences:\n");
       for (int i = refcnt.begin(); i < refcnt.end(); i = refcnt.next(i)) {
-         _pool.at(refcnt.key(i)).print(sout, _varMap),printf(": %d\n", refcnt.value(i));
+         print(sout, refcnt.key(i), 1),printf(": %d\n", refcnt.value(i));
       }
    }
 
@@ -537,20 +308,97 @@ private:
 //   }
 
    void setVarMap (const char* vars) {
+      if (dim > 0)
+         throw Exception("Already initialized. Reset first.");
       _varMap.set(vars);
+      _init(_varMap.size());
+
    }
 
    const VarMap& getVarMap () {
       return _varMap;
    }
 
-private:
-   static int cb_cmp (int a, int b, void* context) {
-      ((MonoPool*)context)->cmp(a, b);
+   void reset () {
+      _uniq.map.clear();
+      _uniq.context = NULL;
+      _uniq.eq = NULL;
+      _uniq.alloc = NULL;
+
+      _munit = -1;
+      _msingle.clear();
+
+      if (memsz > 0)
+         free(mem);
+      mem = NULL;
+      memsz = 0;
+
+      dim = -1;
    }
+private:
+   int dim, sz, len;
+   const int initialSize;
+
+   int* mem;
+   int memsz, memptr;
+   int push () {
+      if (memsz == memptr) {
+         int cnt = (memsz == 0) ? initialSize : 2 * memsz;
+         int* t = (int*)malloc(sz * cnt);
+         if (memsz > 0) {
+            memcpy(t, mem, memsz * sz);
+            free(mem);
+         }
+         mem = t;
+         memsz = cnt;
+      }
+      return memptr++;
+   }
+   int pop () {
+      return memptr--;
+   }
+
+   int * _get(int id) const {
+      return mem + id * len;
+   }
+
+   void _clear(int* data) const {
+      memset(data, 0, sz);
+   }
+
+   void _copy(int* dst, int* src) const {
+      memcpy(dst, src, sz);
+   }
+
+   void _setDeg(int* data) const {
+      data[0] = 0;
+      for (int i = 0; i < dim; ++i)
+         data[0] += data[i+1];
+   }
+
+   int countHash(int* data) const
+   {
+      static long k[]={0,4,8,12,16,20,24,28};
+      static int a = 0x7;
+      int hash = 0;
+      for(int i = 0; i < dim; ++i)
+         hash ^= data[i+1] << k[i & a];
+      return hash;
+   }
+
+   static int cb_cmp (int a, int* data, void* context) {
+      MonoPool& mp = *(MonoPool*)context;
+      return mp.cmpDegRevLex(mp._get(a), data, mp.dim);
+   }
+   static int cb_alloc (int* data, void* context) {
+      MonoPool& mp = *(MonoPool*)context;
+      int id = mp.push();
+      mp._copy(mp._get(id), data);
+      return id;
+   }
+
    HashSet _uniq;
    RedBlackMap<int, int> refcnt;
-   ObjPool<_Mon> _pool;
    mcmp_t _cmp;
    ORDER _order;
    VarMap _varMap;
@@ -558,20 +406,34 @@ private:
    Monomial _munit;
    Array<Monomial> _msingle;
 
-   MonoPool () {
+   void _init (int d) {
+      dim = d;
+      len = dim + 1;
+      sz = sizeof(int) * (dim+1);
+
       _uniq.context = this;
       _uniq.eq = cb_cmp;
+      _uniq.alloc = cb_alloc;
+      memptr = 0;
 
-      int id = _pool.add();
-      _pool.at(id).init();
-      _munit = resolve(id);
+      int tmp[len];
+      _clear(tmp);
+      _munit = resolve(tmp);
       _msingle.clear();
+      _msingle.resize(dim);
+      for (int i = 0; i < dim; ++i) {
+         _clear(tmp);
+         tmp[0] = tmp[i+1] = 1;
+         _msingle[i] = resolve(tmp);
+      }
    }
 
+   MonoPool () : memsz(0), initialSize(200) {
+      reset();
+   }
    MonoPool (const MonoPool&);
 };
 
-typedef MonoPool::_Mon MData;
 extern MonoPool& MP; // global!
 
 class MonoPtr {

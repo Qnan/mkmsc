@@ -311,7 +311,7 @@ public:
       return _n;
    }
    ~NumPtr() {
-      reset();
+      reset(); 
    }
 private:
    Number _n;
