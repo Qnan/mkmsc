@@ -99,13 +99,13 @@ private:
       for (i = 0; i < basis.size(); ++i) {
          Monomial m = basis[i].lm();
          if (MP.divides(lm, m)) {
-            printf("b: ");basis[i].print(sout);printf("\n");
-            printf("f: ");MP.print(sout,MP.div(lm, m),1);printf("\n");
+//            printf("b: ");basis[i].print(sout);printf("\n");
+//            printf("f: ");MP.print(sout,MP.div(lm, m),1);printf("\n");
             t.p.mul(basis[i], MP.div(lm, m));
             t.d.set(t.p.lc().get());
             t.mulnum(NumPtr(NP.neg(p.p.lc().get())));
-            printf("p: ");p.p.print(sout);printf("\n");
-            printf("t: ");t.p.print(sout);printf("\n");
+//            printf("p: ");p.p.print(sout);printf("\n");
+//            printf("t: ");t.p.print(sout);printf("\n");
             p.add(t);
             p.simplify();
             return true;
@@ -177,27 +177,82 @@ private:
       DBG(printf("yield (%i):", id); values[id].p.print(sout); printf("\t/"); NP.print(values[id].d.get()); printf("\n"));
    }
 
+   struct NormTask {
+      NormTask (Monomial a, int p) : m(a), parent(p), state(-1) {
+      }
+      Item q, t;
+      Monomial m;
+      int state;
+      int parent;
+   };
+   ObjArray<NormTask> stack;
+
+   bool procnorm () {
+      NormTask& task = stack.top();
+      printf ("%d(%d): ", stack.size() - 1, task.state);
+      MP.print(sout, task.m);
+      printf ("\n");
+      if (task.state < 0) {
+         if (normalForms.find(task.m)) {
+            task.q.copy(normalForms.at(task.m));
+            printf ("\tcached\n");
+            return true;
+         }
+         task.q.p.addTerm(task.m, NumPtr(NP.init(1)));
+         if (!reduceStep(task.q)) {
+            normalForms.insert(task.m).copy(task.q);
+            printf ("\tirreducible\n");
+            return true;
+         }
+         printf ("\t");
+         task.q.p.print(sout);
+         printf ("\n");
+         task.state = task.q.p.begin();
+      } else {
+         task.state = task.q.p.next(task.state);
+      }
+      if (task.state >= task.q.p.end()) {
+         task.t.simplify();
+         task.q.copy(task.t);
+         normalForms.insert(task.m).copy(task.q);
+         printf ("\tdone: ");
+         task.q.p.print(sout);
+         printf ("\n");
+         return true;
+      }
+      printf ("\t push: ");
+      MP.print(sout, task.q.p.m(task.state));
+      printf ("\n");
+      stack.push(task.q.p.m(task.state), stack.size() - 1);
+      return false;
+   }
+
    void normalize (Item& res, Monomial m) {
-      static int cnt = 0;
-      printf("n-m %i: ", cnt); MP.print(sout, m); printf("\n");
-      cnt++;
       if (normalForms.find(m)) {
          res.copy(normalForms.at(m));
          return;
       }
-      Item q;
-      q.p.addTerm(m, NumPtr(NP.init(1)));
-      if (!reduceStep(q)) {
-         res.copy(q);
-      } else {
-         normalize(res, q);
+      NormTask& task = stack.push(m, -1);
+      while (stack.size() > 0) {
+         int cc = 0;
+         while (!procnorm())
+            cc++;
+         NormTask& cur = stack.top();
+         if (cur.parent >= 0) {
+            NormTask& par = stack[cur.parent];
+            cur.q.mulnum(par.q.p.at(par.state).f);
+            par.t.add(cur.q);
+         } else {
+            res.copy(stack[0].q);
+         }
+         stack.pop();         
       }
-      normalForms.insert(m).copy(res);
-      printf("NF: "); MP.print(sout, m); printf(" -> "); res.p.print(sout); printf("\t/"); NP.print(res.d.get()); printf("\n");
+
+      //      printf("NF: "); MP.print(sout, m); printf(" -> "); res.p.print(sout); printf("\t/"); NP.print(res.d.get()); printf("\n");
    }
 
    void normalize (Item& res, const Item& q) {
-      printf("n-p: "); q.p.print(sout); printf("  /"); NP.print(q.d.get()); printf("\n");
+//      printf("n-p: "); q.p.print(sout); printf("  /"); NP.print(q.d.get()); printf("\n");
       Item w;
       res.p.clear();
       res.d.set(NP.init(1));

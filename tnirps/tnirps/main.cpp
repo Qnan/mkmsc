@@ -393,7 +393,7 @@ void testScript() {
    ScriptInterpreter interpreter;
    const char* input = "vars x,y,z                             \n\
       set p1 x^3*y*z+x^2*y+13*x*y^2+67*x*y*z+x+11*y^3+26*y^2   \n\
-      set p2 x^6551*y^6628                                     \n\
+      set p2 x^65*y^66                                         \n\
       set p3 x^7 - 2*x^4*y^3 + 3*y^6 + x*y^3 + 3*y             \n\
       build sg p1 gorner                                       \n\
       build ss p1 simple                                       \n\
