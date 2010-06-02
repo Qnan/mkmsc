@@ -9,7 +9,7 @@
    static void cb_init (const Array<Monomial>& mm, int total, void* context) { ((className*)context)->init(mm, total); } \
    static void cb_add (int id, int a, int b, void* context) { ((className*)context)->add(id, a, b); } \
    static void cb_mul (int id, int a, int b, void* context) { ((className*)context)->mul(id, a, b); } \
-   static void cb_mulnum (int id, int a, const NumPtr& num, void* context) { ((className*)context)->mulnum(id, a, num); } \
+   static void cb_mulnum (int id, int a, const Cf& num, void* context) { ((className*)context)->mulnum(id, a, num); } \
    static void cb_yield (int id, void* context) { ((className*)context)->yield(id); }
 
 #define SCHEME_CALLBACKS_SET(scheme) \
@@ -47,7 +47,7 @@ public:
    mutable void (*cb_init) (const Array<Monomial>& mm, int total, void* context);
    mutable void (*cb_add) (int id, int a, int b, void* context);
    mutable void (*cb_mul) (int id, int a, int b, void* context);
-   mutable void (*cb_mulnum) (int id, int a, const NumPtr& num, void* context);
+   mutable void (*cb_mulnum) (int id, int a, const Cf& num, void* context);
    mutable void (*cb_yield) (int id, void* context);
 
    void proceed (void* context) const {
@@ -79,7 +79,7 @@ public:
    int totalCount;
    int resultId;
    Array<Op> ops;
-   ObjPool<NumPtr> coeffs;
+   ObjPool<Cf> coeffs;
 
 private:
    Scheme (const Scheme&); // no implicit copy

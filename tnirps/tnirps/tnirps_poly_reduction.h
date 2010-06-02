@@ -10,63 +10,6 @@
 #define DBG(op)
 
 class Reductor {
-   struct Item {
-      Item () {
-         d.set(NP.init(1));
-      }
-      void copy (const Item& other) {
-         p.copy(other.p);
-         d.set(other.d.get());
-      }
-      void add (const Item& other) {
-         NumPtr d1(d.get());
-         NumPtr d2(other.d.get());
-         NumPtr gcd(NP.gcd(d1.get(), d2.get()));
-         // if nontrivial, divide them over it
-         if (NP.cmp(gcd.get(), 1) > 0) {
-            d1.set(NP.div(d1.get(), gcd.get()));
-            d2.set(NP.div(d2.get(), gcd.get()));            
-         }
-         p.mulnum(d2);
-         p.append(other.p, d1);
-         d.set(NP.mul(d.get(), d2.get()));
-      }
-      void mulnum (const NumPtr& f) {
-         NumPtr g(f.get());
-         NumPtr gcd(NP.gcd(d.get(), g.get()));
-         if (NP.cmp(gcd.get(), 1) > 0) {
-            g.set(NP.div(g.get(), gcd.get()));
-            d.set(NP.div(d.get(), gcd.get()));
-         }
-         p.mulnum(g);
-      }
-      void mul (Monomial m) {
-         p.mul(m);
-      }
-      void simplify () {
-         p.simplify();
-
-         // find the GCD of all the coefficients and the denomiator
-         NumPtr gcd(d.get());
-         int j = 1;
-         for (int i = p.begin(); i < p.end(); i = p.next(i)) {
-            gcd.set(NP.gcd(gcd.get(), p.at(i).f.get()));
-         }
-         // if nontrivial, divide them over it
-         if (NP.cmp(gcd.get(), 1) > 0) {
-            for (int i = p.begin(); i < p.end(); i = p.next(i)) {
-               NumPtr& c = p.at(i).f;
-               c.set(NP.div(c.get(), gcd.get()));
-            }
-            d.set(NP.div(d.get(), gcd.get()));
-         }
-      }
-      Polynomial p;
-      NumPtr d; // denominator
-   private:
-      Item (const Item&);
-   };
-
 public:
    Reductor (const ObjArray<Polynomial>& b) : basis(b), sr(b) {
    }
@@ -84,7 +27,7 @@ public:
          printf("  :  ");
          normalForms.value(i).p.print(sout);
          printf("  /  ");
-         NP.print(normalForms.value(i).d.get());
+         Ring::print(normalForms.value(i).d.get());
          printf("\n");
       })
    }
@@ -92,16 +35,17 @@ public:
    SCHEME_CALLBACKS_DEFINE(Reductor);
 
 private:
-   bool reduceStep (Item& p) {
-      Item t;
-      Monomial lm = p.p.lm();
+   bool reduceStep (Polynomial& p) {
+      Polynomial t;
+      Monomial lm = p.lm();
       int i;
       for (i = 0; i < basis.size(); ++i) {
          Monomial m = basis[i].lm();
          if (MP.divides(lm, m)) {
-            t.p.mul(basis[i], MP.div(lm, m));
-            t.d.set(t.p.lc().get());
-            t.mulnum(NumPtr(NP.neg(p.p.lc().get())));
+            Cf cf;
+            Ring::div(cf, p.lc(), basis[i].lc());
+            Ring::neg(cf, cf);
+            t.mul(basis[i], MP.div(lm, m), &cf);
             p.add(t);
             p.simplify();
             return true;
@@ -112,8 +56,10 @@ private:
    
    void evaluateMonomial (const Array<Monomial>& mm, int i) {
       const int* degs = MP.getDegs(mm[i]);
-      Item t[2];
-      t[0].p.addTerm(MP.unit(), NumPtr(NP.init(1)));
+      Polynomial t[2];
+      Cf c;
+      Ring::set(c, 1);
+      t[0].addTerm(MP.unit(), c);
       int k = 0;
       for (int v = 0; v < MP.nvars(); ++v) {
          Monomial single = MP.single(v);
@@ -125,7 +71,7 @@ private:
       }
       
       values[i].copy(t[k&1]);
-      DBG(printf("(%i): ", i); MP.print(sout, mm[i]); printf(" -> "); values[i].p.print(sout); printf("\t/"); NP.print(values[i].d.get()); printf("\n"));
+      DBG(printf("(%i): ", i); MP.print(sout, mm[i]); printf(" -> "); values[i].p.print(sout); printf("\t/"); Ring::print(values[i].d.get()); printf("\n"));
       // TODO: we should initialize these monomials inductively, too
       // TODO: think of alteration between two temporary polynomials on such occasions
       }
@@ -143,17 +89,17 @@ private:
       DBG(printf("(%i) = (%i) + (%i): ", id, a, b); 
          values[id].p.print(sout);
          printf("\t/");
-         NP.print(values[id].d.get());
+         Ring::print(values[id].d.get());
          printf("\n"));
    }
    void mul (int id, int a, int b) {
-      const Item& pa = values[a], &pb = values[b];
-      Item t, s;
-      Item& r = values[id];
-      for (int i = pb.p.begin(); i < pb.p.end(); i = pb.p.next(i)) {
+      const Polynomial& pa = values[a], &pb = values[b];
+      Polynomial t, s;
+      Polynomial& r = values[id];
+      for (int i = pb.begin(); i < pb.end(); i = pb.next(i)) {
          t.copy(pa);
-         t.mul(pb.p.m(i));
-         t.mulnum(pb.p.at(i).f);
+         t.mul(pb.m(i));
+         t.mulnum(pb.at(i).f);
          normalize(s, t);
          r.add(s);
       }
@@ -161,36 +107,35 @@ private:
       DBG(printf("(%i) = (%i) * (%i): ", id, a, b);
          values[id].p.print(sout);
          printf("\t/");
-         NP.print(values[id].d.get());
+         Ring::print(values[id].d.get());
          printf("\n"));
    }
-   void mulnum (int id, int a, const NumPtr& num) {
-      Item& res = values[id];
+   void mulnum (int id, int a, const Cf& num) {
+      Polynomial& res = values[id];
       res.copy(values[a]);
       res.mulnum(num);
       DBG(printf("(%i) = (%i) * ", id, a);
-         NP.print(num.get());
+         Ring::print(num.get());
          printf(": ");
          values[id].p.print(sout);
          printf("\t/");
-         NP.print(values[id].d.get());
+         Ring::print(values[id].d.get());
          printf("\n"));
    }
 
    void yield (int id) {
-      result.copy(values[id].p);
-      resDenomiator.set(values[id].d.get());
+      result.copy(values[id]);
       DBG(printf("yield (%i):", id);
          values[id].p.print(sout);
          printf("\t/");
-         NP.print(values[id].d.get());
+         Ring::print(values[id].d.get());
          printf("\n"));
    }
 
    struct NormTask {
       NormTask (Monomial a, int p) : m(a), parent(p), state(-1) {
       }
-      Item q, t;
+      Polynomial q, t;
       Monomial m;
       int state;
       int parent;
@@ -208,7 +153,9 @@ private:
             DBG(printf("\tcached\n"));
             return true;
          }
-         task.q.p.addTerm(task.m, NumPtr(NP.init(1)));
+         Cf c;
+         Ring::set(c, 1);
+         task.q.addTerm(task.m, c);
          if (!reduceStep(task.q)) {
             normalForms.insert(task.m).copy(task.q);
             DBG(printf ("\tirreducible\n"));
@@ -217,11 +164,11 @@ private:
          DBG(printf ("\t"); 
             task.q.p.print(sout);
             printf ("\n"));
-         task.state = task.q.p.begin();
+         task.state = task.q.begin();
       } else {
-         task.state = task.q.p.next(task.state);
+         task.state = task.q.next(task.state);
       }
-      if (task.state >= task.q.p.end()) {
+      if (task.state >= task.q.end()) {
          task.t.simplify();
          task.q.copy(task.t);
          normalForms.insert(task.m).copy(task.q);
@@ -233,11 +180,11 @@ private:
       DBG(printf ("\t push: ");
          MP.print(sout, task.q.p.m(task.state));
          printf ("\n"));
-      stack.push(task.q.p.m(task.state), stack.size() - 1);
+      stack.push(task.q.m(task.state), stack.size() - 1);
       return false;
    }
 
-   void normalize (Item& res, Monomial m) {
+   void normalize (Polynomial& res, Monomial m) {
       if (normalForms.find(m)) {
          res.copy(normalForms.at(m));
          return;
@@ -250,7 +197,7 @@ private:
          NormTask& cur = stack.top();
          if (cur.parent >= 0) {
             NormTask& par = stack[cur.parent];
-            cur.q.mulnum(par.q.p.at(par.state).f);
+            cur.q.mulnum(par.q.at(par.state).f);
             par.t.add(cur.q);
          } else {
             res.copy(stack[0].q);
@@ -263,16 +210,15 @@ private:
          printf(" -> ");
          res.p.print(sout);
          printf("\t/");
-         NP.print(res.d.get());
+         Ring::print(res.d.get());
          printf("\n"));
    }
 
-   void normalize (Item& res, const Item& q) {
-      Item w;
-      res.p.clear();
-      res.d.set(NP.init(1));
-      for (int i = q.p.begin(); i < q.p.end(); i = q.p.next(i)) {
-         const Polynomial::Term& term = q.p.at(i);
+   void normalize (Polynomial& res, const Polynomial& q) {
+      Polynomial w;
+      res.clear();
+      for (int i = q.begin(); i < q.end(); i = q.next(i)) {
+         const Polynomial::Term& term = q.at(i);
          normalize(w, term.m.get());
          w.mulnum(term.f);
          res.add(w);
@@ -281,10 +227,9 @@ private:
    }
 
    const ObjArray<Polynomial>& basis;
-   ObjArray<Item> values;
-   RedBlackObjMap<Monomial, Item> normalForms;
+   ObjArray<Polynomial> values;
+   RedBlackObjMap<Monomial, Polynomial> normalForms;
    Polynomial result;
-   NumPtr resDenomiator;
    SimpleReductor sr;
 };
 

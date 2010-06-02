@@ -7,6 +7,7 @@
 #include "tnirps_common.h"
 #include "tnirps_bigint.h"
 
+#if 0
 typedef long long Number;
 
 #define BIGNUMOP(name) \
@@ -287,7 +288,7 @@ private:
    bigint_t tmp1, tmp2;
 };
 
-extern NumPool& NP; // global!
+extern NumPool& R; // global!
 
 class NumPtr {
 public:
@@ -298,13 +299,13 @@ public:
    }
    void reset () {
       if (_valid)
-         NP.release(_n);
+         R.release(_n);
       _n = -1;
       _valid = false;
    }
    void set (Number n) {
       reset();
-      _n = NP.copy(n);
+      _n = R.copy(n);
       _valid = true;
    }
    Number get () const {
@@ -318,6 +319,8 @@ private:
    bool _valid;
    NumPtr (const NumPtr& mp);
 };
+
+#endif
 
 #endif	/* __TNIRPS_NUMPOOL_H__ */
 

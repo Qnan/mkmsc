@@ -27,13 +27,14 @@ private:
       }
 
       Array<Scheme::Op>& ops = _scheme.ops;
-      ObjPool<NumPtr>& coeffs = _scheme.coeffs;
+      ObjPool<Cf>& coeffs = _scheme.coeffs;
       // multiply monomials by coefficients
       int cnt = p.size();
       for (int i = p.begin(); i < p.end(); i = p.next(i)) {
          const Polynomial::Term& t = p.at(i);
-         int id = coeffs.add(t.f.get());
-         if (NP.cmp(t.f.get(), 1)) {
+         int id = coeffs.add();
+         Ring::copy(coeffs.at(id), t.f);
+         if (Ring::cmp(t.f, 1)) {
             int r = cnt++;
             ops.push().init(Scheme::OP_MULNUM, r, terms.at(i), id);
             terms.at(i) = r;

@@ -162,8 +162,10 @@ void testPolyAdd2 (void)
    p1.init(s2);
    p1.sort();
 
-   NumPtr c1(NP.init(3));
-   NumPtr c2(NP.init(-6));
+   Cf c1;
+   Ring::set(c1, 3);
+   Cf c2;
+   Ring::set(c2, -6);
 
    p.add(p1, &c1, &c2);
    p.toStr(buf);
@@ -183,7 +185,8 @@ void testPolyMul (void)
    Monomial m = MP.init(s2, 0, 0);
 
    p.mul(m);
-   NumPtr c(NP.init(-2));
+   Cf c;
+   Ring::set(c, -2);
    p.mulnum(c);
    p.toStr(buf);
    CHECK_MATCH("-8*x^2*y*z^3 - 26*x*y^2*z^2 - 20*x*y*z^2 + 142*x*z^2 - 2*y^2*z^3 + 2*y*z^2 - 2*z^5");
@@ -201,14 +204,12 @@ void testPolySimplify (void)
    p1.init(s1, 0, 0);
    p2.init(s2, 0, 0);
    p3.init(s3, 0, 0);
-   NumPtr c(NP.init(70));
+   Cf c;
+   Ring::set(c, 70);
    p1.append(p2, c);
    p1.append(p3);
    p1.toStr(buf);
    CHECK_MATCH("13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z + 70*x - 70*x*y*z + x - 4*x*y^2 + 2 + 13");
-//   p1.sort();
-//   p1.toStr(buf);
-//   CHECK_MATCH("4*x^2*y*z + 13*x*y^2 - 70*x*y*z - 4*x*y^2 + 10*x*y - 71*x + 70*x + x + y^2*z - y + z^3 + 2 + 13");
    p1.simplify();
    p1.toStr(buf);
    CHECK_MATCH("4*x^2*y*z + 9*x*y^2 - 70*x*y*z + 10*x*y + y^2*z - y + z^3 + 15");
@@ -297,14 +298,14 @@ void testSimple (void)
    prn.evaluate(&output, scheme);
    output.writeChar(0);
    CHECK_MATCH("(((((x^2*y + 13 * x*y^2) + x*y) + x) + y^3) + y^2)");
-   Evaluator eval;
-   Array<int> values;
-   values.push(3);
-   values.push(-1);
-   NumPtr res;
-   eval.evaluate(res, scheme, values);
-   if (NP.cmp(res.get(), 30) != 0)
-      throw Exception("%s: Error: Result doesn't match expected value", _name);
+//   Evaluator eval;
+//   Array<int> values;
+//   values.push(3);
+//   values.push(-1);
+//   NumPtr res;
+//   eval.evaluate(res, scheme, values);
+//   if (NP.cmp(res.get(), 30) != 0)
+//      throw Exception("%s: Error: Result doesn't match expected value", _name);
    TEST_POST();
 }
 
@@ -325,14 +326,14 @@ void testGorner (void)
    prn.evaluate(&output, scheme);
    output.writeChar(0);
    CHECK_MATCH("(x * (y * (x + (13 * y + 1)) + 1) + y^2 * (y + 1))");   
-   Evaluator eval;
-   Array<int> values;
-   values.push(3);
-   values.push(-1);
-   NumPtr res;
-   eval.evaluate(res, scheme, values);
-   if (NP.cmp(res.get(), 30) != 0)
-      throw Exception("%s: Error: Result doesn't match expected value", _name);
+//   Evaluator eval;
+//   Array<int> values;
+//   values.push(3);
+//   values.push(-1);
+//   NumPtr res;
+//   eval.evaluate(res, scheme, values);
+//   if (NP.cmp(res.get(), 30) != 0)
+//      throw Exception("%s: Error: Result doesn't match expected value", _name);
    TEST_POST();
 }
 
@@ -353,14 +354,14 @@ void testTree (void)
    prn.evaluate(&output, scheme);
    output.writeChar(0);
    CHECK_MATCH("(((((x^2 + x*y) + y^2) + x * x*y) + 13 * x * y^2) + y * y^2)");
-   Evaluator eval;
-   Array<int> values;
-   values.push(3);
-   values.push(-1);
-   NumPtr res;
-   eval.evaluate(res, scheme, values);
-   if (NP.cmp(res.get(), 36) != 0)
-      throw Exception("%s: Error: Result doesn't match expected value", _name);
+//   Evaluator eval;
+//   Array<int> values;
+//   values.push(3);
+//   values.push(-1);
+//   NumPtr res;
+//   eval.evaluate(res, scheme, values);
+//   if (NP.cmp(res.get(), 36) != 0)
+//      throw Exception("%s: Error: Result doesn't match expected value", _name);
    TEST_POST();
 }
 
@@ -503,44 +504,6 @@ void testSort ()
 
 }
 
-void testInt64Gmp ()
-{
-   long long a = 0;
-   bigint_t b;
-   BI::init(b);
-
-   printf("%lld\n", a), gmp_printf("%Zd\n\n", b);
-   a = 1; BI::set(b, a);
-   printf("%lld\n", a), gmp_printf("%Zd\n\n", b);
-   a = -192834; BI::set(b, a);
-   printf("%lld\n", a), gmp_printf("%Zd\n\n", b);
-   a = 50000000000ll; BI::set64(b, a);
-   printf("%lld\n", a), gmp_printf("%Zd\n\n", b);
-   a = -59238457812ll; BI::set64(b, a);
-   printf("%lld\n", a), gmp_printf("%Zd\n\n", b);
-}
-
-void testNumber ()
-{
-   long long a = 50000000000ll, b = 61111111111ll;
-
-   printf("%lld + %lld = ", a, b), NP.print(NP.sum(NP.init(a), NP.init(b))), printf("\n");
-   printf("%lld - %lld = ", a, a), NP.print(NP.diff(NP.init(a), NP.init(a))), printf("\n");
-   printf("%lld - %lld = ", b, a), NP.print(NP.diff(NP.init(b), NP.init(a))), printf("\n");
-   printf("%lld * %lld = ", a, a), NP.print(NP.mul(NP.init(a), NP.init(a))), printf("\n");
-   printf("%lld * %lld = ", a, a), NP.print(NP.mul(NP.init(a), NP.init(a))), printf("\n");
-   NP.print(NP.init("1234567890")), printf("\n");
-   NP.print(NP.init("123456789012345678901234567890")), printf("\n");
-
-//   printf("%lld\n", a), NP.print(NP.init(a)), printf("\n\n");
-//   a = -192834;
-//   printf("%lld\n", a), NP.print(NP.init(a)), printf("\n\n");
-//   a = 50000000000ll;
-//   printf("%lld\n", a), NP.print(NP.init(a)), printf("\n\n");
-//   a = -59238457812ll;
-//   printf("%lld\n", a), NP.print(NP.init(a)), printf("\n\n");
-}
-
 int testMaple (const char* path) {
    FileScanner fs(path);
    Array<char> buf, sub;
@@ -596,7 +559,6 @@ int testMaple (const char* path) {
 
    Reductor redr(basis);
    float time;
-   NumPtr resDen;
    Polynomial res;
    qword t0 = nanoClock();
    redr.reduce(res, s);
@@ -609,7 +571,6 @@ int testMaple (const char* path) {
 int main (int argc, const char** argv) {
    MP.setOrder(MonoPool::DRL);
    
-   //testNumber();
-   //tests();
-   testMaple("samples/p2.txt");
+   tests();
+   //testMaple("samples/p1.txt");
 }

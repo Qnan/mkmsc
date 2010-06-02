@@ -77,16 +77,11 @@ private:
       for (; i < p.end(); i = p.next(i)) {
          p2.addTerm(p.m(i), p.at(i).f);
       }
-//      MP.print(sout, m, 1);
       int id0 = addMonomial(m), id1 = -1, id2 = -1;
       bool hasFactor = !MP.isUnit(p1.lm());
       if (hasFactor) {
-//         printf(" * ");
-//         if (p1.size() > 1) printf("(");
          id1 = build(p1);
-//         if (p1.size() > 1) printf(")");
-      } else if (NP.cmp(p1.lc().get(), 1) != 0) {
-//         printf(" * %d", p1.lc());
+      } else if (Ring::cmp(p1.lc(), 1) != 0) {
       }
       bool hasSummand = p2.size() > 0;
       if (hasSummand) {
@@ -94,14 +89,15 @@ private:
          id2 = build(p2);
       }
       Array<Scheme::Op>& ops = _scheme.ops;
-      ObjPool<NumPtr>& coeffs = _scheme.coeffs;
+      ObjPool<Cf>& coeffs = _scheme.coeffs;
       if (hasFactor) {
          int r = intermediateCounter++;
          ops.push().init(Scheme::OP_MUL, r, id0, id1);
          id0 = r;
-      } else if (NP.cmp(p1.lc().get(), 1) != 0) {
+      } else if (Ring::cmp(p1.lc(), 1) != 0) {
          int r = intermediateCounter++;
-         int f = coeffs.add(p1.lc().get());
+         int f = coeffs.add();
+         Ring::copy(coeffs.at(f), p1.lc());
          ops.push().init(Scheme::OP_MULNUM, r, id0, f);
          id0 = r;
       }

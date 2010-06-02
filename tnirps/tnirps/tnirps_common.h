@@ -7,5 +7,8 @@ extern StandardOutput sout;
 
 #define ABS(a) ((a) > 0 ? (a) : (-(a)))
 
+//#undef QRING
+#define QRING 1
+
 #endif	/* __TNIRPS_COMMON_H__ */
 

@@ -96,15 +96,15 @@ private:
          printf("\tERROR: invalid number of values provided for arguments, %i expected\n", nvars);
          return 1;
       }
-      Evaluator eval;
-      float time;
-      NumPtr res;      
-      qword t0 = nanoClock();
-      eval.evaluate(res, scheme.at(schname), vvals);
-      qword t1 = nanoClock();
-      time = 1000.0f * nanoHowManySeconds(t1 - t0);
-      printf("\ttime: %.3f ms\n", time);
-      printf("\tresult: "), NP.print(sout, res.get()), printf("\n");
+//      Evaluator eval;
+//      float time;
+//      NumPtr res;
+//      qword t0 = nanoClock();
+//      eval.evaluate(res, scheme.at(schname), vvals);
+//      qword t1 = nanoClock();
+//      time = 1000.0f * nanoHowManySeconds(t1 - t0);
+//      printf("\ttime: %.3f ms\n", time);
+//      printf("\tresult: "), NP.print(sout, res.get()), printf("\n");
       return 0;
    }
    int reduce(const char* schname, const char* arg) {
@@ -126,7 +126,6 @@ private:
 
       Reductor redr(basis);
       float time;
-      NumPtr resDen;
       Polynomial res;
       qword t0 = nanoClock();
       redr.reduce(res, scheme.at(schname));

@@ -84,12 +84,13 @@ private:
          }
       }
 
-      ObjPool<NumPtr>& coeffs = _scheme.coeffs;
+      ObjPool<Cf>& coeffs = _scheme.coeffs;
       for (int i = p.begin(); i < p.end(); i = p.next(i)) {
          //NumPtr f(p.at(i).f.get());
-         if (NP.cmp(p.at(i).f.get(), 1) == 0)
+         if (Ring::cmp(p.at(i).f, 1) == 0)
             continue;
-         int f = coeffs.add(p.at(i).f.get());
+         int f = coeffs.add();
+         Ring::copy(coeffs.at(f), p.at(i).f);
 
          int r = intermediateCounter++;
          ops.push().init(Scheme::OP_MULNUM, r, monomials.at(i), f);

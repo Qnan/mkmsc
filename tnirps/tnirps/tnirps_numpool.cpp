@@ -1,4 +1,8 @@
-#include "tnirps_numpool.h"
+#include "tnirps_num_q.h"
 
-NumPool& NP = NumPool::inst();
-NumPool NumPool::_inst;
+Ring R;
+
+#if QRING
+Array<char> Ring::buf;
+#endif
+

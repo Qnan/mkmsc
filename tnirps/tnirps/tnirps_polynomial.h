@@ -2,10 +2,11 @@
 #define __TNIRPS_POLYNOMIAL_H__
 
 #include "obj_pool.h"
+#include "obj_array.h"
 #include "obj_list.h"
 #include "tnirps_monomial.h"
 #include "tnirps_monopool.h"
-#include "tnirps_numpool.h"
+#include "tnirps_num_q.h"
 
 class Polynomial {
 public:
@@ -13,12 +14,12 @@ public:
       Term () {
       }
       MonoPtr m;
-      NumPtr f;
+      Cf f;
    private:
       Term (const Term& t);
    };
 
-   Polynomial () : _terms(_pool) {}
+   Polynomial () : _terms(/*_pool*/) {}
 
    ~Polynomial () {
       clear();
@@ -59,7 +60,6 @@ public:
 
          // read variables, if any
          sc.readWord(buf, "+-");
-         printf("%s\n", buf.ptr());
          buf.rstrip();
          Monomial m;
          if (strlen(buf.ptr()) > 0) {
@@ -73,24 +73,26 @@ public:
             m = MP.unit();
          }
 
-         addTerm(m, NumPtr(NP.init(coeff)));
+         Cf cf;
+         Ring::set(cf, coeff);
+         addTerm(m, cf);
       }
    }
 
-   int addTerm (Monomial m, const NumPtr& f)
+   int addTerm (Monomial m, const Cf& f)
    {                      
       int id = _terms.add();
       Term& t = _terms.at(id);
-      t.f.set(f.get());
+      Ring::copy(t.f, f);
       t.m.set(m);
       return id;
    }
 
-   int insertTerm (int m, const NumPtr&  f, int before)
+   int insertTerm (int m, const Cf&  f, int before)
    {     
       int id = _terms.insertBefore(before);
       Term& t = _terms.at(id);
-      t.f.set(f.get());
+      Ring::copy(t.f, f);
       t.m.set(m);
       return id;
    }
@@ -133,7 +135,7 @@ public:
    Monomial m (int i) const { return _terms.at(i).m.get(); }
    int size () const { return _terms.size(); }
    int lm () const { return _terms.at(_terms.begin()).m.get(); }
-   const NumPtr& lc () const { return _terms.at(_terms.begin()).f; }
+   const Cf& lc () const { return _terms.at(_terms.begin()).f; }
    Term& lt () const { return _terms.at(_terms.begin()); }
 
    void toStr(Array<char>& buf) const {
@@ -145,16 +147,17 @@ public:
    void print (Output& output) const {
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i)) {
          const Term& t = _terms.at(i);
-         int c = NP.cmp(t.f.get(), 0);
+         int c = Ring::cmp(t.f, 0);
          if (i != _terms.begin())
             output.printf(" %c ", c >= 0 ? '+' : '-');
          else if (c < 0)
             output.printf("-");
          bool showVars = !MP.isUnit(t.m.get());
-         NumPtr f(NP.abs(t.f.get()));
-         bool showCf = (NP.cmp(f.get(), 1) != 0 || !showVars);
+         Cf f;
+         Ring::abs(f, t.f);
+         bool showCf = (Ring::cmp(f, 1) != 0 || !showVars);
          if (showCf)
-            NP.print(output, f.get());
+            Ring::print(output, f);
          if (showVars) {
             if (showCf)
                output.printf("*");
@@ -168,7 +171,7 @@ public:
       _terms.clear();
    }
 
-   void mul (const Polynomial& a, Monomial m, const NumPtr* cf = NULL) {
+   void mul (const Polynomial& a, Monomial m, const Cf* cf = NULL) {
       copy(a);
       mul(m);
       if (cf != NULL)
@@ -184,12 +187,12 @@ public:
       }
    }
 
-   void sum (const Polynomial& a, const Polynomial& b, const NumPtr* fa = NULL, const NumPtr* fb = NULL) {
+   void sum (const Polynomial& a, const Polynomial& b, const Cf* fa = NULL, const Cf* fb = NULL) {
       copy(a);
       add(b, fa, fb);
    }
 
-   void add (const Polynomial& a, const NumPtr* fr = NULL, const NumPtr* fa = NULL) {
+   void add (const Polynomial& a, const Cf* fr = NULL, const Cf* fa = NULL) {
       int ri = begin(), ai = a.begin();
       while (ri < end() && ai < a.end()) {
          Term& tr = at(ri);
@@ -197,22 +200,29 @@ public:
          int c = MP.cmp(tr.m.get(), ta.m.get());
          if (c > 0) {
             if (fr != NULL)
-               tr.f.set(NP.mul(tr.f.get(), fr->get()));
+               Ring::mul(tr.f, tr.f, *fr);
             ri = next(ri);
          } else if (c < 0) {
-            NumPtr cf(ta.f.get());
+            Cf cf;
             if (fa != NULL)
-               cf.set(NP.mul(cf.get(), fa->get()));
+               Ring::mul(cf, ta.f, *fa);
+            else
+               Ring::copy(cf, ta.f);
+            
             insertTerm(ta.m.get(), cf, ri);
             ai = a.next(ai);
          } else {
-            NumPtr cfr(tr.f.get()), cfa(ta.f.get());
+            Cf cfr, cfa;
             if (fr != NULL)
-               cfr.set(NP.mul(tr.f.get(), fr->get()));
+               Ring::mul(cfr, tr.f, *fr);
+            else
+               Ring::copy(cfr, tr.f);
             if (fa != NULL)
-               cfa.set(NP.mul(ta.f.get(), fa->get()));
-            tr.f.set(NP.sum(cfr.get(), cfa.get()));
-            if (NP.cmp(tr.f.get(), 0) == 0) {
+               Ring::mul(cfa, ta.f, *fa);
+            else
+               Ring::copy(cfa, ta.f);
+            Ring::add(tr.f, cfr, cfa);
+            if (Ring::cmp(tr.f, 0) == 0) {
                int t = ri;
                ri = next(ri);
                ai = a.next(ai);
@@ -225,17 +235,17 @@ public:
       }
       while (ri < end()) {
          Term& tr = at(ri);
-         NumPtr cf(tr.f.get());
          if (fr != NULL)
-            cf.set(NP.mul(cf.get(), fr->get()));
-         tr.f.set(cf.get());
+            Ring::mul(tr.f, tr.f, *fr);
          ri = next(ri);
       }
       while (ai < a.end()) {
          const Term& ta = a.at(ai);
-         NumPtr cf(ta.f.get());
+         Cf cf;
          if (fa != NULL)
-            cf.set(NP.mul(cf.get(), fa->get()));
+            Ring::mul(cf, ta.f, *fa);
+         else
+            Ring::copy(cf, ta.f);
          addTerm(ta.m.get(), cf);
          ai = a.next(ai);
       }
@@ -246,19 +256,19 @@ public:
       for (int i = begin(), j; i < end() && next(i) < end();) {
          Term& t = _terms.at(i);
          while ((j = next(i)) < end() && MP.equals(m(i), m(j))) {
-            t.f.set(NP.sum(t.f.get(), _terms.at(j).f.get()));
+            Ring::add(t.f, t.f, _terms.at(j).f);
             _terms.remove(j);
          }
          j = next(i);
-         if (NP.cmp(t.f.get(), 0) == 0)
+         if (Ring::cmp(t.f, 0) == 0)
             _terms.remove(i);
          i = j;
       }
    }
 
-   void mulnum (const NumPtr& f) {
+   void mulnum (const Cf& f) {
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
-         _terms[i].f.set(NP.mul(_terms[i].f.get(), f.get()));
+         Ring::mul(_terms[i].f, _terms[i].f, f);
    }
 
    void copy (const Polynomial& a) {
@@ -266,10 +276,11 @@ public:
       append(a);
    }
 
-   void append (const Polynomial& a, const NumPtr& f) {
+   void append (const Polynomial& a, const Cf& f) {
       for (int i = a.begin(); i < a.end(); i = a.next(i)) {
          const Term& t = a.at(i);
-         NumPtr cf(NP.mul(t.f.get(), f.get()));
+         Cf cf;
+         Ring::mul(cf, t.f, f);
          addTerm(t.m.get(), cf);
       }
    }

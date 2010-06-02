@@ -43,9 +43,9 @@ private:
       output.printf("%s * %s", intermediateValues[a].ptr(), intermediateValues[b].ptr());
       output.writeChar(0);
    }
-   void mulnum (int id, int a, const NumPtr& num) {
+   void mulnum (int id, int a, const Cf& num) {
       ArrayOutput output(intermediateValues[id]);
-      NP.print(output, num.get());
+      Ring::print(output, num);
       output.printf(" * %s", intermediateValues[a].ptr());
       output.writeChar(0);
    }
