@@ -7,7 +7,6 @@
 #include "pool.h"
 #include "list.h"
 #include "tnirps_var_map.h"
-#include "tnirps_numpool.h"
 #include "tnirps_monomial.h"
 #include "tnirps_polynomial.h"
 #include "tnirps_reduction.h"
@@ -405,16 +404,7 @@ void testScript() {
       build ss3 p3 simple                                      \n\
       build ss2 p2 simple                                      \n\
       reduce ss2 y^3+x*y, x*y^2+x^2, x^2*y-2*y^2+x, x^3-3*x*y  \n";
-      //reduce ss3 y^3+x*y, x*y^2+x^2, x^2*y-2*y^2+x, x^3-3*x*y  \n\
 
-   //      vars x,y                               \n\
-//      build sg2 p2 gorner                     \n\
-//      build ss2 p2 simple                     \n\
-//      build sm2 p2 tree                       \n\
-//      eval sg2 2,-3                           \n\
-//      eval ss2 2,-3                           \n\
-//      eval sm2 2,-3                           \n\
-//   ";
    BufferScanner scanner(input);
    interpreter.execute(scanner);
    TEST_POST();

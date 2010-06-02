@@ -1,4 +1,4 @@
-#include "tnirps_num_q.h"
+#include "tnirps_ring.h"
 
 Ring R;
 

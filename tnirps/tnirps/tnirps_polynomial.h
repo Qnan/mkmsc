@@ -6,7 +6,7 @@
 #include "obj_list.h"
 #include "tnirps_monomial.h"
 #include "tnirps_monopool.h"
-#include "tnirps_num_q.h"
+#include "tnirps_ring.h"
 
 class Polynomial {
 public:
