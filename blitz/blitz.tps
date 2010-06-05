@@ -5,7 +5,7 @@ Version=2
 [SessionInfo]
 ActiveTab=0
 FrameCount=3
-ActiveFrame=2
+ActiveFrame=1
 
 [Frame0]
 Columns=1
@@ -32,15 +32,15 @@ cxCur=1489
 cxMin=10
 
 [Frame0_View0,0]
-Cursor.row=18
-Cursor.column=22
+Cursor.row=10
+Cursor.column=3
 TopSubLine=0
 
 [Frame1]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-8
@@ -53,23 +53,23 @@ Class=CLatexEdit
 Document=src\blitz_intro.tex
 
 [Frame1_Row0]
-cyCur=561
+cyCur=844
 cyMin=10
 
 [Frame1_Col0]
-cxCur=514
+cxCur=1214
 cxMin=10
 
 [Frame1_View0,0]
-Cursor.row=1
-Cursor.column=0
+Cursor.row=25
+Cursor.column=51
 TopSubLine=0
 
 [Frame2]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-8
@@ -82,15 +82,15 @@ Class=CLatexEdit
 Document=src\blitz_schemes.tex
 
 [Frame2_Row0]
-cyCur=873
+cyCur=561
 cyMin=10
 
 [Frame2_Col0]
-cxCur=806
+cxCur=514
 cxMin=10
 
 [Frame2_View0,0]
-Cursor.row=15
-Cursor.column=13
+Cursor.row=11
+Cursor.column=0
 TopSubLine=0
 
