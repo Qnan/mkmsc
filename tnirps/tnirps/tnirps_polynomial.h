@@ -117,7 +117,77 @@ public:
 
    void sort ()
    {
-      _terms.bubbleSort(cmpDefault);
+      if (MP.getOrder() == MP.DRL)
+         sortDrl();
+      else if (MP.getOrder() == MP.LEX)
+         sortLex();
+      else
+         throw Exception("Order invalid");
+   }
+
+   void _sordDigitalSub(Array<int>& accu, Array<int>& f, Array<int>& g, int d) {
+      accu.clear();
+      for (int i = 0; i < f.size(); ++i) {
+         int v = MP.getAll(_terms.at(f[i]).m.get())[d];
+         int sz = accu.size();
+         if (v >= sz) {
+            accu.resize(v+1);
+            for (int j = sz; j <= v; ++j)
+               accu[j] = 0;
+         }
+         ++accu[v];
+      }
+      int t = 0;
+      for (int i = accu.size()-1; i >= 0; --i) {
+         t += accu[i];
+         accu[i] = t - accu[i];
+      }
+      for (int i = 0; i < f.size(); ++i) {
+         int v = MP.getAll(_terms.at(f[i]).m.get())[d];
+         g[accu[v]++] = f[i];
+      }
+   }
+   void sortDrl ()
+   {
+      static Array<int> accu, p[2];
+      accu.clear();
+      p[0].clear();
+      p[1].clear();
+      p[0].reserve(_terms.size());
+      p[1].resize(_terms.size());
+
+      for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
+         p[0].push(i);
+
+      for (int k = 0; k <= MP.nvars(); ++k) {
+         int b = k&1;
+         Array<int>& f = p[b];
+         Array<int>& g = p[1-b];
+         _sordDigitalSub(accu, f, g, (k+1) % (MP.nvars()+1));
+      }
+      Array<int>& f = p[(MP.nvars()+1) & 1];
+      _terms.set(f);
+   }
+   void sortLex ()
+   {
+      static Array<int> accu, p[2];
+      accu.clear();
+      p[0].clear();
+      p[1].clear();
+      p[0].reserve(_terms.size());
+      p[1].resize(_terms.size());
+
+      for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
+         p[0].push(i);
+
+      for (int k = 0; k < MP.nvars(); ++k) {
+         int b = k&1;
+         Array<int>& f = p[b];
+         Array<int>& g = p[1-b];
+         _sordDigitalSub(accu, f, g, MP.nvars() - k);
+      }
+      Array<int>& f = p[MP.nvars() & 1];
+      _terms.set(f);
    }
    
    void sort (MonoPool::ORDER o, bool inverse = false)

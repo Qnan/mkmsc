@@ -86,6 +86,18 @@ public:
       return idx;
    }
 
+   void set (const Array<int>& ids)
+   {
+      int sz = ids.size();
+      for (int i = 0; i < ids.size(); ++i) {
+         Elem &elem = _pool->at(ids[i]);
+         elem.next = i < sz - 1 ? ids[i+1] : -1;
+         elem.prev = i > 0 ? ids[i-1] : -1;
+      }
+      _head = ids[0];
+      _tail = ids[sz - 1];
+   }
+
    int insertAfter (int existing)
    {
       _pool->at(existing); // will throw if the element does not exist

@@ -115,6 +115,7 @@ void testPolyInit (void)
    p.init(s);
    p.toStr(buf);
    CHECK_MATCH("13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z");
+   p.sortDrl();
    TEST_POST();
 }
 
@@ -558,9 +559,108 @@ int testMaple (const char* path) {
    printf("\tresult: "), res.print(sout), printf("\n");
 }
 
+int testSing (const char* mode, const char* path) {
+   Array<char> buf, fname;
+   Polynomial p, r, r1;
+   int t;
+   ObjArray<Polynomial> basis;
+   {
+      FileScanner fs("%s/v", path);
+      fs.skipSpace();
+      fs.readAll(buf);
+      while (isspace(buf.top()))
+         buf.pop();
+      buf.push(0);
+      MP.setVarMap(buf.ptr());
+   }
+   {
+      FileScanner fs("%s/g", path);
+      fs.skipSpace();
+      while (!fs.isEOF()) {
+         fs.readWord(buf, ",");
+         basis.push().init(buf.ptr());
+//         basis.top().simplify();
+         if (!fs.isEOF())
+            fs.readChar();
+      }
+   }
+   {
+      FileScanner fs("%s/p", path);
+      fs.skipSpace();
+      fs.readAll(buf);
+      while (isspace(buf.top()))
+         buf.pop();
+      buf.push(0);
+      p.init(buf.ptr());
+      //p.simplify();
+   }
+   {
+      FileScanner fs("%s/r", path);
+      fs.skipSpace();
+      fs.readAll(buf);
+      while (isspace(buf.top()))
+         buf.pop();
+      buf.push(0);
+      r.init(buf.ptr());
+//      r.simplify();
+   }
+   {
+      FileScanner fs("%s/t", path);
+      fs.skipSpace();
+      t = fs.readInt();
+   }
+   Polynomial r2;
+
+   printf("G:\n");
+   for (int i = 0; i < basis.size(); ++i) {
+      basis[i].print(sout);printf("\n");
+   }
+   scanf("*");
+   printf("p:\n");
+   p.print(sout);printf("\n");
+   scanf("*");
+   printf("r:\n");
+   r.print(sout);printf("\n");
+   scanf("*");
+   printf("t: %i\n", t);
+   scanf("*");
+
+   Scheme s;
+   if (strcmp(mode, "simple") == 0) {
+      SchemeSimple ss(s, p);
+      ss.build();
+   } else if (strcmp(mode, "gorner") == 0) {
+      SchemeGorner ss(s, p);
+      ss.build();
+   } else if (strcmp(mode, "tree") == 0) {
+      SchemeHangingTree ss(s, p);
+      ss.build();
+   } else {
+      printf("mode not recognized: %s\n", mode);
+      return 1;
+   }
+   printf("scheme built\n");
+   scanf("*");
+
+   Reductor redr(basis);
+   float time;
+   Polynomial res;
+   qword t0 = nanoClock();
+   redr.reduce(res, s);
+   qword t1 = nanoClock();
+   time = 1000.0f * nanoHowManySeconds(t1 - t0);
+   printf("\ttime: %.3f ms\n", time);
+   Cf f;
+   Ring::set(f, -1);
+   r1.add(r, NULL, &f);
+   r1.simplify();
+   printf("\tresult: "), res.print(sout), printf("\n");
+}
+
 int main (int argc, const char** argv) {
    MP.setOrder(MonoPool::DRL);
    
-   tests();
+   testSing("simple", "../sage/p31s1/");
    //testMaple("samples/p1.txt");
+   //tests();
 }

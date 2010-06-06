@@ -134,6 +134,10 @@ public:
       return _get(m)+1;
    }
 
+   int* getAll (Monomial m) const {
+      return _get(m);
+   }
+
    int deg (Monomial m, int i) const {
       return _get(m)[i+1];
    }
@@ -159,6 +163,10 @@ public:
    void setOrder (ORDER o) {
       _order = o;
       _cmp = getCmp(o);
+   }
+
+   ORDER getOrder () {
+      return _order;
    }
 
    mcmp_t getCmp (ORDER o) const {

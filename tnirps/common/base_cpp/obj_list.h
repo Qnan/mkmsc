@@ -63,6 +63,11 @@ public:
       return idx;
    }
 
+   void set (const Array<int>& ids)
+   {
+      _list.set(ids);
+   }
+
    template <typename A> int insertAfter (int existing, A &a)
    {
       int idx = _list.insertAfter(existing);
