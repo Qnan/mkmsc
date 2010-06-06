@@ -1,0 +1,48 @@
+{VERSION 6 0 "IBM INTEL NT" "6.0" }
+{USTYLETAB {CSTYLE "Maple Input" -1 0 "Courier" 0 1 255 0 0 1 0 1 0 0 
+1 0 0 0 0 1 }{CSTYLE "2D Math" -1 2 "Times" 0 1 0 0 0 0 0 0 2 0 0 0 0 
+0 0 1 }{CSTYLE "2D Output" 2 20 "" 0 1 0 0 255 1 0 0 0 0 0 0 0 0 0 1 }
+{PSTYLE "Normal" -1 0 1 {CSTYLE "" -1 -1 "" 0 1 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 }0 0 0 -1 -1 -1 0 0 0 0 0 0 -1 0 }{PSTYLE "Maple Output" 0 11 1 
+{CSTYLE "" -1 -1 "" 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 }3 3 0 -1 -1 -1 0 
+0 0 0 0 0 -1 0 }}
+{SECT 0 {EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 79 "p:=((((((x * x * y +
+ x * x * y) + 13 * y^2 * x) + x * y) + x) + y^2 * y) + y^2)" }}{PARA 
+0 "> " 0 "" {MPLTEXT 1 0 1 ";" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#>%\"p
+G,.*(\"\"#\"\"\")%\"xGF'F(%\"yGF(F(*(\"#8F()F+F'F(F*F(F(*&F*F(F+F(F(F*
+F(*$)F+\"\"$F(F(*$F.F(F(" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 31 
+"q:=x^2*y+13*x*y^2+x*y+x+y^3+y^2" }}{PARA 0 "> " 0 "" {MPLTEXT 1 0 1 "
+;" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#>%\"qG,.*&)%\"xG\"\"#\"\"\"%\"yGF
+*F**(\"#8F*)F+F)F*F(F*F**&F(F*F+F*F*F(F**$)F+\"\"$F*F**$F.F*F*" }}}
+{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 42 "r:=x^2*y + 13*x*y^2 + x*y + \+
+x + y^3 + y^2;" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#>%\"rG,.*&)%\"xG\"\"
+#\"\"\"%\"yGF*F**(\"#8F*)F+F)F*F(F*F**&F(F*F+F*F*F(F**$)F+\"\"$F*F**$F
+.F*F*" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 69 "s[x,y]:=(((((x^2 +
+ x*y) + y^2) + x * x*y) + 13 * x * y^2) + y * y^2);" }}{PARA 11 "" 1 "
+" {XPPMATH 20 "6#>&%\"sG6$%\"xG%\"yG,.*$)F'\"\"#\"\"\"F-*&F'F-F(F-F-*$
+)F(F,F-F-*&F+F-F(F-F-*(\"#8F-F0F-F'F-F-*$)F(\"\"$F-F-" }}}{EXCHG 
+{PARA 0 "> " 0 "" {MPLTEXT 1 0 0 "" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#
+&%\"sG6$\"\"\"\"\"#" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 51 "g:=[
+y^3+x*y, y^2*x+x^2, x^2*y-2*y^2+x, x^3-3*x*y];\n" }}{PARA 11 "" 1 "" 
+{XPPMATH 20 "6#>%\"gG7&,&*$)%\"yG\"\"$\"\"\"F+*&%\"xGF+F)F+F+,&*&)F)\"
+\"#F+F-F+F+*$)F-F1F+F+,(*&F3F+F)F+F+*&F1F+F0F+!\"\"F-F+,&*$)F-F*F+F+*(
+F*F+F-F+F)F+F7" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 46 "a:=13*x*y
+^2+z^3-71*x+10*x*y+4*x^2*y*z-y+y^2*z;" }}{PARA 11 "" 1 "" {XPPMATH 20 
+"6#>%\"aG,0*(\"#8\"\"\")%\"yG\"\"#F(%\"xGF(F(*$)%\"zG\"\"$F(F(*&\"#rF(
+F,F(!\"\"*(\"#5F(F,F(F*F(F(**\"\"%F()F,F+F(F*F(F/F(F(F*F3*&F)F(F/F(F(
+" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 60 "b:=5*x - x*y^2 + 17*z^3
+ - 10*z^2 - 10*x*y + 5*y - 1 + x*y*z;" }}{PARA 11 "" 1 "" {XPPMATH 20 
+"6#>%\"bG,2*&\"\"&\"\"\"%\"xGF(F(*&)%\"yG\"\"#F(F)F(!\"\"*&\"#<F()%\"z
+G\"\"$F(F(*&\"#5F()F2F-F(F.*(F5F(F)F(F,F(F.*&F'F(F,F(F(F(F.*(F)F(F,F(F
+2F(F(" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 75 "c:=4*x^2*y*z + 12*
+x*y^2 + x*y*z - 66*x + y^2*z + 4*y + 18*z^3 - 10*z^2 - 1;" }}{PARA 11 
+"" 1 "" {XPPMATH 20 "6#>%\"cG,4**\"\"%\"\"\")%\"xG\"\"#F(%\"yGF(%\"zGF
+(F(*(\"#7F()F,F+F(F*F(F(*(F*F(F,F(F-F(F(*&\"#mF(F*F(!\"\"*&F0F(F-F(F(*
+&F'F(F,F(F(*&\"#=F()F-\"\"$F(F(*&\"#5F()F-F+F(F4F(F4" }}}{EXCHG {PARA 
+0 "> " 0 "" {MPLTEXT 1 0 16 "simplify(a+b-c);" }}{PARA 11 "" 1 "" 
+{XPPMATH 20 "6#\"\"!" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 161 "si
+mplify(3*(13*x*y^2+z^3-71*x+10*x*y+4*x^2*y*z-y+y^2*z) - 6*(10*z^2 - x*
+y + 7) - (12*x^2*y*z + 39*x*y^2 + 36*x*y - 213*x + 3*y^2*z - 3*y + 3*z
+^3 - 60*z^2 - 42));" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#\"\"!" }}}
+{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 0 "" }}}}{MARK "11 0 0" 0 }
+{VIEWOPTS 1 1 0 1 1 1803 1 1 1 1 }{PAGENUMBERS 0 1 2 33 1 1 }

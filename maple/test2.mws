@@ -1,0 +1,44 @@
+{VERSION 6 0 "IBM INTEL NT" "6.0" }
+{USTYLETAB {CSTYLE "Maple Input" -1 0 "Courier" 0 1 255 0 0 1 0 1 0 0 
+1 0 0 0 0 1 }{CSTYLE "2D Math" -1 2 "Times" 0 1 0 0 0 0 0 0 2 0 0 0 0 
+0 0 1 }{CSTYLE "2D Output" 2 20 "" 0 1 0 0 255 1 0 0 0 0 0 0 0 0 0 1 }
+{PSTYLE "Normal" -1 0 1 {CSTYLE "" -1 -1 "Times" 1 12 0 0 0 1 2 2 2 2 
+2 2 1 1 1 1 }1 1 0 0 0 0 1 0 1 0 2 2 0 1 }{PSTYLE "Maple Output" -1 
+11 1 {CSTYLE "" -1 -1 "Times" 1 12 0 0 0 1 2 2 2 2 2 2 1 1 1 1 }3 3 0 
+0 0 0 1 0 1 0 2 2 0 1 }}
+{SECT 0 {EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 15 "with(Groebner):" }}}
+{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 112 "randomize(70012355):\nrp :=
+ (x,y)->eval(randpoly([x,y], terms = 4, expons = rand(0..30), coeffs =
+ rand(-1..1))):\n" }}{PARA 0 "> " 0 "" {MPLTEXT 1 0 75 "G:=Basis([x^10
+0,y^100,rp(x,y),rp(x,y),rp(x,y),rp(x,y),rp(x,y)], tdeg(x,y));" }}
+{PARA 11 "" 1 "" {XPPMATH 20 "6#>%\"GG7(*&)%\"xG\"\"$\"\"\")%\"yG\"#6F
+**&)F(\"\"'F*)F,\"\"*F**&F(F*)F,\"#:F*,&*&)F(\"#<F*)F,\"\"%F*F**&)F(\"
+\"(F*)F,F0F*F**$)F,\"$+\"F**$)F(FBF*" }}}{PARA 0 "" 0 "" {TEXT -1 0 "
+" }}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 221 "rp(x,y);p := proc( n ::
+ posint ) :: float;\n  local i :: integer, s :: float;\n  s := -x^64*y
+^73-x^20*y^39-x^15*y^12+x^69*y^92;\n  for i from 1 to n do\n    s := s
+ + x / i\n  end do;\n  s\nend proc:\ncp := Compiler:-Compile( p );" }}
+{PARA 11 "" 1 "" {XPPMATH 20 "6#,**&)%\"xG\"#:\"\"\")%\"yG\"#EF(F(*&)F
+&\"\"*F()F*\"#GF(F(*&)F&\"#;F()F*\"\"(F(F(*&)F&\"\")F()F*\"#CF(!\"\"" 
+}}{PARA 11 "" 1 "" {XPPMATH 20 "6#>%#cpGf*6\"F&6$%.call_externalG-%0de
+fine_externalG6%%C_m0287d916582e5d435a08f8c80ac37aacG%&MAPLEG/%$LIBGQd
+pC:\\Users\\Qnan\\AppData\\Local\\Temp\\Qnan-5096\\_m0287d916582e5d435
+a08f8c80ac37aacbLHp1XIL.dllF&F&-F(6'\"\"!\"*GTNh\"%%trueG%&falseG9\"F&
+F&F&" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 34 "t0 := time():\nrp(0
+,0);\ntime()-t0;\n" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#\"\"!" }}{PARA 
+11 "" 1 "" {XPPMATH 20 "6#$\"\"!F$" }}}{EXCHG {PARA 11 "" 1 "" {TEXT 
+-1 0 "" }}}{EXCHG {PARA 0 "" 0 "" {TEXT -1 0 "" }}}{EXCHG {PARA 0 "> \+
+" 0 "" {MPLTEXT 1 0 93 "a := r -> cos(r)+I*sin(r):\na1 := a(5);\na2 :=
+ a(7);\ntime(rp(a1, a2));\ntime(evalhf(rp(a1,a2)));" }{TEXT -1 0 "" }}
+{PARA 11 "" 1 "" {XPPMATH 20 "6#>%#a1G,&-%$cosG6#\"\"&\"\"\"*&-%$sinGF
+(F*^#F*F*F*" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#>%#a2G,&-%$cosG6#\"\"(
+\"\"\"*&-%$sinGF(F*^#F*F*F*" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#$\"\"!F
+$" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#$\"\"!F$" }}}{EXCHG {PARA 0 "> " 
+0 "" {MPLTEXT 1 0 10 "compile();" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#-%
+(compileG6\"" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 0 "" }}}{EXCHG 
+{PARA 0 "> " 0 "" {MPLTEXT 1 0 0 "" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#
+!$E#" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 25 "evalhf(bigp(a(5),a(
+7)));\n" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#^$$\"3r)HIbP6#GN!#;$!3![q5N
+W&o&H$!#<" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 0 "" }}}}{MARK "1 \+
+1 0" 75 }{VIEWOPTS 1 1 0 1 1 1803 1 1 1 1 }{PAGENUMBERS 0 1 2 33 1 1 }
+

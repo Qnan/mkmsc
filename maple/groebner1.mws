@@ -1,0 +1,130 @@
+{VERSION 6 0 "IBM INTEL NT" "6.0" }
+{USTYLETAB {CSTYLE "Maple Input" -1 0 "Courier" 0 1 255 0 0 1 0 1 0 0 
+1 0 0 0 0 1 }{CSTYLE "2D Math" -1 2 "Times" 0 1 0 0 0 0 0 0 2 0 0 0 0 
+0 0 1 }{CSTYLE "2D Output" 2 20 "" 0 1 0 0 255 1 0 0 0 0 0 0 0 0 0 1 }
+{PSTYLE "Normal" -1 0 1 {CSTYLE "" -1 -1 "Times" 1 12 0 0 0 1 2 2 2 2 
+2 2 1 1 1 1 }1 1 0 0 0 0 1 0 1 0 2 2 0 1 }{PSTYLE "Maple Output" -1 
+11 1 {CSTYLE "" -1 -1 "Times" 1 12 0 0 0 1 2 2 2 2 2 2 1 1 1 1 }3 3 0 
+0 0 0 1 0 1 0 2 2 0 1 }{PSTYLE "Maple Output" -1 12 1 {CSTYLE "" -1 
+-1 "Times" 1 12 0 0 0 1 2 2 2 2 2 2 1 1 1 1 }1 3 0 0 0 0 1 0 1 0 2 2 
+0 1 }}
+{SECT 0 {EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 15 "with(Groebner);" }}
+{PARA 12 "" 1 "" {XPPMATH 20 "6#7B%&BasisG%%FGLMG%1HilbertDimensionG%2
+HilbertPolynomialG%.HilbertSeriesG%+HomogenizeG%,InitialFormG%,InterRe
+duceG%)IsProperG%2IsZeroDimensionalG%3LeadingCoefficientG%0LeadingMono
+mialG%,LeadingTermG%,MatrixOrderG%6MaximalIndependentSetG%.MonomialOrd
+erG%5MultiplicationMatrixG%9MultivariateCyclicVectorG%+NormalFormG%*No
+rmalSetG%ARationalUnivariateRepresentationG%'ReduceG%.RememberBasisG%,
+SPolynomialG%&SolveG%5SuggestVariableOrderG%*TestOrderG%0ToricIdealBas
+isG%-TrailingTermG%5UnivariatePolynomialG%%WalkG%/WeightedDegreeG" }}}
+{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 49 "g:=[x^5+3*x^3*y^2+7*y^3,x^2*
+y^2+x^8,x^4*y+x*y^2];" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#>%\"gG7%,(*$)
+%\"xG\"\"&\"\"\"F+*(\"\"$F+)F)F-F+)%\"yG\"\"#F+F+*&\"\"(F+)F0F-F+F+,&*
+&)F)F1F+F/F+F+*$)F)\"\")F+F+,&*&)F)\"\"%F+F0F+F+*&F)F+F/F+F+" }}}
+{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 38 "F := [x^3 - 3*x*y, x^2*y - 2
+*y^2 + x];" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#>%\"FG7$,&*$)%\"xG\"\"$
+\"\"\"F+*(F*F+F)F+%\"yGF+!\"\",(*&)F)\"\"#F+F-F+F+*&F2F+)F-F2F+F.F)F+
+" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 20 "Basis(F, plex(x,y));" }
+}{PARA 11 "" 1 "" {XPPMATH 20 "6#7$,&*&\"\"$\"\"\")%\"yGF&F'!\"\"*$)F)
+\"\"'F'F',(*&\"\"#F')F)F0F'F**$)F)\"\"&F'F'%\"xGF'" }}}{EXCHG {PARA 0 
+"> " 0 "" {MPLTEXT 1 0 23 "G:=Basis(F, tdeg(x,y));" }}{PARA 11 "" 1 "
+" {XPPMATH 20 "6#>%\"GG7&,&*$)%\"yG\"\"$\"\"\"F+*&%\"xGF+F)F+F+,&*&F-F
++)F)\"\"#F+F+*$)F-F1F+F+,(*&F3F+F)F+F+*&F1F+F0F+!\"\"F-F+,&*$)F-F*F+F+
+*(F*F+F-F+F)F+F7" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 47 "[y^3+x*
+y, x*y^2+x^2, x^2*y-2*y^2+x, x^3-3*x*y];" }}{PARA 11 "" 1 "" {XPPMATH 
+20 "6#7&,&*$)%\"yG\"\"$\"\"\"F)*&%\"xGF)F'F)F),&*&F+F))F'\"\"#F)F)*$)F
++F/F)F),(*&F1F)F'F)F)*&F/F)F.F)!\"\"F+F),&*$)F+F(F)F)*(F(F)F+F)F'F)F5
+" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 75 "r:=Groebner[Reduce](x^7
+-2*y^3*x^4+3*y^6+x*y^3+3*y,G,tdeg(x,y),'s','q');s;q;" }}{PARA 11 "" 1 
+"" {XPPMATH 20 "6#>%\"rG,**&\"##*\"\"\")%\"yG\"\"#F(!\"\"*&\"#YF(%\"xG
+F(F(*(\"\"*F(F/F(F*F(F,*&\"\"$F(F*F(F(" }}{PARA 11 "" 1 "" {XPPMATH 
+20 "6#\"\"\"" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#7&,**&\"\"#\"\"\")%\"x
+G\"\"%F'!\"\"*&\"\"$F')%\"yGF-F'F'*(F-F'F)F'F/F'F+F)F',&*&\"#5F')F)F&F
+'F'*&F-F'F)F'F',&*&\"\"&F')F)F-F'F'\"#YF+,(*$F(F'F'*&\"#:F'F)F'F+F-F+
+" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 36 "u:=-92 *y^2 - 9 *x*y + \+
+3 *y + 46 *x;" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#>%\"uG,**&\"##*\"\"\"
+)%\"yG\"\"#F(!\"\"*&\"#YF(%\"xGF(F(*(\"\"*F(F/F(F*F(F,*&\"\"$F(F*F(F(
+" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 47 "r+simplify(Vector[row](
+q) . Vector[column](G));" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#,,*$)%\"xG
+\"\"(\"\"\"F(*(\"\"#F()%\"yG\"\"$F()F&\"\"%F(!\"\"*&F-F()F,\"\"'F(F(*&
+F&F(F+F(F(*&F-F(F,F(F(" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 46 "s
+implify(x^3-2*y^2*x^2+7*y^5-(y^3+x*y)*y^2*7);" }}{PARA 0 "> " 0 "" 
+{MPLTEXT 1 0 0 "" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#,(*$)%\"xG\"\"$\"
+\"\"F(*(\"\"#F()F&F*F()%\"yGF*F(!\"\"*(\"\"(F(F&F()F-F'F(F." }}}
+{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 50 "simplify(-7*x*y^3+x^3-2*x^2*
+y^2-(y^3+x*y)*x*(-7));" }}{PARA 0 "> " 0 "" {MPLTEXT 1 0 0 "" }}{PARA 
+11 "" 1 "" {XPPMATH 20 "6#,(*$)%\"xG\"\"$\"\"\"F(*(\"\"#F()F&F*F()%\"y
+GF*F(!\"\"*(\"\"(F(F+F(F-F(F(" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 
+0 51 "simplify(x^3-2*x^2*y^2+7*x^2*y-(y^2*x+x^2)*x*(-2));" }}{PARA 0 "
+> " 0 "" {MPLTEXT 1 0 0 "" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#,&*&\"\"$
+\"\"\")%\"xGF%F&F&*(\"\"(F&)F(\"\"#F&%\"yGF&F&" }}}{EXCHG {PARA 0 "> \+
+" 0 "" {MPLTEXT 1 0 42 "simplify(7*x^2*y+3*x^3-(x^2*y-2*y^2+x)*7);" }}
+{PARA 11 "" 1 "" {XPPMATH 20 "6#,(*&\"\"$\"\"\")%\"xGF%F&F&*&\"#9F&)%
+\"yG\"\"#F&F&*&\"\"(F&F(F&!\"\"" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 
+1 0 210 "simplify(Groebner[NormalForm](x^7,G,tdeg(x,y))-2*Groebner[Nor
+malForm](y^3*x^4,G,tdeg(x,y))+3*Groebner[NormalForm](y^6,G,tdeg(x,y))+
+Groebner[NormalForm](x*y^3,G,tdeg(x,y))+3*Groebner[NormalForm](y,G,tde
+g(x,y)));" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#,**&\"##*\"\"\")%\"yG\"\"
+#F&!\"\"*&\"#YF&%\"xGF&F&*(\"\"*F&F-F&F(F&F**&\"\"$F&F(F&F&" }}}
+{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 42 "Groebner[NormalForm](x^7,G,t
+deg(x,y),'q');" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#,&*&\"#a\"\"\")%\"yG
+\"\"#F&!\"\"*&\"#FF&%\"xGF&F&" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 
+0 2 "s;" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#\"\"\"" }}}{EXCHG {PARA 0 "
+> " 0 "" {MPLTEXT 1 0 441 "Groebner[Reduce](x*y^2,G,tdeg(x,y),'s','q')
+;\nGroebner[Reduce](x^2*y,G,tdeg(x,y),'s','q');\nGroebner[Reduce](y^3,
+G,tdeg(x,y),'s','q');\nGroebner[Reduce](x^3,G,tdeg(x,y),'s','q');\nGro
+ebner[Reduce](x^7,G,tdeg(x,y),'s','q');\nGroebner[Reduce](x*y^3,G,tdeg
+(x,y),'s','q');\nGroebner[Reduce](x^4,G,tdeg(x,y),'s','q');\nGroebner[
+Reduce](x^5*y,G,tdeg(x,y),'s','q');\nGroebner[Reduce](x^3*y^2,G,tdeg(x
+,y),'s','q');\nGroebner[Reduce](y^5,G,tdeg(x,y),'s','q');" }}{PARA 11 
+"" 1 "" {XPPMATH 20 "6#,$*$)%\"xG\"\"#\"\"\"!\"\"" }}{PARA 11 "" 1 "" 
+{XPPMATH 20 "6#,&*&\"\"#\"\"\")%\"yGF%F&F&%\"xG!\"\"" }}{PARA 11 "" 1 
+"" {XPPMATH 20 "6#,$*&%\"xG\"\"\"%\"yGF&!\"\"" }}{PARA 11 "" 1 "" 
+{XPPMATH 20 "6#*&%\"xG\"\"\"%\"yGF%" }}{PARA 11 "" 1 "" {XPPMATH 20 "6
+#,&*&\"\"#\"\"\")%\"yGF%F&!\"\"%\"xGF&" }}{PARA 11 "" 1 "" {XPPMATH 
+20 "6#,&*&\"\"#\"\"\")%\"yGF%F&!\"\"%\"xGF&" }}{PARA 11 "" 1 "" 
+{XPPMATH 20 "6#,&*&\"\"#\"\"\")%\"yGF%F&F&%\"xG!\"\"" }}{PARA 11 "" 1 
+"" {XPPMATH 20 "6#,&*&\"\"#\"\"\")%\"yGF%F&!\"\"%\"xGF&" }}{PARA 11 "
+" 1 "" {XPPMATH 20 "6#,&*&\"\"#\"\"\")%\"yGF%F&!\"\"%\"xGF&" }}{PARA 
+11 "" 1 "" {XPPMATH 20 "6#,&*&\"\"#\"\"\")%\"yGF%F&F&%\"xG!\"\"" }}}
+{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 44 "Groebner[Reduce](x^2*y,G,tde
+g(x,y),'s','q');" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#,&*&\"\"#\"\"\")%
+\"yGF%F&F&%\"xG!\"\"" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 90 "zz0
+ := ((((y * 3) + (x*y^2 * y)) + ((y^5 * y) * 3)) + x^7) + ((x^3 * (x*y
+^2 * y)) * (-2));" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#>%$zz0G,,*$)%\"xG
+\"\"(\"\"\"F**(\"\"#F*)%\"yG\"\"$F*)F(\"\"%F*!\"\"*&F/F*)F.\"\"'F*F**&
+F(F*F-F*F**&F/F*F.F*F*" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 30 "x
+^7-2*y^3*x^4+3*y^6+x*y^3+3*y;" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#,,*$)
+%\"xG\"\"(\"\"\"F(*(\"\"#F()%\"yG\"\"$F()F&\"\"%F(!\"\"*&F-F()F,\"\"'F
+(F(*&F&F(F+F(F(*&F-F(F,F(F(" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 
+112 "zz1 := simplify(((((y * 3) + (x^2 * y)) + (((y^2 + x) * y) * 3)) \+
++ (2*y^2 + 2*x)) + ((x*y * (x^2 * y)) * (-2)));" }}{PARA 11 "" 1 "" 
+{XPPMATH 20 "6#>%$zz1G,0*&\"\"$\"\"\"%\"yGF(F(*&)%\"xG\"\"#F(F)F(F(*&F
+'F()F)F'F(F(*(F'F(F,F(F)F(F(*&F-F()F)F-F(F(*&F-F(F,F(F(*(F-F()F,F'F(F2
+F(!\"\"" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 46 "Groebner[Reduce]
+(zz0,G,tdeg(x,y),'s','q');s;q;" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#,**&
+\"##*\"\"\")%\"yG\"\"#F&!\"\"*&\"#YF&%\"xGF&F&*(\"\"*F&F-F&F(F&F**&\"
+\"$F&F(F&F&" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#\"\"\"" }}{PARA 11 "" 
+1 "" {XPPMATH 20 "6#7&,**&\"\"#\"\"\")%\"xG\"\"%F'!\"\"*&\"\"$F')%\"yG
+F-F'F'*(F-F'F)F'F/F'F+F)F',&*&\"#5F')F)F&F'F'*&F-F'F)F'F',&*&\"\"&F')F
+)F-F'F'\"#YF+,(*$F(F'F'*&\"#:F'F)F'F+F-F+" }}}{EXCHG {PARA 0 "> " 0 "
+" {MPLTEXT 1 0 46 "Groebner[Reduce](zz1,G,tdeg(x,y),'s','q');s;q;" }}
+{PARA 11 "" 1 "" {XPPMATH 20 "6#,(*&\"#;\"\"\")%\"yG\"\"#F&F&*&\"\"&F&
+%\"xGF&!\"\"*&\"\"$F&F(F&F&" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#\"\"\"
+" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#7&\"\"$,$*&\"\"#\"\"\")%\"xGF'F(!
+\"\"\"\"(,$*&F'F(F*F(F(" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 244 
+"Groebner[Reduce](y,G,tdeg(x,y),'s','q');y;\nGroebner[Reduce](x*y^2,G,
+tdeg(x,y),'s','q');x^2;\nGroebner[Reduce](y^5,G,tdeg(x,y),'s','q');y^2
+ + x;\nGroebner[Reduce](x^7,G,tdeg(x,y),'s','q');2*y^2 + 2*x;\nGroebne
+r[Reduce](x^3,G,tdeg(x,y),'s','q');x*y;" }}{PARA 11 "" 1 "" {XPPMATH 
+20 "6#%\"yG" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#%\"yG" }}{PARA 11 "" 1 
+"" {XPPMATH 20 "6#,$*$)%\"xG\"\"#\"\"\"!\"\"" }}{PARA 11 "" 1 "" 
+{XPPMATH 20 "6#*$)%\"xG\"\"#\"\"\"" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#
+,&*&\"\"#\"\"\")%\"yGF%F&F&%\"xG!\"\"" }}{PARA 11 "" 1 "" {XPPMATH 20 
+"6#,&*$)%\"yG\"\"#\"\"\"F(%\"xGF(" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#,
+&*&\"\"#\"\"\")%\"yGF%F&!\"\"%\"xGF&" }}{PARA 11 "" 1 "" {XPPMATH 20 "
+6#,&*&\"\"#\"\"\")%\"yGF%F&F&*&F%F&%\"xGF&F&" }}{PARA 11 "" 1 "" 
+{XPPMATH 20 "6#*&%\"xG\"\"\"%\"yGF%" }}{PARA 11 "" 1 "" {XPPMATH 20 "6
+#*&%\"xG\"\"\"%\"yGF%" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 0 "" }
+}}}{MARK "8 0 0" 47 }{VIEWOPTS 1 1 0 1 1 1803 1 1 1 1 }{PAGENUMBERS 0 
+1 2 33 1 1 }
