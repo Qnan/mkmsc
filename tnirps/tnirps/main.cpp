@@ -206,8 +206,8 @@ void testPolySimplify (void)
    p3.init(s3, 0, 0);
    Cf c;
    Ring::set(c, 70);
-   p1.append(p2, c);
-   p1.append(p3);
+   p1.add(p2, NULL, &c);
+   p1.add(p3, NULL, NULL);
    p1.toStr(buf);
    CHECK_MATCH("13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z + 70*x - 70*x*y*z + x - 4*x*y^2 + 2 + 13");
    p1.simplify();
@@ -666,7 +666,7 @@ int testSing (const char* mode, const char* path) {
 
 int main (int argc, const char** argv) {
    MP.setOrder(MonoPool::DRL);
-   scanf("*");
+   //scanf("*");
    Ring::init();
 
 //   printf("%d\n", 720%31);
@@ -683,7 +683,10 @@ int main (int argc, const char** argv) {
 //   Ring::div(c, a, b);
 //   printf("5 / 26 = "); Ring::print(sout, c); printf("\n");
 //
-   testSing("simple", "../sage/p31s1/");
+//   for (int i = 0; i < argc; ++i)
+//      printf("%s\n", argv[i]);
+   testSing(argv[1], argv[2]);
+   //testSing("simple", "../sage/p31s1/");
    //testMaple("samples/p1.txt");
    //tests();
 }

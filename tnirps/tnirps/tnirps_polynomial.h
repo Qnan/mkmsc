@@ -352,28 +352,32 @@ public:
 
    void copy (const Polynomial& a) {
       clear();
-      append(a);
-   }
-
-   void append (const Polynomial& a, const Cf& f) {
-      for (int i = a.begin(); i < a.end(); i = a.next(i)) {
-         const Term& t = a.at(i);
-         Cf cf;
-         Ring::mul(cf, t.f, f);
-         addTerm(t.m.get(), cf);
-      }
-   }
-
-   void append (const Polynomial& a) {
+      ///append(a);
       for (int i = a.begin(); i < a.end(); i = a.next(i)) {
          const Term& t = a.at(i);
          addTerm(t.m.get(), t.f);
       }
    }
 
-   void append (const Term& t) {
-      addTerm(t.m.get(), t.f);
-   }
+//   void append (const Polynomial& a, const Cf& f) {
+//      for (int i = a.begin(); i < a.end(); i = a.next(i)) {
+//         const Term& t = a.at(i);
+//         Cf cf;
+//         Ring::mul(cf, t.f, f);
+//         addTerm(t.m.get(), cf);
+//      }
+//   }
+//
+//   void append (const Polynomial& a) {
+//      for (int i = a.begin(); i < a.end(); i = a.next(i)) {
+//         const Term& t = a.at(i);
+//         addTerm(t.m.get(), t.f);
+//      }
+//   }
+//
+//   void append (const Term& t) {
+//      addTerm(t.m.get(), t.f);
+//   }
 private:
    static Pool<ObjList<Term>::Elem> _pool;
    ObjList<Term> _terms;

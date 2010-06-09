@@ -48,7 +48,7 @@ private:
             Ring::neg(cf, cf);
             t.mul(basis[i], MP.div(lm, m), &cf);
             p.add(t);
-            p.simplify();
+            //p.simplify();
             return true;
          }
       }
@@ -89,7 +89,7 @@ private:
    void add (int id, int a, int b) {
       values[id].copy(values[a]);
       values[id].add(values[b]);
-      values[id].simplify();
+      //values[id].simplify();
       DBG(printf("(%i) = (%i) + (%i): ", id, a, b); values[id].print(sout); printf("\n"));
    }
    void mul (int id, int a, int b) {
@@ -103,7 +103,7 @@ private:
          normalize(s, t);
          r.add(s);
       }
-      r.simplify();
+      //r.simplify();
       DBG(printf("(%i) = (%i) * (%i): ", id, a, b); values[id].print(sout); printf("\n"));
    }
    void mulnum (int id, int a, const Cf& num) {
@@ -161,7 +161,7 @@ private:
          task.state = task.q.next(task.state);
       }
       if (task.state >= task.q.end()) {
-         task.t.simplify();
+         //task.t.simplify();
          task.q.copy(task.t);
          normalForms.insert(task.m).copy(task.q);
          DBG(printf ("\tdone: ");
@@ -213,7 +213,7 @@ private:
          w.mulnum(term.f);
          res.add(w);
       }
-      res.simplify();
+      //res.simplify();
    }
 
    const ObjArray<Polynomial>& basis;
