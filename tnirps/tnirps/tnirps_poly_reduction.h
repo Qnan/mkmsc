@@ -25,9 +25,7 @@ public:
       DBG(for (int i = normalForms.begin(); i < normalForms.end(); i = normalForms.next(i)) {
          MP.print(sout, normalForms.key(i));
          printf("  :  ");
-         normalForms.value(i).p.print(sout);
-         printf("  /  ");
-         Ring::print(normalForms.value(i).d.get());
+         normalForms.value(i).print(sout);
          printf("\n");
       })
    }
@@ -43,7 +41,10 @@ private:
          Monomial m = basis[i].lm();
          if (MP.divides(lm, m)) {
             Cf cf;
+            DBG(printf("p: "); p.print(sout); printf("\n"));
+            DBG(printf("gi: "); basis[i].print(sout); printf("\n"));
             Ring::div(cf, p.lc(), basis[i].lc());
+            DBG(printf("cf: "); Ring::print(sout, p.lc()); printf(" / "); Ring::print(sout, basis[i].lc()); printf(" = "); Ring::print(sout, cf); printf("\n"));
             Ring::neg(cf, cf);
             t.mul(basis[i], MP.div(lm, m), &cf);
             p.add(t);
@@ -65,13 +66,16 @@ private:
          Monomial single = MP.single(v);
          for (int j = 0; j < degs[v]; ++j) {
             int b = (k++) & 1;
+            DBG(printf("a: "); t[b].print(sout); printf("\n"));
             t[b].mul(single);
+            DBG(printf("b: "); t[b].print(sout); printf("\n"));
             normalize(t[1 - b], t[b]);
+            DBG(printf("c: "); t[1-b].print(sout); printf("\n"));
          }
       }
       
       values[i].copy(t[k&1]);
-      DBG(printf("(%i): ", i); MP.print(sout, mm[i]); printf(" -> "); values[i].p.print(sout); printf("\t/"); Ring::print(values[i].d.get()); printf("\n"));
+      DBG(printf("(%i): ", i); MP.print(sout, mm[i]); printf(" -> "); values[i].print(sout); printf("\n"));
       // TODO: we should initialize these monomials inductively, too
       // TODO: think of alteration between two temporary polynomials on such occasions
       }
@@ -86,11 +90,7 @@ private:
       values[id].copy(values[a]);
       values[id].add(values[b]);
       values[id].simplify();
-      DBG(printf("(%i) = (%i) + (%i): ", id, a, b); 
-         values[id].p.print(sout);
-         printf("\t/");
-         Ring::print(values[id].d.get());
-         printf("\n"));
+      DBG(printf("(%i) = (%i) + (%i): ", id, a, b); values[id].print(sout); printf("\n"));
    }
    void mul (int id, int a, int b) {
       const Polynomial& pa = values[a], &pb = values[b];
@@ -104,31 +104,23 @@ private:
          r.add(s);
       }
       r.simplify();
-      DBG(printf("(%i) = (%i) * (%i): ", id, a, b);
-         values[id].p.print(sout);
-         printf("\t/");
-         Ring::print(values[id].d.get());
-         printf("\n"));
+      DBG(printf("(%i) = (%i) * (%i): ", id, a, b); values[id].print(sout); printf("\n"));
    }
    void mulnum (int id, int a, const Cf& num) {
       Polynomial& res = values[id];
       res.copy(values[a]);
       res.mulnum(num);
       DBG(printf("(%i) = (%i) * ", id, a);
-         Ring::print(num.get());
+         Ring::print(sout, num);
          printf(": ");
-         values[id].p.print(sout);
-         printf("\t/");
-         Ring::print(values[id].d.get());
+         values[id].print(sout);
          printf("\n"));
    }
 
    void yield (int id) {
       result.copy(values[id]);
       DBG(printf("yield (%i):", id);
-         values[id].p.print(sout);
-         printf("\t/");
-         Ring::print(values[id].d.get());
+         values[id].print(sout);
          printf("\n"));
    }
 
@@ -162,7 +154,7 @@ private:
             return true;
          }
          DBG(printf ("\t"); 
-            task.q.p.print(sout);
+            task.q.print(sout);
             printf ("\n"));
          task.state = task.q.begin();
       } else {
@@ -173,12 +165,12 @@ private:
          task.q.copy(task.t);
          normalForms.insert(task.m).copy(task.q);
          DBG(printf ("\tdone: ");
-            task.q.p.print(sout);
+            task.q.print(sout);
             printf ("\n"));
          return true;
       }
       DBG(printf ("\t push: ");
-         MP.print(sout, task.q.p.m(task.state));
+         MP.print(sout, task.q.m(task.state));
          printf ("\n"));
       stack.push(task.q.m(task.state), stack.size() - 1);
       return false;
@@ -208,9 +200,7 @@ private:
       DBG(printf("NF: ");
          MP.print(sout, m);
          printf(" -> ");
-         res.p.print(sout);
-         printf("\t/");
-         Ring::print(res.d.get());
+         res.print(sout);
          printf("\n"));
    }
 

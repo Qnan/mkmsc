@@ -579,7 +579,7 @@ int testSing (const char* mode, const char* path) {
       while (!fs.isEOF()) {
          fs.readWord(buf, ",");
          basis.push().init(buf.ptr());
-//         basis.top().simplify();
+         basis.top().simplify();
          if (!fs.isEOF())
             fs.readChar();
       }
@@ -592,7 +592,7 @@ int testSing (const char* mode, const char* path) {
          buf.pop();
       buf.push(0);
       p.init(buf.ptr());
-      //p.simplify();
+      p.simplify();
    }
    {
       FileScanner fs("%s/r", path);
@@ -602,7 +602,7 @@ int testSing (const char* mode, const char* path) {
          buf.pop();
       buf.push(0);
       r.init(buf.ptr());
-//      r.simplify();
+      r.simplify();
    }
    {
       FileScanner fs("%s/t", path);
@@ -611,20 +611,28 @@ int testSing (const char* mode, const char* path) {
    }
    Polynomial r2;
 
-   printf("G:\n");
-   for (int i = 0; i < basis.size(); ++i) {
-      basis[i].print(sout);printf("\n");
-   }
-   scanf("*");
+//   printf("G:\n");
+//   for (int i = 0; i < basis.size(); ++i) {
+//      basis[i].print(sout);printf("\n");
+//   }
+//   scanf("*");
+//   printf("p:\n");
+//   p.print(sout);printf("\n");
+//   scanf("*");
+//   printf("r:\n");
+//   r.print(sout);printf("\n");
+//   scanf("*");
+//   printf("t: %i\n", t);
+//   scanf("*");
+
+
+   //Polynomial q;
+//   Cf cc;
+//   Ring::set(cc, 1);
+//   p.copy(basis[0]);
    printf("p:\n");
    p.print(sout);printf("\n");
-   scanf("*");
-   printf("r:\n");
-   r.print(sout);printf("\n");
-   scanf("*");
-   printf("t: %i\n", t);
-   scanf("*");
-
+   //p.addTerm(MP.single(0), cc);
    Scheme s;
    if (strcmp(mode, "simple") == 0) {
       SchemeSimple ss(s, p);
@@ -640,7 +648,6 @@ int testSing (const char* mode, const char* path) {
       return 1;
    }
    printf("scheme built\n");
-   scanf("*");
 
    Reductor redr(basis);
    float time;
@@ -650,16 +657,32 @@ int testSing (const char* mode, const char* path) {
    qword t1 = nanoClock();
    time = 1000.0f * nanoHowManySeconds(t1 - t0);
    printf("\ttime: %.3f ms\n", time);
-   Cf f;
-   Ring::set(f, -1);
-   r1.add(r, NULL, &f);
-   r1.simplify();
+//   Cf f;
+//   Ring::set(f, -1);
+//   r1.add(r, NULL, &f);
+//   r1.simplify();
    printf("\tresult: "), res.print(sout), printf("\n");
 }
 
 int main (int argc, const char** argv) {
    MP.setOrder(MonoPool::DRL);
-   
+   scanf("*");
+   Ring::init();
+
+//   printf("%d\n", 720%31);
+//   printf("%d\n", ((-11)%31+31)%31);
+//   printf("%d\n", ((-44)%31+31)%31);
+
+//   Cf a, b, c;
+//   Ring::set(a, 5);
+//   Ring::set(b, 26);
+//   Ring::add(c, a, b);
+//   printf("5 + 26 = "); Ring::print(sout, c); printf("\n");
+//   Ring::mul(c, a, b);
+//   printf("5 * 26 = "); Ring::print(sout, c); printf("\n");
+//   Ring::div(c, a, b);
+//   printf("5 / 26 = "); Ring::print(sout, c); printf("\n");
+//
    testSing("simple", "../sage/p31s1/");
    //testMaple("samples/p1.txt");
    //tests();

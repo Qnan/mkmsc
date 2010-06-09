@@ -5,6 +5,7 @@
 #include "tnirps_common.h"
 #include <gmp.h>
 
+//QRING
 #if QRING
 class Cf {
 public:
@@ -88,71 +89,78 @@ private:
 };
 
 class Ring {
-   const int p;
+   static const int p = 31;
 public:
-   Ring () : p(31) {
-      for (int i = 0; i < p; ++i) {
+   static void init () {
+      inv[0] = 0;
+      for (int i = 1; i < p; ++i) {
          int t = i, q;
-         while ((q = (t * i) % p) != i)
+         while ((q = (t * i) % p) != 1)
             t = q;
          inv[i] = t;         
       }
+//      for (int i = 0; i < p; ++i)
+//         printf (" %2d", i);
+//      printf ("\n");
+//      for (int i = 0; i < p; ++i)
+//         printf (" %2d", inv[i]);
+//      printf ("\n");
    }
 
-   void copy (Cf& a, const Cf& b) {
+   static void copy (Cf& a, const Cf& b) {
       a.v = b.v;
    }
 
-   void set (Cf& a, int v) {
-      a.v = v % p;
+   static void set (Cf& a, int v) {
+      a.v = (v % p + p) % p; // trick to convert negative numbers
    }
 
-   void set (Cf& a, const char* s) {
+   static void set (Cf& a, const char* s) {
       sscanf(s, "%d", &a.v);
-      a.v = a.v % p;
+      a.v =(a.v % p + p) % p;
    }
 
-   void add (Cf& r, const Cf& a, const Cf& b) {
+   static void add (Cf& r, const Cf& a, const Cf& b) {
       r.v = (a.v + b.v) % p;
    }
 
-   void sub (Cf& r, const Cf& a, const Cf& b) {
+   static void sub (Cf& r, const Cf& a, const Cf& b) {
       r.v = (p + a.v - b.v) % p;
    }
 
-   void mul (Cf& r, const Cf& a, const Cf& b) {
+   static void mul (Cf& r, const Cf& a, const Cf& b) {
       r.v = (a.v * b.v) % p;
    }
 
-   void div (Cf& r, const Cf& a, const Cf& b) {
+   static void div (Cf& r, const Cf& a, const Cf& b) {
       r.v = (a.v * inv[b.v]) % p;
    }
 
-   void abs (Cf& r, const Cf& a) {
+   static void abs (Cf& r, const Cf& a) {
       r.v = a.v;
    }
 
-   void neg (Cf& r, const Cf& a) {
+   static void neg (Cf& r, const Cf& a) {
       r.v = p - a.v;
    }
 
-   int cmp (const Cf& a, const Cf& b) {
+   static int cmp (const Cf& a, const Cf& b) {
       return a.v - b.v;
    }
 
-   int cmp (const Cf& a, int b) {
+   static int cmp (const Cf& a, int b) {
       return a.v - b;
    }
 
-   void print (Output& output, const Cf& a) {
+   static void print (Output& output, const Cf& a) {
       output.printf("%d", a.v);
    }
 
 private:
-   int inv[p];
+   static int inv[p];
 };
 
-extern Ring<31> R;
+extern Ring R;
 #endif
 
 #endif	/* __TNIRPS_NUM_Q_H__ */

@@ -125,7 +125,7 @@ public:
          throw Exception("Order invalid");
    }
 
-   void _sordDigitalSub(Array<int>& accu, Array<int>& f, Array<int>& g, int d) {
+   void _sordDigitalSub(Array<int>& accu, Array<int>& f, Array<int>& g, int d, bool reverse) {
       accu.clear();
       for (int i = 0; i < f.size(); ++i) {
          int v = MP.getAll(_terms.at(f[i]).m.get())[d];
@@ -138,10 +138,16 @@ public:
          ++accu[v];
       }
       int t = 0;
-      for (int i = accu.size()-1; i >= 0; --i) {
-         t += accu[i];
-         accu[i] = t - accu[i];
-      }
+      if (!reverse)
+         for (int i = accu.size()-1; i >= 0; --i) {
+            t += accu[i];
+            accu[i] = t - accu[i];
+         }
+      else
+         for (int i = 0; i < accu.size(); ++i) {
+            t += accu[i];
+            accu[i] = t - accu[i];
+         }
       for (int i = 0; i < f.size(); ++i) {
          int v = MP.getAll(_terms.at(f[i]).m.get())[d];
          g[accu[v]++] = f[i];
@@ -149,11 +155,13 @@ public:
    }
    void sortDrl ()
    {
+      if (_terms.size() < 2)
+         return;
       static Array<int> accu, p[2];
       accu.clear();
       p[0].clear();
       p[1].clear();
-      p[0].reserve(_terms.size());
+      //p[0].rserve(_terms.size());
       p[1].resize(_terms.size());
 
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
@@ -163,7 +171,8 @@ public:
          int b = k&1;
          Array<int>& f = p[b];
          Array<int>& g = p[1-b];
-         _sordDigitalSub(accu, f, g, (k+1) % (MP.nvars()+1));
+         int q = (k+1) % (MP.nvars()+1);
+         _sordDigitalSub(accu, f, g, q, q != 0);
       }
       Array<int>& f = p[(MP.nvars()+1) & 1];
       _terms.set(f);
@@ -184,7 +193,7 @@ public:
          int b = k&1;
          Array<int>& f = p[b];
          Array<int>& g = p[1-b];
-         _sordDigitalSub(accu, f, g, MP.nvars() - k);
+         _sordDigitalSub(accu, f, g, MP.nvars() - k, false);
       }
       Array<int>& f = p[MP.nvars() & 1];
       _terms.set(f);
