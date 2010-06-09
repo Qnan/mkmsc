@@ -24,6 +24,8 @@ private:
 
 class Ring {
 public:
+   static void init () {
+   }
 
    static void copy (Cf& a, const Cf& b) {
       mpq_init(a.v);

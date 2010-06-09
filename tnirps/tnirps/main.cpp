@@ -109,13 +109,20 @@ void testMonDiv ()
 void testPolyInit (void)
 {
    TEST_PRE("testPolyInit");
+   MP.setOrder(MonoPool::DRL);
    MP.setVarMap("x,y,z");
    Polynomial p;
-   const char *s = "13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z";
+   //const char *s = "13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z";
+   const char *s = "y^2 + x*y^2*z^2 + x^2*z + y^5 + y^4*z + x^3 + x*z + x + z^5 + x^3*z^2 + x*y*z + y^4 + y^3*z^2 + y*z^4 + x*y*z^3 + y*z^2 + x*y^2 + x^4 + y^2*z^2 + y^3";
+   const char *w = "y^5 + y^4*z + x^3*z^2 + x*y^2*z^2 + y^3*z^2 + x*y*z^3 + y*z^4 + z^5 + x^4 + y^4 + y^2*z^2 + x^3 + x*y^2 + y^3 + x^2*z + x*y*z + y*z^2 + y^2 + x*z + x";
    p.init(s);
    p.toStr(buf);
-   CHECK_MATCH("13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z");
-   p.sortDrl();
+   printf("orig: %s\n", s);
+   printf("drl: %s\n", w);
+   printf("our: %s\n", buf.ptr());
+   printf("sorted: %s\n", p.isSorted() ? "yes" : "no");
+   //CHECK_MATCH("13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z");
+   //p.sortDrl();
    TEST_POST();
 }
 
@@ -127,6 +134,10 @@ void testPolySort (void)
    const char *s = "13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z";
    p.init(s);
    p.sort();
+   if (p.isSorted())
+      printf("sorted");
+   else
+      printf("not sorted");
    p.toStr(buf);
    CHECK_MATCH("4*x^2*y*z + 13*x*y^2 + 10*x*y - 71*x + y^2*z - y + z^3");
    TEST_POST();
@@ -210,7 +221,7 @@ void testPolySimplify (void)
    p1.add(p3, NULL, NULL);
    p1.toStr(buf);
    CHECK_MATCH("13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z + 70*x - 70*x*y*z + x - 4*x*y^2 + 2 + 13");
-   p1.simplify();
+   //p1.simplify();
    p1.toStr(buf);
    CHECK_MATCH("4*x^2*y*z + 9*x*y^2 - 70*x*y*z + 10*x*y + y^2*z - y + z^3 + 15");
    TEST_POST();
@@ -316,7 +327,7 @@ void testGorner (void)
    Polynomial p;
 
    p.init("x^2*y + 13*x*y^2 + x*y + x + y^3 + y^2");
-   p.simplify();
+   //p.simplify();
 
    Scheme scheme;
    SchemeGorner strategy(scheme, p);
@@ -344,7 +355,7 @@ void testTree (void)
    Polynomial p;
 
    p.init("x^2*y + 13*x*y^2 + x*y + x^2 + y^3 + y^2");
-   p.simplify();
+   //p.simplify();
 
    Scheme scheme;
    SchemeHangingTree strategy(scheme, p);
@@ -521,14 +532,14 @@ int testMaple (const char* path) {
    fs.readChar();fs.readChar();
    fs.readWord(buf,"\n\r");
    p.init(buf.ptr());
-   p.simplify();
+   //p.simplify();
 
    Polynomial r;
    fs.skipSpace();
    fs.readChar();fs.readChar();
    fs.readWord(buf,"\n\r");
    r.init(buf.ptr());
-   r.simplify();
+   //r.simplify();
 
    fs.skipSpace();
    fs.readChar();fs.readChar();
@@ -592,7 +603,7 @@ int testSing (const char* mode, const char* path) {
          buf.pop();
       buf.push(0);
       p.init(buf.ptr());
-      p.simplify();
+      //p.simplify();
    }
    {
       FileScanner fs("%s/r", path);
@@ -602,7 +613,7 @@ int testSing (const char* mode, const char* path) {
          buf.pop();
       buf.push(0);
       r.init(buf.ptr());
-      r.simplify();
+      //r.simplify();
    }
    {
       FileScanner fs("%s/t", path);
@@ -666,7 +677,8 @@ int testSing (const char* mode, const char* path) {
 
 int main (int argc, const char** argv) {
    MP.setOrder(MonoPool::DRL);
-   //scanf("*");
+//   printf("Press any key to start...");
+//   scanf("*");
    Ring::init();
 
 //   printf("%d\n", 720%31);

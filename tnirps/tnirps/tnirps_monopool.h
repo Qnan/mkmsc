@@ -123,7 +123,7 @@ public:
       if (diff != 0)
          return diff;
       for (int i = dim - 1; i >= 0; --i) {
-         int diff = da[i+1] - db[i+1];
+         int diff = db[i+1] - da[i+1];
          if (diff != 0)
             return diff;
       }

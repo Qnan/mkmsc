@@ -77,6 +77,7 @@ public:
          Ring::set(cf, coeff);
          addTerm(m, cf);
       }
+      simplify();
    }
 
    int addTerm (Monomial m, const Cf& f)
@@ -99,7 +100,7 @@ public:
 
    bool isSorted ()
    {
-      for (int i = begin(); i < end(); i = next(i))
+      for (int i = begin(); next(i) < end(); i = next(i))
          if (MP.cmp(m(i), m(next(i))) < 0)
             return false;
       return true;
