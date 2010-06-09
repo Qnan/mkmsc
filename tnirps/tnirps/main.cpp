@@ -21,6 +21,7 @@
 #include "tnirps_hashset.h"
 #include "scanner.h"
 #include "tnirps_var_map.h"
+#include "profiling.h"
 
 #include <gmp.h>
 
@@ -664,10 +665,12 @@ int testSing (const char* mode, const char* path) {
    float time;
    Polynomial res;
    qword t0 = nanoClock();
+   profTimerStart(MonoEval, "reduction time");
    redr.reduce(res, s);
    qword t1 = nanoClock();
-   time = 1000.0f * nanoHowManySeconds(t1 - t0);
-   printf("\ttime: %.3f ms\n", time);
+   profTimerStop(MonoEval);
+   time = nanoHowManySeconds(t1 - t0);
+   printf("\ttime: %.5lf s\n", time);
 //   Cf f;
 //   Ring::set(f, -1);
 //   r1.add(r, NULL, &f);
@@ -678,7 +681,7 @@ int testSing (const char* mode, const char* path) {
 int main (int argc, const char** argv) {
    MP.setOrder(MonoPool::DRL);
 //   printf("Press any key to start...");
-//   scanf("*");
+   //scanf("*");
    Ring::init();
 
 //   printf("%d\n", 720%31);
@@ -698,6 +701,8 @@ int main (int argc, const char** argv) {
 //   for (int i = 0; i < argc; ++i)
 //      printf("%s\n", argv[i]);
    testSing(argv[1], argv[2]);
+   profGetStatistics(sout, true);
+   //printf("\tptime: %.5lf s\n", nanoHowManySeconds(tt));
    //testSing("simple", "../sage/p31s1/");
    //testMaple("samples/p1.txt");
    //tests();

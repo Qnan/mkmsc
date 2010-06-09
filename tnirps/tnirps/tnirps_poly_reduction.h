@@ -1,6 +1,7 @@
 #ifndef __TNIRPS_POLY_REDUCTION_H__
 #define __TNIRPS_POLY_REDUCTION_H__
 
+#include "profiling.h"
 #include "tnirps_scheme.h"
 #include "tnirps_monopool.h"
 #include "tnirps_reduction.h"
@@ -54,6 +55,9 @@ private:
       }
       return false;
    }
+
+   
+   //void init ()
    
    void evaluateMonomial (const Array<Monomial>& mm, int i) {
       const int* degs = MP.getDegs(mm[i]);
@@ -62,23 +66,50 @@ private:
       Ring::set(c, 1);
       t[0].addTerm(MP.unit(), c);
       int k = 0;
-      for (int v = 0; v < MP.nvars(); ++v) {
-         Monomial single = MP.single(v);
-         for (int j = 0; j < degs[v]; ++j) {
-            int b = (k++) & 1;
-            DBG(printf("a: "); t[b].print(sout); printf("\n"));
-            t[b].mul(single);
-            DBG(printf("b: "); t[b].print(sout); printf("\n"));
-            normalize(t[1 - b], t[b]);
-            DBG(printf("c: "); t[1-b].print(sout); printf("\n"));
+      bool hasDeg = true;
+      for (int d = 0; hasDeg; ++d) {
+         hasDeg = false;
+         for (int v = 0; v < MP.nvars(); ++v) {
+            if (degs[v] > d) {
+               int b = (k++) & 1;
+               DBG(printf("a: "); t[b].print(sout); printf("\n"));
+               t[b].mul(MP.single(v));
+               DBG(printf("b: "); t[b].print(sout); printf("\n"));
+               normalize(t[1 - b], t[b]);
+               hasDeg = true;
+            }
          }
       }
-      
-      values[i].copy(t[k&1]);
+
+      values[i].copy(t[k & 1]);
       DBG(printf("(%i): ", i); MP.print(sout, mm[i]); printf(" -> "); values[i].print(sout); printf("\n"));
-      // TODO: we should initialize these monomials inductively, too
-      // TODO: think of alteration between two temporary polynomials on such occasions
-      }
+   }
+
+//   void promoteMonomial (Monomial a, Monomial b) {
+//      const int* degs = MP.getDegs(mm[i]);
+//      Polynomial t[2];
+//      Cf c;
+//      Ring::set(c, 1);
+//      t[0].addTerm(MP.unit(), c);
+//      int k = 0;
+//      bool hasDeg = true;
+//      for (int d = 0; hasDeg; ++d) {
+//         hasDeg = false;
+//         for (int v = 0; v < MP.nvars(); ++v) {
+//            if (degs[v] > d) {
+//               int b = (k++) & 1;
+//               DBG(printf("a: "); t[b].print(sout); printf("\n"));
+//               t[b].mul(MP.single(v));
+//               DBG(printf("b: "); t[b].print(sout); printf("\n"));
+//               normalize(t[1 - b], t[b]);
+//               hasDeg = true;
+//            }
+//         }
+//      }
+//
+//      values[i].copy(t[k & 1]);
+//      DBG(printf("(%i): ", i); MP.print(sout, mm[i]); printf(" -> "); values[i].print(sout); printf("\n"));
+//   }
 
    void init (const Array<Monomial>& mm, int total) {
       values.clear();
@@ -190,7 +221,9 @@ private:
          if (cur.parent >= 0) {
             NormTask& par = stack[cur.parent];
             cur.q.mulnum(par.q.at(par.state).f);
+            profTimerStart(add, "addition");
             par.t.add(cur.q);
+            profTimerStop(add);
          } else {
             res.copy(stack[0].q);
          }
@@ -211,7 +244,9 @@ private:
          const Polynomial::Term& term = q.at(i);
          normalize(w, term.m.get());
          w.mulnum(term.f);
+         profTimerStart(add, "addition");
          res.add(w);
+         profTimerStop(add);
       }
       //res.simplify();
    }
