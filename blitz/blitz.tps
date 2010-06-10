@@ -4,8 +4,8 @@ Version=2
 
 [SessionInfo]
 ActiveTab=2
-FrameCount=8
-ActiveFrame=1
+FrameCount=9
+ActiveFrame=8
 
 [Frame0]
 Columns=1
@@ -32,15 +32,15 @@ cxCur=514
 cxMin=10
 
 [Frame0_View0,0]
-Cursor.row=17
-Cursor.column=48
-TopSubLine=32
+Cursor.row=0
+Cursor.column=34
+TopSubLine=0
 
 [Frame1]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-8
@@ -53,17 +53,17 @@ Class=CLatexEdit
 Document=src\blitz_reduce.tex
 
 [Frame1_Row0]
-cyCur=815
+cyCur=532
 cyMin=10
 
 [Frame1_Col0]
-cxCur=1214
+cxCur=922
 cxMin=10
 
 [Frame1_View0,0]
-Cursor.row=69
-Cursor.column=255
-TopSubLine=53
+Cursor.row=71
+Cursor.column=0
+TopSubLine=89
 
 [Frame2]
 Columns=1
@@ -119,9 +119,9 @@ cxCur=922
 cxMin=10
 
 [Frame3_View0,0]
-Cursor.row=0
+Cursor.row=43
 Cursor.column=0
-TopSubLine=0
+TopSubLine=34
 
 [Frame4]
 Columns=1
@@ -148,9 +148,9 @@ cxCur=922
 cxMin=10
 
 [Frame4_View0,0]
-Cursor.row=74
+Cursor.row=6
 Cursor.column=0
-TopSubLine=101
+TopSubLine=0
 
 [Frame5]
 Columns=1
@@ -206,8 +206,8 @@ cxCur=922
 cxMin=10
 
 [Frame6_View0,0]
-Cursor.row=7
-Cursor.column=16
+Cursor.row=9
+Cursor.column=17
 TopSubLine=0
 
 [Frame7]
@@ -235,7 +235,36 @@ cxCur=1599
 cxMin=10
 
 [Frame7_View0,0]
-Cursor.row=8
-Cursor.column=55
+Cursor.row=2
+Cursor.column=0
 TopSubLine=0
+
+[Frame8]
+Columns=1
+Rows=1
+Flags=2
+ShowCmd=3
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-8
+MaxPos.y=-28
+NormalPos.left=184
+NormalPos.top=184
+NormalPos.right=1820
+NormalPos.bottom=802
+Class=CLatexEdit
+Document=src\blitz_schemes.tex
+
+[Frame8_Row0]
+cyCur=903
+cyMin=10
+
+[Frame8_Col0]
+cxCur=1214
+cxMin=10
+
+[Frame8_View0,0]
+Cursor.row=86
+Cursor.column=65
+TopSubLine=93
 
