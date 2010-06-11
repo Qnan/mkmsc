@@ -13,6 +13,7 @@
 class Reductor {
 public:
    Reductor (const ObjArray<Polynomial>& b) : basis(b), sr(b) {
+        stack.reserve(1048576);
    }
 
    ~Reductor () {
@@ -66,20 +67,35 @@ private:
       Ring::set(c, 1);
       t[0].addTerm(MP.unit(), c);
       int k = 0;
+#if 1
       bool hasDeg = true;
       for (int d = 0; hasDeg; ++d) {
          hasDeg = false;
+         Monomial v1 = MP.unit();
          for (int v = 0; v < MP.nvars(); ++v) {
             if (degs[v] > d) {
-               int b = (k++) & 1;
-               DBG(printf("a: "); t[b].print(sout); printf("\n"));
-               t[b].mul(MP.single(v));
-               DBG(printf("b: "); t[b].print(sout); printf("\n"));
-               normalize(t[1 - b], t[b]);
+               v1 = MP.mul(v1, MP.single(v));
                hasDeg = true;
             }
          }
+         if (hasDeg) {
+            int b = (k++) & 1;
+            t[b].mul(v1);
+            normalize(t[1 - b], t[b]);
+         }
       }
+#else
+      for (int v = 0; v < MP.nvars(); ++v) {
+         Monomial s = MP.single(v);
+         for (int i = 0; i < degs[v]; ++i) {
+            int b = (k++) & 1;
+            DBG(printf("a: "); t[b].print(sout); printf("\n"));
+            t[b].mul(s);
+            DBG(printf("b: "); t[b].print(sout); printf("\n"));
+            normalize(t[1 - b], t[b]);
+         }
+      }
+#endif
 
       values[i].copy(t[k & 1]);
       DBG(printf("(%i): ", i); MP.print(sout, mm[i]); printf(" -> "); values[i].print(sout); printf("\n"));
@@ -166,6 +182,11 @@ private:
    ObjArray<NormTask> stack;
 
    bool procnorm () {
+//      static int ccc = 0;
+//      ccc++;
+//      printf("%i\n", ccc);
+//      if (ccc == 4075)
+//         ccc = 4075;
       NormTask& task = stack.top();
       DBG(printf ("%d(%d): ", stack.size() - 1, task.state);
          MP.print(sout, task.m);

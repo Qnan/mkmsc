@@ -19,7 +19,9 @@ public:
       Term (const Term& t);
    };
 
-   Polynomial () : _terms(/*_pool*/) {}
+   Polynomial () : _terms(_pool) {
+       //_pool.clear();
+   }
 
    ~Polynomial () {
       clear();
@@ -81,19 +83,23 @@ public:
    }
 
    int addTerm (Monomial m, const Cf& f)
-   {                      
+   {
+      Cf cf;
+      Ring::copy(cf, f);
       int id = _terms.add();
       Term& t = _terms.at(id);
-      Ring::copy(t.f, f);
+      Ring::copy(t.f, cf);
       t.m.set(m);
       return id;
    }
 
    int insertTerm (int m, const Cf&  f, int before)
    {     
+      Cf cf;
+      Ring::copy(cf, f);
       int id = _terms.insertBefore(before);
       Term& t = _terms.at(id);
-      Ring::copy(t.f, f);
+      Ring::copy(t.f, cf);
       t.m.set(m);
       return id;
    }
@@ -347,8 +353,10 @@ public:
    }
 
    void mulnum (const Cf& f) {
+      Cf cf;
+      Ring::copy(cf, f);
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
-         Ring::mul(_terms[i].f, _terms[i].f, f);
+         Ring::mul(_terms[i].f, _terms[i].f, cf);
    }
 
    void copy (const Polynomial& a) {
@@ -379,8 +387,8 @@ public:
 //   void append (const Term& t) {
 //      addTerm(t.m.get(), t.f);
 //   }
-private:
    static Pool<ObjList<Term>::Elem> _pool;
+private:
    ObjList<Term> _terms;
    Polynomial (const Polynomial&);
 };

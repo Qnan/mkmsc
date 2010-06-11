@@ -436,7 +436,7 @@ private:
       }
    }
 
-   MonoPool () : memsz(0), initialSize(200) {
+   MonoPool () : memsz(0), initialSize(1048576) {
       reset();
    }
    MonoPool (const MonoPool&);
