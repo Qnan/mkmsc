@@ -119,9 +119,9 @@ cxCur=922
 cxMin=10
 
 [Frame3_View0,0]
-Cursor.row=9
-Cursor.column=0
-TopSubLine=0
+Cursor.row=43
+Cursor.column=9
+TopSubLine=37
 
 [Frame4]
 Columns=1
@@ -221,7 +221,7 @@ MaxPos.x=-8
 MaxPos.y=-28
 NormalPos.left=161
 NormalPos.top=161
-NormalPos.right=1773
+NormalPos.right=1761
 NormalPos.bottom=721
 Class=CLatexEdit
 Document=src\blitz_impl.tex
@@ -231,7 +231,7 @@ cyCur=503
 cyMin=10
 
 [Frame7_Col0]
-cxCur=1575
+cxCur=1563
 cxMin=10
 
 [Frame7_View0,0]
@@ -250,7 +250,7 @@ MaxPos.x=-8
 MaxPos.y=-28
 NormalPos.left=184
 NormalPos.top=184
-NormalPos.right=1796
+NormalPos.right=1784
 NormalPos.bottom=802
 Class=CLatexEdit
 Document=src\blitz_schemes.tex
@@ -260,11 +260,11 @@ cyCur=723
 cyMin=10
 
 [Frame8_Col0]
-cxCur=1142
+cxCur=1563
 cxMin=10
 
 [Frame8_View0,0]
-Cursor.row=143
-Cursor.column=187
-TopSubLine=146
+Cursor.row=164
+Cursor.column=3
+TopSubLine=154
 
