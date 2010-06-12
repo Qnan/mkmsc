@@ -623,19 +623,19 @@ int testSing (const char* mode, const char* path) {
    }
    Polynomial r2;
 
-//   printf("G:\n");
-//   for (int i = 0; i < basis.size(); ++i) {
-//      basis[i].print(sout);printf("\n");
-//   }
+   printf("G:\n");
+   for (int i = 0; i < basis.size(); ++i) {
+      basis[i].print(sout);printf("\n");
+   }
 //   scanf("*");
-//   printf("p:\n");
-//   p.print(sout);printf("\n");
+   printf("p:\n");
+   p.print(sout);printf("\n");
 //   scanf("*");
 //   printf("r:\n");
 //   r.print(sout);printf("\n");
 //   scanf("*");
-//   printf("t: %i\n", t);
-//   scanf("*");
+   printf("t: %i\n", t);
+   //scanf("*");
 
 
    //Polynomial q;
@@ -681,8 +681,9 @@ int testSing (const char* mode, const char* path) {
 int main (int argc, const char** argv) {
    MP.setOrder(MonoPool::DRL);
 //   printf("Press any key to start...");
-   //scanf("*");
+//   scanf("*");
    Ring::init();
+   Polynomial::_pool.reserve(2000000);
 
 //   printf("%d\n", 720%31);
 //   printf("%d\n", ((-11)%31+31)%31);
@@ -700,10 +701,10 @@ int main (int argc, const char** argv) {
 //
 //   for (int i = 0; i < argc; ++i)
 //      printf("%s\n", argv[i]);
-   testSing(argv[1], argv[2]);
-   profGetStatistics(sout, true);
+   //testSing(argv[1], argv[2]);
+   //profGetStatistics(sout, true);
    //printf("\tptime: %.5lf s\n", nanoHowManySeconds(tt));
-   //testSing("simple", "../sage/p31s1/");
+   testSing("simple", "../sage/p31z1/");
    //testMaple("samples/p1.txt");
    //tests();
 }

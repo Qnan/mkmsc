@@ -133,6 +133,11 @@ public:
       return (*this)[index];
    }
 
+   void reserve (int sz)
+   {
+       _array.reserve(sz);
+   }
+
 protected:
    Array<T>   _array; // pool elements
 
