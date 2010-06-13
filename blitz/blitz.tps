@@ -33,7 +33,7 @@ cxMin=10
 
 [Frame0_View0,0]
 Cursor.row=0
-Cursor.column=34
+Cursor.column=0
 TopSubLine=0
 
 [Frame1]
@@ -61,8 +61,8 @@ cxCur=922
 cxMin=10
 
 [Frame1_View0,0]
-Cursor.row=71
-Cursor.column=2
+Cursor.row=0
+Cursor.column=0
 TopSubLine=70
 
 [Frame2]
@@ -115,13 +115,13 @@ cyCur=723
 cyMin=10
 
 [Frame3_Col0]
-cxCur=844
+cxCur=1571
 cxMin=10
 
 [Frame3_View0,0]
-Cursor.row=1
-Cursor.column=0
-TopSubLine=0
+Cursor.row=51
+Cursor.column=66
+TopSubLine=30
 
 [Frame4]
 Columns=1
@@ -206,7 +206,7 @@ cxCur=922
 cxMin=10
 
 [Frame6_View0,0]
-Cursor.row=9
+Cursor.row=19
 Cursor.column=17
 TopSubLine=0
 
@@ -264,7 +264,7 @@ cxCur=1563
 cxMin=10
 
 [Frame8_View0,0]
-Cursor.row=158
-Cursor.column=138
-TopSubLine=167
+Cursor.row=151
+Cursor.column=226
+TopSubLine=157
 
