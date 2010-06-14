@@ -4,13 +4,17 @@
 \usepackage{graphicx}
 \usepackage{helvet}
 \usepackage{amsfonts, amssymb}
+\usepackage{amsthm}
+\newtheorem{thdef}{Определение}
 %\usepackage{amsfonts}
 %\usepackage[dvips,pdftex]{graphicx}
 \usepackage[left=2cm,top=2cm,bottom=2cm,right=2cm]{geometry}
 \usepackage[ruled]{algorithm2e}
 \usepackage{algorithmic}
 \frenchspacing
-%\renewcommand{\baselinestretch}{1.5}
+\newcommand{\mir}{МИР}
+\newcommand{\svp}{СВП}
+\newcommand{\ssvm}{ССВМ}
 \linespread{1.3}
 \author{Михаил Кожевников, 6057/2}
 
@@ -24,8 +28,8 @@
 \include{blitz_schemes}
 \include{blitz_reduce}
 \include{blitz_impl}
-\include{blitz_results}
-\include{blitz_concl}
+%\include{blitz_results}
+%\include{blitz_concl}
 \include{blitz_lib}
 
 \end{document}

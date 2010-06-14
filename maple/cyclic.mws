@@ -1,0 +1,61 @@
+{VERSION 6 0 "IBM INTEL NT" "6.0" }
+{USTYLETAB {CSTYLE "Maple Input" -1 0 "Courier" 0 1 255 0 0 1 0 1 0 0 
+1 0 0 0 0 1 }{CSTYLE "2D Math" -1 2 "Times" 0 1 0 0 0 0 0 0 2 0 0 0 0 
+0 0 1 }{CSTYLE "2D Output" 2 20 "" 0 1 0 0 255 1 0 0 0 0 0 0 0 0 0 1 }
+{PSTYLE "Normal" -1 0 1 {CSTYLE "" -1 -1 "Times" 1 12 0 0 0 1 2 2 2 2 
+2 2 1 1 1 1 }1 1 0 0 0 0 1 0 1 0 2 2 0 1 }{PSTYLE "Maple Output" 0 11 
+1 {CSTYLE "" -1 -1 "" 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 }3 3 0 -1 -1 -1 
+0 0 0 0 0 0 -1 0 }{PSTYLE "" 11 12 1 {CSTYLE "" -1 -1 "" 0 1 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 }1 0 0 -1 -1 -1 0 0 0 0 0 0 -1 0 }}
+{SECT 0 {EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 120 "C5:=[a+b+c+d+e,a*b+
+b*c+c*d+d*e+e*a,a*b*c+b*c*d+c*d*e+d*e*a+e*a*b, a*b*c*d+b*c*d*e+c*d*e*a
++d*e*a*b+e*a*b*c, a*b*c*d*e-1];" }}{PARA 0 "> " 0 "" {MPLTEXT 1 0 15 "
+with(Groebner);" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#>%#C5G7',,%\"aG\"\"
+\"%\"bGF(%\"cGF(%\"dGF(%\"eGF(,,*&F'F(F)F(F(*&F)F(F*F(F(*&F*F(F+F(F(*&
+F+F(F,F(F(*&F,F(F'F(F(,,*(F'F(F)F(F*F(F(*(F)F(F*F(F+F(F(*(F*F(F+F(F,F(
+F(*(F+F(F,F(F'F(F(*(F,F(F'F(F)F(F(,,**F'F(F)F(F*F(F+F(F(**F)F(F*F(F+F(
+F,F(F(**F*F(F+F(F,F(F'F(F(**F+F(F,F(F'F(F)F(F(**F,F(F'F(F)F(F*F(F(,&*,
+F'F(F)F(F*F(F+F(F,F(F(F(!\"\"" }}{PARA 12 "" 1 "" {XPPMATH 20 "6#7B%&B
+asisG%%FGLMG%1HilbertDimensionG%2HilbertPolynomialG%.HilbertSeriesG%+H
+omogenizeG%,InitialFormG%,InterReduceG%)IsProperG%2IsZeroDimensionalG%
+3LeadingCoefficientG%0LeadingMonomialG%,LeadingTermG%,MatrixOrderG%6Ma
+ximalIndependentSetG%.MonomialOrderG%5MultiplicationMatrixG%9Multivari
+ateCyclicVectorG%+NormalFormG%*NormalSetG%ARationalUnivariateRepresent
+ationG%'ReduceG%.RememberBasisG%,SPolynomialG%&SolveG%5SuggestVariable
+OrderG%*TestOrderG%0ToricIdealBasisG%-TrailingTermG%5UnivariatePolynom
+ialG%%WalkG%/WeightedDegreeG" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 
+0 30 "G:=Basis(C5, plex(a,b,c,d,e));" }}{PARA 12 "" 1 "" {XPPMATH 20 "
+6#>%\"GG7-,*\"\"\"!\"\"*&\"$A\"F')%\"eG\"\"&F'F(*&F*F')F,\"#5F'F'*$)F,
+\"#:F'F',2*&\"$()*F')F,\"\"#F'F'*&\"$z*F')F,\"\"(F'F(*&\"\")F')F,\"#7F
+'F(*(\"$L#F'%\"dGF'F,F'F'*(\"$J#F'FCF')F,\"\"'F'F(*(F8F'FCF')F,\"#6F'F
+(*&\"#bF')FCF8F'F(*(FLF'FMF'F+F'F',6*&\"'.\"G\"F'F7F'F'*&\"';r7F'F;F'F
+(*&\"%U5F'F?F'F(*(\"&(y[F'FCF'F,F'F'*(\"&a&[F'FCF'FFF'F(*(\"$)RF'FCF'F
+IF'F(*(FLF')FCF-F'F7F'F'*(\"$l\"F')FCFGF'F,F'F'*&FLF'FMF'F(*&FLF')FCF<
+F'F',,*&\"$W\"F'F,F'F(*&FLF'%\"cGF'F(*&\"$V\"F'FFF'F'*$FIF'F'*(FLF'Fbo
+F'F+F'F',:*&\"'um8F'F7F'F'*&\"'jn8F'F;F'F(*&\"%@6F'F?F'F(*(\"&8R&F'FCF
+'F,F'F'*(\"&6R&F'FCF'FFF'F(*(\"$U%F'FCF'FIF'F(*(\"$v#F')FC\"\"$F')F,\"
+\"%F'F(*(\"%57F'FgnF'F7F'F'*(\"$S%F'FjnF'F,F'F'*&FepF'FMF'F'*(FepF'Fbo
+F'F,F'F(*(FepF'FboF'FCF'F',<*(\"$]&F'FMF'F,F'F'*&FepF')FboFgpF'F'*&\"&
+2$pF')F,FgpF'F'*(FcqF'F,F')FboF8F'F'*&\"&*GpF')F,F>F'F(*(\"&=!GF'FCF'F
+7F'F'*&\"$o&F')F,\"#8F'F(*(\"&O$GF'FCF'F;F'F(*(\"$K#F'FCF'F?F'F(*(FcqF
+')FCFipF'FhpF'F(*(FcqF'FgnF'FhqF'F'*(FepF'FjnF'F7F'F'*(FcqF'FboF'F7F'F
+(,,*&F`oF'F,F'F(*&FLF'%\"bGF'F(*&FdoF'FFF'F'FeoF'*(FLF'F+F'F`sF'F',:*&
+\"&C@%F'F7F'F(*&\"&=A%F'F;F'F'*&\"$Y$F'F?F'F'*(\"&1^\"F'FCF'F,F'F(*(\"
+&#4:F'FCF'FFF'F'*(\"$C\"F'FCF'FIF'F'*(F]qF'FgnF'F7F'F(*(\"$5\"F'FjnF'F
+,F'F(*(FepF'FirF'FhqF'F(*(FepF'F,F'F`sF'F(*(FepF'FfpF'FhpF'F'*(FepF'F`
+sF'FCF'F',@*(\"&E2%F'FCF'F,F'F(*(FepF'F`sF'FboF'F'*(FepF'F,F'F`sF'F(*(
+FcqF'FboF'F,F'F'*&FepF'FjqF'F'*&FcqF'FMF'F(*&\"'te5F'F7F'F(*&\"'wd5F'F
+;F'F'*&\"$n)F'F?F'F'*(FepF'FirF'FhqF'F(*(\"$M$F'FCF'FIF'F'*(\"&A2%F'FC
+F'FFF'F'*(FepF'FfpF'FhpF'F'*(\"%X5F'FgnF'F7F'F(*(\"$I$F'FjnF'F,F'F(,<*
+(\"&>!pF'FCF'F,F'F'*(\"$D)F'F,F'F`sF'F'*&FepF')F`sF8F'F'*&FepF'FMF'F'*
+&\"'t!z\"F'F7F'F'*&\"'\")*y\"F'F;F'F(*&\"%n9F'F?F'F(*(FepF'FirF'FhqF'F
+'*(\"$m&F'FCF'FIF'F(*(\"&.!pF'FCF'FFF'F(*(FcqF'FfpF'FhpF'F(*(\"%];F'Fg
+nF'F7F'F'*(FcqF'FjnF'F,F'F',,%\"aGF'F`sF'FboF'FCF'F,F'" }}}{EXCHG 
+{PARA 0 "> " 0 "" {MPLTEXT 1 0 42 "p:=-5*a^9*c^12*e^9-2*a^2*d^4+6*b^5*
+c^12*d;" }}{PARA 11 "" 1 "" {XPPMATH 20 "6#>%\"pG,(**\"\"&\"\"\")%\"aG
+\"\"*F()%\"cG\"#7F()%\"eGF+F(!\"\"*(\"\"#F()F*F3F()%\"dG\"\"%F(F1**\"
+\"'F()%\"bGF'F(F,F(F6F(F(" }}}{EXCHG {PARA 0 "> " 0 "" {MPLTEXT 1 0 
+52 "time(Groebner[Reduce](p,G,plex(a,b,c,d,e),'s','q'));" }}{PARA 11 "
+" 1 "" {XPPMATH 20 "6#$\"$r\"!\"$" }}}{EXCHG {PARA 0 "> " 0 "" 
+{MPLTEXT 1 0 0 "" }}}}{MARK "1 0 0" 30 }{VIEWOPTS 1 1 0 1 1 1803 1 1 
+1 1 }{PAGENUMBERS 0 1 2 33 1 1 }
