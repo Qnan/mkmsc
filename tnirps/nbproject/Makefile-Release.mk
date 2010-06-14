@@ -95,52 +95,52 @@ dist/Release/GNU-Linux-x86/tnirps: ${OBJECTFILES}
 ${OBJECTDIR}/common/base_cpp/os_thread_wrapper.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/os_thread_wrapper.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/os_thread_wrapper.o common/base_cpp/os_thread_wrapper.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/os_thread_wrapper.o common/base_cpp/os_thread_wrapper.cpp
 
 ${OBJECTDIR}/tnirps/tnirps_script.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_script.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_script.o tnirps/tnirps_script.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_script.o tnirps/tnirps_script.cpp
 
 ${OBJECTDIR}/tnirps/tnirps_monomial.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_monomial.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_monomial.o tnirps/tnirps_monomial.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_monomial.o tnirps/tnirps_monomial.cpp
 
 ${OBJECTDIR}/common/base_cpp/output.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/output.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/output.o common/base_cpp/output.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/output.o common/base_cpp/output.cpp
 
 ${OBJECTDIR}/common/base_cpp/profiling.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/profiling.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/profiling.o common/base_cpp/profiling.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/profiling.o common/base_cpp/profiling.cpp
 
 ${OBJECTDIR}/common/base_cpp/os_sync_wrapper.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/os_sync_wrapper.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/os_sync_wrapper.o common/base_cpp/os_sync_wrapper.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/os_sync_wrapper.o common/base_cpp/os_sync_wrapper.cpp
 
 ${OBJECTDIR}/tnirps/tnirps_var_map.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_var_map.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_var_map.o tnirps/tnirps_var_map.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_var_map.o tnirps/tnirps_var_map.cpp
 
 ${OBJECTDIR}/tnirps/tnirps_scheme_simple.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_scheme_simple.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_scheme_simple.o tnirps/tnirps_scheme_simple.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_scheme_simple.o tnirps/tnirps_scheme_simple.cpp
 
 ${OBJECTDIR}/common/base_cpp/chunk_storage.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/chunk_storage.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/chunk_storage.o common/base_cpp/chunk_storage.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/chunk_storage.o common/base_cpp/chunk_storage.cpp
 
 ${OBJECTDIR}/common/base_cpp/bitinworker.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/bitinworker.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/bitinworker.o common/base_cpp/bitinworker.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/bitinworker.o common/base_cpp/bitinworker.cpp
 
 ${OBJECTDIR}/common/base_c/nano_posix.o: nbproject/Makefile-${CND_CONF}.mk common/base_c/nano_posix.c 
 	${MKDIR} -p ${OBJECTDIR}/common/base_c
@@ -155,52 +155,52 @@ ${OBJECTDIR}/common/base_c/os_thread_posix.o: nbproject/Makefile-${CND_CONF}.mk 
 ${OBJECTDIR}/tnirps/tnirps_monopool.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_monopool.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_monopool.o tnirps/tnirps_monopool.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_monopool.o tnirps/tnirps_monopool.cpp
 
 ${OBJECTDIR}/common/base_cpp/scanner.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/scanner.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/scanner.o common/base_cpp/scanner.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/scanner.o common/base_cpp/scanner.cpp
 
 ${OBJECTDIR}/common/base_cpp/exception.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/exception.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/exception.o common/base_cpp/exception.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/exception.o common/base_cpp/exception.cpp
 
 ${OBJECTDIR}/tnirps/tnirps_scheme_gorner.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_scheme_gorner.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_scheme_gorner.o tnirps/tnirps_scheme_gorner.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_scheme_gorner.o tnirps/tnirps_scheme_gorner.cpp
 
 ${OBJECTDIR}/common/base_cpp/bitoutworker.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/bitoutworker.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/bitoutworker.o common/base_cpp/bitoutworker.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/bitoutworker.o common/base_cpp/bitoutworker.cpp
 
 ${OBJECTDIR}/common/base_cpp/gray_codes.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/gray_codes.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/gray_codes.o common/base_cpp/gray_codes.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/gray_codes.o common/base_cpp/gray_codes.cpp
 
 ${OBJECTDIR}/common/base_cpp/tlscont.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/tlscont.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/tlscont.o common/base_cpp/tlscont.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/tlscont.o common/base_cpp/tlscont.cpp
 
 ${OBJECTDIR}/tnirps/tnirps_scheme.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_scheme.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_scheme.o tnirps/tnirps_scheme.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_scheme.o tnirps/tnirps_scheme.cpp
 
 ${OBJECTDIR}/tnirps/tnirps_ring.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_ring.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_ring.o tnirps/tnirps_ring.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_ring.o tnirps/tnirps_ring.cpp
 
 ${OBJECTDIR}/common/base_cpp/crc32.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/crc32.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/crc32.o common/base_cpp/crc32.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/crc32.o common/base_cpp/crc32.cpp
 
 ${OBJECTDIR}/common/base_c/os_sync_posix.o: nbproject/Makefile-${CND_CONF}.mk common/base_c/os_sync_posix.c 
 	${MKDIR} -p ${OBJECTDIR}/common/base_c
@@ -210,12 +210,12 @@ ${OBJECTDIR}/common/base_c/os_sync_posix.o: nbproject/Makefile-${CND_CONF}.mk co
 ${OBJECTDIR}/tnirps/main.o: nbproject/Makefile-${CND_CONF}.mk tnirps/main.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/main.o tnirps/main.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/main.o tnirps/main.cpp
 
 ${OBJECTDIR}/tnirps/tnirps_polynomial.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_polynomial.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_polynomial.o tnirps/tnirps_polynomial.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_polynomial.o tnirps/tnirps_polynomial.cpp
 
 ${OBJECTDIR}/common/base_c/os_dir_posix.o: nbproject/Makefile-${CND_CONF}.mk common/base_c/os_dir_posix.c 
 	${MKDIR} -p ${OBJECTDIR}/common/base_c
@@ -225,7 +225,7 @@ ${OBJECTDIR}/common/base_c/os_dir_posix.o: nbproject/Makefile-${CND_CONF}.mk com
 ${OBJECTDIR}/tnirps/tnirps_reduction.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_reduction.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_reduction.o tnirps/tnirps_reduction.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_reduction.o tnirps/tnirps_reduction.cpp
 
 ${OBJECTDIR}/common/base_c/os_tls_posix.o: nbproject/Makefile-${CND_CONF}.mk common/base_c/os_tls_posix.c 
 	${MKDIR} -p ${OBJECTDIR}/common/base_c
@@ -235,27 +235,27 @@ ${OBJECTDIR}/common/base_c/os_tls_posix.o: nbproject/Makefile-${CND_CONF}.mk com
 ${OBJECTDIR}/tnirps/tnirps_scheme_tree.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_scheme_tree.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_scheme_tree.o tnirps/tnirps_scheme_tree.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_scheme_tree.o tnirps/tnirps_scheme_tree.cpp
 
 ${OBJECTDIR}/tnirps/tnirps_common.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_common.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_common.o tnirps/tnirps_common.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_common.o tnirps/tnirps_common.cpp
 
 ${OBJECTDIR}/common/base_cpp/string_pool.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/string_pool.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/string_pool.o common/base_cpp/string_pool.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/string_pool.o common/base_cpp/string_pool.cpp
 
 ${OBJECTDIR}/common/base_cpp/smart_output.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/smart_output.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/smart_output.o common/base_cpp/smart_output.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/smart_output.o common/base_cpp/smart_output.cpp
 
 ${OBJECTDIR}/common/base_cpp/shmem_posix.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/shmem_posix.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/shmem_posix.o common/base_cpp/shmem_posix.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/shmem_posix.o common/base_cpp/shmem_posix.cpp
 
 ${OBJECTDIR}/common/base_c/bitarray.o: nbproject/Makefile-${CND_CONF}.mk common/base_c/bitarray.c 
 	${MKDIR} -p ${OBJECTDIR}/common/base_c
@@ -265,12 +265,12 @@ ${OBJECTDIR}/common/base_c/bitarray.o: nbproject/Makefile-${CND_CONF}.mk common/
 ${OBJECTDIR}/tnirps/tnirps_bigint.o: nbproject/Makefile-${CND_CONF}.mk tnirps/tnirps_bigint.cpp 
 	${MKDIR} -p ${OBJECTDIR}/tnirps
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_bigint.o tnirps/tnirps_bigint.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/tnirps/tnirps_bigint.o tnirps/tnirps_bigint.cpp
 
 ${OBJECTDIR}/common/base_cpp/d_bitset.o: nbproject/Makefile-${CND_CONF}.mk common/base_cpp/d_bitset.cpp 
 	${MKDIR} -p ${OBJECTDIR}/common/base_cpp
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/d_bitset.o common/base_cpp/d_bitset.cpp
+	$(COMPILE.cc) -O2 -Werror -Itnirps -Icommon -Icommon/base_c -Icommon/base_cpp -MMD -MP -MF $@.d -o ${OBJECTDIR}/common/base_cpp/d_bitset.o common/base_cpp/d_bitset.cpp
 
 # Subprojects
 .build-subprojects:

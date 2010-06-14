@@ -1,2 +1,1 @@
-print "Hello World"
-print 2^3
+print"HelloWorld"print2^3

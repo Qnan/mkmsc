@@ -1,0 +1,1 @@
+R.<x,y,z,w>=PolynomialRing(GF(31))g=gload('p31s1/g')p=pload('p31s1/p')r=pload('p31s1/r')
