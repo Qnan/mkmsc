@@ -174,12 +174,7 @@ void testPolyAdd2 (void)
    p1.init(s2);
    p1.sort();
 
-   Cf c1;
-   Ring::set(c1, 3);
-   Cf c2;
-   Ring::set(c2, -6);
-
-   p.add(p1, &c1, &c2);
+   p.add(p1, 3, -6);
    p.toStr(buf);
    CHECK_MATCH("12*x^2*y*z + 39*x*y^2 + 36*x*y - 213*x + 3*y^2*z - 3*y + 3*z^3 - 60*z^2 - 42");
    TEST_POST();
@@ -216,10 +211,8 @@ void testPolySimplify (void)
    p1.init(s1, 0, 0);
    p2.init(s2, 0, 0);
    p3.init(s3, 0, 0);
-   Cf c;
-   Ring::set(c, 70);
-   p1.add(p2, NULL, &c);
-   p1.add(p3, NULL, NULL);
+   p1.add(p2, 1, 70);
+   p1.add(p3);
    p1.toStr(buf);
    CHECK_MATCH("13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z + 70*x - 70*x*y*z + x - 4*x*y^2 + 2 + 13");
    //p1.simplify();

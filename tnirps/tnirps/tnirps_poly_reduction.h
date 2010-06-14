@@ -62,11 +62,43 @@ private:
    
    void evaluateMonomial (const Array<Monomial>& mm, int i) {
       const int* degs = MP.getDegs(mm[i]);
-      Polynomial t[2];
+      Polynomial t[4];
       Cf c;
       Ring::set(c, 1);
       t[0].addTerm(MP.unit(), c);
       int k = 0;
+#if 1
+      for (int v = 1; v < MP.nvars(); ++v)
+         if (degs[v] != degs[v-1])
+            throw Exception("Error");
+      int deg = degs[0];
+      Array<int> bdegs;
+      for (int v = 0; v < MP.nvars(); ++v) {
+         bdegs.push(1);
+      }
+
+      Monomial base = MP.init(bdegs.ptr());
+      t[0].clear();
+      t[0].addTerm(base, 1);
+      int max = 0;
+      while ((deg >> (max+1)) != 0)
+         ++max;
+      for (;max>=0;--max) {
+//      while (deg > 0) {
+         int b = (k++) & 1;
+         t[1-b].clear();
+         for (int i = t[b].begin(); i < t[b].end(); i = t[b].next(i)) {
+            t[2].mul(t[b], t[b].m(i), &t[b].at(i).f);
+            normalize(t[3], t[2]);
+            t[1-b].add(t[3]);
+         }
+         if (deg & (1<<max)) {
+            t[b].mul(base);
+            normalize(t[1 - b], t[b]);
+         }
+         //deg >>= 1;
+      }
+#else
 #if 1
       bool hasDeg = true;
       for (int d = 0; hasDeg; ++d) {
@@ -96,7 +128,7 @@ private:
          }
       }
 #endif
-
+#endif
       values[i].copy(t[k & 1]);
       DBG(printf("(%i): ", i); MP.print(sout, mm[i]); printf(" -> "); values[i].print(sout); printf("\n"));
    }
@@ -262,9 +294,8 @@ private:
       Polynomial w;
       res.clear();
       for (int i = q.begin(); i < q.end(); i = q.next(i)) {
-         const Polynomial::Term& term = q.at(i);
-         normalize(w, term.m.get());
-         w.mulnum(term.f);
+         normalize(w, q.m(i));
+         w.mulnum(q.at(i).f);
          profTimerStart(add, "addition");
          res.add(w);
          profTimerStop(add);

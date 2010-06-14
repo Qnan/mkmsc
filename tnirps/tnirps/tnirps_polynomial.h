@@ -82,7 +82,7 @@ public:
       simplify();
    }
 
-   int addTerm (Monomial m, const Cf& f)
+   int addTerm (Monomial m, Cf f)
    {
       Cf cf;
       Ring::copy(cf, f);
@@ -93,7 +93,7 @@ public:
       return id;
    }
 
-   int insertTerm (int m, const Cf&  f, int before)
+   int insertTerm (int m, Cf  f, int before)
    {     
       Cf cf;
       Ring::copy(cf, f);
@@ -221,7 +221,7 @@ public:
    Monomial m (int i) const { return _terms.at(i).m.get(); }
    int size () const { return _terms.size(); }
    int lm () const { return _terms.at(_terms.begin()).m.get(); }
-   const Cf& lc () const { return _terms.at(_terms.begin()).f; }
+   Cf lc () const { return _terms.at(_terms.begin()).f; }
    Term& lt () const { return _terms.at(_terms.begin()); }
 
    void toStr(Array<char>& buf) const {
@@ -273,25 +273,25 @@ public:
       }
    }
 
-   void sum (const Polynomial& a, const Polynomial& b, const Cf* fa = NULL, const Cf* fb = NULL) {
+   void sum (const Polynomial& a, const Polynomial& b, Cf fa = 1, Cf fb = 1) {
       copy(a);
       add(b, fa, fb);
    }
 
-   void add (const Polynomial& a, const Cf* fr = NULL, const Cf* fa = NULL) {
+   void add (const Polynomial& a, Cf fr = 1, Cf fa = 1) {
       int ri = begin(), ai = a.begin();
       while (ri < end() && ai < a.end()) {
          Term& tr = at(ri);
          const Term& ta = a.at(ai);
          int c = MP.cmp(tr.m.get(), ta.m.get());
          if (c > 0) {
-            if (fr != NULL)
-               Ring::mul(tr.f, tr.f, *fr);
+            if (fr != 1)
+               Ring::mul(tr.f, tr.f, fr);
             ri = next(ri);
          } else if (c < 0) {
             Cf cf;
-            if (fa != NULL)
-               Ring::mul(cf, ta.f, *fa);
+            if (fa != 1)
+               Ring::mul(cf, ta.f, fa);
             else
                Ring::copy(cf, ta.f);
             
@@ -299,12 +299,12 @@ public:
             ai = a.next(ai);
          } else {
             Cf cfr, cfa;
-            if (fr != NULL)
-               Ring::mul(cfr, tr.f, *fr);
+            if (fr != 1)
+               Ring::mul(cfr, tr.f, fr);
             else
                Ring::copy(cfr, tr.f);
-            if (fa != NULL)
-               Ring::mul(cfa, ta.f, *fa);
+            if (fa != 1)
+               Ring::mul(cfa, ta.f, fa);
             else
                Ring::copy(cfa, ta.f);
             Ring::add(tr.f, cfr, cfa);
@@ -321,15 +321,15 @@ public:
       }
       while (ri < end()) {
          Term& tr = at(ri);
-         if (fr != NULL)
-            Ring::mul(tr.f, tr.f, *fr);
+         if (fr != 1)
+            Ring::mul(tr.f, tr.f, fr);
          ri = next(ri);
       }
       while (ai < a.end()) {
          const Term& ta = a.at(ai);
          Cf cf;
-         if (fa != NULL)
-            Ring::mul(cf, ta.f, *fa);
+         if (fa != 1)
+            Ring::mul(cf, ta.f, fa);
          else
             Ring::copy(cf, ta.f);
          addTerm(ta.m.get(), cf);
@@ -352,8 +352,8 @@ public:
       }
    }
 
-   void mulnum (const Cf& f) {
-      Cf cf;
+   void mulnum (Cf f) {
+      static Cf cf;
       Ring::copy(cf, f);
       for (int i = _terms.begin(); i < _terms.end(); i = _terms.next(i))
          Ring::mul(_terms[i].f, _terms[i].f, cf);
@@ -368,7 +368,7 @@ public:
       }
    }
 
-//   void append (const Polynomial& a, const Cf& f) {
+//   void append (const Polynomial& a, Cf f) {
 //      for (int i = a.begin(); i < a.end(); i = a.next(i)) {
 //         const Term& t = a.at(i);
 //         Cf cf;
