@@ -6,7 +6,7 @@ Version=4
 MainFile=src\blitz.tex
 UseBibTeX=0
 UseMakeIndex=0
-ActiveProfile=LaTeX => PDF
+ActiveProfile=LaTeX => DVI
 ProjectLanguage=en
 ProjectDialect=US
 
