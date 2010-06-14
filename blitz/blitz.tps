@@ -5,13 +5,13 @@ Version=2
 [SessionInfo]
 ActiveTab=2
 FrameCount=9
-ActiveFrame=4
+ActiveFrame=0
 
 [Frame0]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-8
@@ -24,16 +24,16 @@ Class=CLatexEdit
 Document=src\blitz_intro.tex
 
 [Frame0_Row0]
-cyCur=561
+cyCur=723
 cyMin=10
 
 [Frame0_Col0]
-cxCur=514
+cxCur=1571
 cxMin=10
 
 [Frame0_View0,0]
-Cursor.row=4
-Cursor.column=311
+Cursor.row=0
+Cursor.column=26
 TopSubLine=0
 
 [Frame1]
@@ -61,9 +61,9 @@ cxCur=922
 cxMin=10
 
 [Frame1_View0,0]
-Cursor.row=64
-Cursor.column=1
-TopSubLine=86
+Cursor.row=89
+Cursor.column=0
+TopSubLine=123
 
 [Frame2]
 Columns=1
@@ -90,8 +90,8 @@ cxCur=922
 cxMin=10
 
 [Frame2_View0,0]
-Cursor.row=0
-Cursor.column=26
+Cursor.row=15
+Cursor.column=15
 TopSubLine=0
 
 [Frame3]
@@ -119,15 +119,15 @@ cxCur=922
 cxMin=10
 
 [Frame3_View0,0]
-Cursor.row=51
-Cursor.column=66
-TopSubLine=47
+Cursor.row=37
+Cursor.column=0
+TopSubLine=46
 
 [Frame4]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-8
@@ -140,17 +140,17 @@ Class=CLatexEdit
 Document=src\blitz_problem.tex
 
 [Frame4_Row0]
-cyCur=723
+cyCur=532
 cyMin=10
 
 [Frame4_Col0]
-cxCur=1571
+cxCur=922
 cxMin=10
 
 [Frame4_View0,0]
-Cursor.row=87
-Cursor.column=0
-TopSubLine=88
+Cursor.row=29
+Cursor.column=500
+TopSubLine=19
 
 [Frame5]
 Columns=1
@@ -235,9 +235,9 @@ cxCur=1563
 cxMin=10
 
 [Frame7_View0,0]
-Cursor.row=1
-Cursor.column=0
-TopSubLine=0
+Cursor.row=22
+Cursor.column=55
+TopSubLine=30
 
 [Frame8]
 Columns=1
@@ -264,7 +264,7 @@ cxCur=1325
 cxMin=10
 
 [Frame8_View0,0]
-Cursor.row=162
-Cursor.column=97
-TopSubLine=190
+Cursor.row=124
+Cursor.column=0
+TopSubLine=128
 
