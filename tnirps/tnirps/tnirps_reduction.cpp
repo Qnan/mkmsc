@@ -15,7 +15,7 @@ bool SimpleReductor::reduceStep (Polynomial& r, const Polynomial& p) {
          t.mul(g[i], MP.div(lm, m));
          Cf f;
          Ring::neg(f, r.lc());
-         r.add(t, &t.lc(), &f);
+         r.add(t, t.lc(), f);
          return true;
       }
    }

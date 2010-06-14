@@ -82,13 +82,8 @@ private:
    static Array<char> buf;
 };
 #else
-class Cf {
-public:
-   Cf () : v(0) {}
-   int v;
-private:
-   Cf (const Cf& other);
-};
+
+typedef int Cf;
 
 class Ring {
    static const int p = 31;
@@ -109,53 +104,53 @@ public:
 //      printf ("\n");
    }
 
-   static void copy (Cf& a, const Cf& b) {
-      a.v = b.v;
+   static void copy (Cf& a, Cf b) {
+      a = b;
    }
 
    static void set (Cf& a, int v) {
-      a.v = (v % p + p) % p; // trick to convert negative numbers
+      a = (v % p + p) % p; // trick to convert negative numbers
    }
 
    static void set (Cf& a, const char* s) {
-      sscanf(s, "%d", &a.v);
-      a.v =(a.v % p + p) % p;
+      sscanf(s, "%d", &a);
+      a =(a % p + p) % p;
    }
 
-   static void add (Cf& r, const Cf& a, const Cf& b) {
-      r.v = (a.v + b.v) % p;
+   static void add (Cf& r, Cf a, Cf b) {
+      r = (a + b) % p;
    }
 
-   static void sub (Cf& r, const Cf& a, const Cf& b) {
-      r.v = (p + a.v - b.v) % p;
+   static void sub (Cf& r, Cf a, Cf b) {
+      r = (p + a - b) % p;
    }
 
-   static void mul (Cf& r, const Cf& a, const Cf& b) {
-      r.v = (a.v * b.v) % p;
+   static void mul (Cf& r, Cf a, Cf b) {
+      r = (a * b) % p;
    }
 
-   static void div (Cf& r, const Cf& a, const Cf& b) {
-      r.v = (a.v * inv[b.v]) % p;
+   static void div (Cf& r, Cf a, Cf b) {
+      r = (a * inv[b]) % p;
    }
 
-   static void abs (Cf& r, const Cf& a) {
-      r.v = a.v;
+   static void abs (Cf& r, Cf a) {
+      r = a;
    }
 
-   static void neg (Cf& r, const Cf& a) {
-      r.v = p - a.v;
+   static void neg (Cf& r, Cf a) {
+      r = p - a;
    }
 
-   static int cmp (const Cf& a, const Cf& b) {
-      return a.v - b.v;
+   static int cmp (Cf a, Cf b) {
+      return a - b;
    }
 
-   static int cmp (const Cf& a, int b) {
-      return a.v - b;
-   }
+//   static int cmp (Cf a, int b) {
+//      return a - b;
+//   }
 
-   static void print (Output& output, const Cf& a) {
-      output.printf("%d", a.v);
+   static void print (Output& output, Cf a) {
+      output.printf("%d", a);
    }
 
 private:
