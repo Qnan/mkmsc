@@ -1,0 +1,30 @@
+\section[Основные подходы]{Approaches}
+	\subsection[Стратегия порождения и проверки]{GenerateAndCheck}
+		\frame[label=LFGNC]
+		{
+			\frametitle{Стратегия порождения и проверки}
+			Структура алгоритмов поиска:
+			\begin{itemize}
+				\item Порождение \textsl{кандидатов}
+				\item Подсчет встречаемости
+			\end{itemize}\medskip
+
+			Сложности:
+			\begin{itemize}
+				\item Возможность повторного порождения графов
+				\item Трудоемкость операции подсчета встречаемости
+			\end{itemize}\medskip
+
+			Решения:
+			\begin{itemize}
+				\item Использование \textsl{канонических форм} графов
+				\item Использование вложенности опорных множеств и \textsl{списков вхождений}
+			\end{itemize}\medskip
+			
+			По способу порождения \textsl{кандидатов} алгоритмы поиска можно разделить на две группы
+			\begin{itemize}
+				\item Алгоритмы типа Apriori
+				\item Алгоритмы <<наращивания шаблона>>
+			\end{itemize}
+		}
+
