@@ -4,8 +4,8 @@ Version=2
 
 [SessionInfo]
 ActiveTab=2
-FrameCount=8
-ActiveFrame=5
+FrameCount=11
+ActiveFrame=1
 
 [Frame0]
 Columns=1
@@ -32,15 +32,15 @@ cxCur=922
 cxMin=10
 
 [Frame0_View0,0]
-Cursor.row=83
-Cursor.column=21
-TopSubLine=123
+Cursor.row=0
+Cursor.column=0
+TopSubLine=94
 
 [Frame1]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-8
@@ -53,17 +53,17 @@ Class=CLatexEdit
 Document=src\blitz_results.tex
 
 [Frame1_Row0]
-cyCur=532
+cyCur=723
 cyMin=10
 
 [Frame1_Col0]
-cxCur=922
+cxCur=1146
 cxMin=10
 
 [Frame1_View0,0]
-Cursor.row=0
-Cursor.column=0
-TopSubLine=0
+Cursor.row=60
+Cursor.column=27
+TopSubLine=53
 
 [Frame2]
 Columns=1
@@ -90,9 +90,9 @@ cxCur=922
 cxMin=10
 
 [Frame2_View0,0]
-Cursor.row=42
-Cursor.column=0
-TopSubLine=38
+Cursor.row=4
+Cursor.column=76
+TopSubLine=0
 
 [Frame3]
 Columns=1
@@ -119,9 +119,9 @@ cxCur=922
 cxMin=10
 
 [Frame3_View0,0]
-Cursor.row=29
-Cursor.column=500
-TopSubLine=19
+Cursor.row=14
+Cursor.column=0
+TopSubLine=26
 
 [Frame4]
 Columns=1
@@ -155,8 +155,8 @@ TopSubLine=19
 [Frame5]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-8
@@ -169,17 +169,17 @@ Class=CLatexEdit
 Document=src\blitz.tex
 
 [Frame5_Row0]
-cyCur=723
+cyCur=532
 cyMin=10
 
 [Frame5_Col0]
-cxCur=1571
+cxCur=922
 cxMin=10
 
 [Frame5_View0,0]
-Cursor.row=23
-Cursor.column=21
-TopSubLine=0
+Cursor.row=25
+Cursor.column=0
+TopSubLine=11
 
 [Frame6]
 Columns=1
@@ -206,9 +206,9 @@ cxCur=1563
 cxMin=10
 
 [Frame6_View0,0]
-Cursor.row=22
-Cursor.column=55
-TopSubLine=30
+Cursor.row=6
+Cursor.column=0
+TopSubLine=10
 
 [Frame7]
 Columns=1
@@ -235,7 +235,94 @@ cxCur=1325
 cxMin=10
 
 [Frame7_View0,0]
-Cursor.row=123
-Cursor.column=19
-TopSubLine=128
+Cursor.row=0
+Cursor.column=0
+TopSubLine=0
+
+[Frame8]
+Columns=1
+Rows=1
+Flags=0
+ShowCmd=1
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-8
+MaxPos.y=-28
+NormalPos.left=184
+NormalPos.top=184
+NormalPos.right=1121
+NormalPos.bottom=698
+Class=CLatexEdit
+Document=src\blitz_intro.tex
+
+[Frame8_Row0]
+cyCur=457
+cyMin=10
+
+[Frame8_Col0]
+cxCur=900
+cxMin=10
+
+[Frame8_View0,0]
+Cursor.row=28
+Cursor.column=292
+TopSubLine=65
+
+[Frame9]
+Columns=1
+Rows=1
+Flags=0
+ShowCmd=1
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-8
+MaxPos.y=-28
+NormalPos.left=230
+NormalPos.top=230
+NormalPos.right=1167
+NormalPos.bottom=744
+Class=CLatexEdit
+Document=src\blitz_concl.tex
+
+[Frame9_Row0]
+cyCur=457
+cyMin=10
+
+[Frame9_Col0]
+cxCur=900
+cxMin=10
+
+[Frame9_View0,0]
+Cursor.row=5
+Cursor.column=302
+TopSubLine=0
+
+[Frame10]
+Columns=1
+Rows=1
+Flags=0
+ShowCmd=1
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-8
+MaxPos.y=-28
+NormalPos.left=0
+NormalPos.top=0
+NormalPos.right=937
+NormalPos.bottom=514
+Class=CLatexEdit
+Document=src\blitz_pp.tex
+
+[Frame10_Row0]
+cyCur=457
+cyMin=10
+
+[Frame10_Col0]
+cxCur=900
+cxMin=10
+
+[Frame10_View0,0]
+Cursor.row=6
+Cursor.column=71
+TopSubLine=0
 
