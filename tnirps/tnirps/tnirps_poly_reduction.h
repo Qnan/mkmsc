@@ -10,6 +10,8 @@
 #undef DBG
 #define DBG(op)
 
+#define MONOEVAL 1
+
 class Reductor {
 public:
    Reductor (const ObjArray<Polynomial>& b) : basis(b), sr(b) {
@@ -49,7 +51,7 @@ private:
             DBG(printf("cf: "); Ring::print(sout, p.lc()); printf(" / "); Ring::print(sout, basis[i].lc()); printf(" = "); Ring::print(sout, cf); printf("\n"));
             Ring::neg(cf, cf);
             t.mul(basis[i], MP.div(lm, m), &cf);
-            p.add(t);
+            p.add(t, Cf(1), Cf(1));
             //p.simplify();
             return true;
          }
@@ -67,7 +69,7 @@ private:
       Ring::set(c, 1);
       t[0].addTerm(MP.unit(), c);
       int k = 0;
-#if 1
+#if MONOEVAL == 3
       for (int v = 1; v < MP.nvars(); ++v)
          if (degs[v] != degs[v-1])
             throw Exception("Error");
@@ -98,8 +100,20 @@ private:
          }
          //deg >>= 1;
       }
-#else
-#if 1
+#elif MONOEVAL == 0
+      bool hasDeg = true;
+      for (int d = 0; hasDeg; ++d) {
+         hasDeg = false;
+         for (int v = 0; v < MP.nvars(); ++v) {
+            if (degs[v] > d) {
+               int b = (k++) & 1;
+               t[b].mul(MP.single(v));
+               normalize(t[1 - b], t[b]);
+               hasDeg = true;
+            }
+         }
+      }
+#elif MONOEVAL == 1
       bool hasDeg = true;
       for (int d = 0; hasDeg; ++d) {
          hasDeg = false;
@@ -116,7 +130,7 @@ private:
             normalize(t[1 - b], t[b]);
          }
       }
-#else
+#elif MONOEVAL == 2
       for (int v = 0; v < MP.nvars(); ++v) {
          Monomial s = MP.single(v);
          for (int i = 0; i < degs[v]; ++i) {
@@ -127,7 +141,6 @@ private:
             normalize(t[1 - b], t[b]);
          }
       }
-#endif
 #endif
       values[i].copy(t[k & 1]);
       DBG(printf("(%i): ", i); MP.print(sout, mm[i]); printf(" -> "); values[i].print(sout); printf("\n"));

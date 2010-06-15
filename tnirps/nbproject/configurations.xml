@@ -184,6 +184,7 @@
             <pElem>common/base_c</pElem>
             <pElem>common/base_cpp</pElem>
           </incDir>
+          <warningLevel>3</warningLevel>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

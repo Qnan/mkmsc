@@ -79,7 +79,7 @@ public:
    }
    
    int countHash(int id) const {
-      countHash(_get(id));
+      return countHash(_get(id));
    }
 
    bool divides (Monomial a, Monomial b)
@@ -386,11 +386,11 @@ private:
 
    int countHash(int* data) const
    {
-      static long k[]={0,4,8,12,16,20,24,28};
+      static int k[]={0,4,8,12,16,20,24,28};
       static int a = 0x7;
       int hash = 0;
       for(int i = 0; i < dim; ++i)
-         hash ^= data[i+1] << k[i & a];
+         hash ^= (data[i+1] << k[i & a]);
       return hash;
    }
 

@@ -273,12 +273,15 @@ public:
       }
    }
 
-   void sum (const Polynomial& a, const Polynomial& b, Cf fa = 1, Cf fb = 1) {
+   void sum (const Polynomial& a, const Polynomial& b, Cf fa, Cf fb) {
       copy(a);
       add(b, fa, fb);
    }
 
-   void add (const Polynomial& a, Cf fr = 1, Cf fa = 1) {
+   void add (const Polynomial& a) {
+      add(a, Cf(1), Cf(1));
+   }
+   void add (const Polynomial& a, Cf fr, Cf fa) {
       int ri = begin(), ai = a.begin();
       while (ri < end() && ai < a.end()) {
          Term& tr = at(ri);

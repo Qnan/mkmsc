@@ -65,7 +65,7 @@ void testMonome (void) {
 
    int h = MP.countHash(m1);
    if (h != h1)
-      throw Exception("%s: Hash mismatch: %X != %X", _name, h, h1);
+      throw Exception("%s: Hash mismatch: %d != %d", _name, h, h1);
 
    m2 = MP.init(s2);
    m3 = MP.mul(m1, m2);
@@ -213,8 +213,8 @@ void testPolySimplify (void)
    p3.init(s3, 0, 0);
    p1.add(p2, 1, 70);
    p1.add(p3);
-   p1.toStr(buf);
-   CHECK_MATCH("13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z + 70*x - 70*x*y*z + x - 4*x*y^2 + 2 + 13");
+   //p1.toStr(buf);
+   //CHECK_MATCH("13*x*y^2 + z^3 - 71*x + 10*x*y + 4*x^2*y*z - y + y^2*z + 70*x - 70*x*y*z + x - 4*x*y^2 + 2 + 13");
    //p1.simplify();
    p1.toStr(buf);
    CHECK_MATCH("4*x^2*y*z + 9*x*y^2 - 70*x*y*z + 10*x*y + y^2*z - y + z^3 + 15");
@@ -251,7 +251,7 @@ void testReduce (void) {
       p.copy(r);
    }
    r.toStr(buf);
-   CHECK_MATCH("-92*y^2 - 9*x*y + 3*y + 46*x");
+   CHECK_MATCH("-9*x*y - 92*y^2 + 46*x + 3*y");
    TEST_POST();
 }
 
@@ -281,7 +281,7 @@ void testReduceIncr (void) {
    Reductor reductor(g);
    reductor.reduce(r, scheme);
    r.toStr(buf);
-   CHECK_MATCH("-92*y^2 - 9*x*y + 3*y + 46*x");
+   CHECK_MATCH("-9*x*y - 92*y^2 + 46*x + 3*y");
    TEST_POST();
 }
 
@@ -358,7 +358,7 @@ void testTree (void)
    ArrayOutput output(buf);
    prn.evaluate(&output, scheme);
    output.writeChar(0);
-   CHECK_MATCH("(((((x^2 + x*y) + y^2) + x * x*y) + 13 * x * y^2) + y * y^2)");
+   CHECK_MATCH("(((((y^2 + x*y) + x^2) + y * y^2) + 13 * y * x*y) + y * x^2)");
 //   Evaluator eval;
 //   Array<int> values;
 //   values.push(3);
@@ -500,7 +500,7 @@ void testSort ()
 
 }
 
-int testMaple (const char* path) {
+int testMaple (const char* mode, const char* path) {
    FileScanner fs(path);
    Array<char> buf, sub;
    fs.skipSpace();
@@ -546,12 +546,23 @@ int testMaple (const char* path) {
    printf("p:\n");
    p.print(sout);printf("\n");
    printf("r:\n");
-   p.print(sout);printf("\n");
+   r.print(sout);printf("\n");
    printf("t: %i\n", t);
 
    Scheme s;
-   SchemeSimple ss(s, p);
-   ss.build();
+   if (strcmp(mode, "simple") == 0) {
+      SchemeSimple ss(s, p);
+      ss.build();
+   } else if (strcmp(mode, "gorner") == 0) {
+      SchemeGorner ss(s, p);
+      ss.build();
+   } else if (strcmp(mode, "tree") == 0) {
+      SchemeHangingTree ss(s, p);
+      ss.build();
+   } else {
+      printf("mode not recognized: %s\n", mode);
+      return 1;
+   }
 
    Reductor redr(basis);
    float time;
@@ -593,7 +604,7 @@ int testSing (const char* mode, const char* path) {
       FileScanner fs("%s/p", path);
       fs.skipSpace();
       fs.readAll(buf);
-      while (isspace(buf.top()))
+      while (buf.size() > 0 && isspace(buf.top()))
          buf.pop();
       buf.push(0);
       p.init(buf.ptr());
@@ -695,9 +706,14 @@ int main (int argc, const char** argv) {
 //   for (int i = 0; i < argc; ++i)
 //      printf("%s\n", argv[i]);
    //testSing(argv[1], argv[2]);
+   testSing("gorner", "../sage/p31m1/");
+   //testMaple(argv[1], argv[2]);
    //profGetStatistics(sout, true);
    //printf("\tptime: %.5lf s\n", nanoHowManySeconds(tt));
-   testSing("simple", "../sage/p31z1/");
-   //testMaple("samples/p1.txt");
+   //testSing("simple", "../sage/p31z1/");
+   //testMaple("simple","samples/p3.txt");
+   //testMaple("gorner","samples/p3.txt");
+   //testMaple("tree","samples/p3.txt");
+
    //tests();
 }
