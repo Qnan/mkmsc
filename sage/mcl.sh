@@ -1,1 +1,1 @@
-cat $1 | tr '\n' ' ' | sed 's/ //g' | sed 's/.*:=//g' | sed 's/\[//g' | sed 's/\]//g' | sed 's/;//g' > $1
+cat $1 | tr '\n' ' ' | sed 's/ //g' | sed 's/.*:=//g' | sed 's/\[//g' | sed 's/\]//g' | sed 's/;//g'

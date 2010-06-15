@@ -539,16 +539,21 @@ int testMaple (const char* mode, const char* path) {
    fs.readChar();fs.readChar();
    int t = fs.readInt();
 
-   printf("G:\n");
-   for (int i = 0; i < basis.size(); ++i) {
-      basis[i].print(sout);printf("\n");
-   }
-   printf("p:\n");
-   p.print(sout);printf("\n");
-   printf("r:\n");
-   r.print(sout);printf("\n");
-   printf("t: %i\n", t);
+//   printf("G:\n");
+//   for (int i = 0; i < basis.size(); ++i) {
+//      basis[i].print(sout);printf("\n");
+//   }
+//   printf("p:\n");
+//   p.print(sout);printf("\n");
+//   printf("r:\n");
+//   r.print(sout);printf("\n");
+//   printf("t: %i\n", t);
 
+   int td = 0;
+   for (int i = p.begin(); i < p.end(); i = p.next(i)) {
+      td = __max(td, MP.totalDeg(p.m(i)));
+   }
+   printf("vars,deg,sz: %2d & %3d & %3d\n", MP.getVarMap().size(), td, p.size());
    Scheme s;
    if (strcmp(mode, "simple") == 0) {
       SchemeSimple ss(s, p);
@@ -564,15 +569,15 @@ int testMaple (const char* mode, const char* path) {
       return 1;
    }
 
-   Reductor redr(basis);
-   float time;
-   Polynomial res;
-   qword t0 = nanoClock();
-   redr.reduce(res, s);
-   qword t1 = nanoClock();
-   time = 1000.0f * nanoHowManySeconds(t1 - t0);
-   printf("\ttime: %.3f ms\n", time);
-   printf("\tresult: "), res.print(sout), printf("\n");
+//   Reductor redr(basis);
+//   float time;
+//   Polynomial res;
+//   qword t0 = nanoClock();
+//   redr.reduce(res, s);
+//   qword t1 = nanoClock();
+//   time = 1000.0f * nanoHowManySeconds(t1 - t0);
+//   printf("\ttime: %.3f ms\n", time);
+//   printf("\tresult: "), res.print(sout), printf("\n");
 }
 
 int testSing (const char* mode, const char* path) {
@@ -584,7 +589,7 @@ int testSing (const char* mode, const char* path) {
       FileScanner fs("%s/v", path);
       fs.skipSpace();
       fs.readAll(buf);
-      while (isspace(buf.top()))
+      while (buf.size() > 0 && isspace(buf.top()))
          buf.pop();
       buf.push(0);
       MP.setVarMap(buf.ptr());
@@ -614,7 +619,7 @@ int testSing (const char* mode, const char* path) {
       FileScanner fs("%s/r", path);
       fs.skipSpace();
       fs.readAll(buf);
-      while (isspace(buf.top()))
+      while (buf.size() > 0 && isspace(buf.top()))
          buf.pop();
       buf.push(0);
       r.init(buf.ptr());
@@ -635,12 +640,17 @@ int testSing (const char* mode, const char* path) {
    printf("p:\n");
    p.print(sout);printf("\n");
 //   scanf("*");
-//   printf("r:\n");
-//   r.print(sout);printf("\n");
+   printf("r:\n");
+   r.print(sout);printf("\n");
 //   scanf("*");
    printf("t: %i\n", t);
    //scanf("*");
 
+   int td = 0;
+   for (int i = p.begin(); i < p.end(); i = p.next(i)) {
+      td = __max(td, MP.totalDeg(p.m(i)));
+   }
+   printf("vars,deg,sz: %2d & %3d & %3d\n", MP.getVarMap().size(), td, p.size());
 
    //Polynomial q;
 //   Cf cc;
@@ -675,11 +685,13 @@ int testSing (const char* mode, const char* path) {
    profTimerStop(MonoEval);
    time = nanoHowManySeconds(t1 - t0);
    printf("\ttime: %.5lf s\n", time);
-//   Cf f;
-//   Ring::set(f, -1);
-//   r1.add(r, NULL, &f);
-//   r1.simplify();
+   r.mulnum(Ring::p-1);
+   r1.add(r);
+   r1.add(res);
+   //r1.simplify();
    printf("\tresult: "), res.print(sout), printf("\n");
+   printf("\tcanoni: "), r.print(sout), printf("\n");
+   printf("\tdiff: "), r1.print(sout), printf("\n");
 }
 
 int main (int argc, const char** argv) {
@@ -706,14 +718,20 @@ int main (int argc, const char** argv) {
 //   for (int i = 0; i < argc; ++i)
 //      printf("%s\n", argv[i]);
    //testSing(argv[1], argv[2]);
-   testSing("gorner", "../sage/p31m1/");
+   testSing("simple", "../sage/p31z1/");
    //testMaple(argv[1], argv[2]);
    //profGetStatistics(sout, true);
    //printf("\tptime: %.5lf s\n", nanoHowManySeconds(tt));
    //testSing("simple", "../sage/p31z1/");
-   //testMaple("simple","samples/p3.txt");
-   //testMaple("gorner","samples/p3.txt");
-   //testMaple("tree","samples/p3.txt");
+//   MP.reset();
+//   MP.setOrder(MonoPool::DRL);
+//   testMaple("simple", "samples/p1.txt");
+//   MP.reset();
+//   MP.setOrder(MonoPool::DRL);
+//   testMaple("gorner", "samples/p2.txt");
+//   MP.reset();
+//   MP.setOrder(MonoPool::DRL);
+//   testMaple("tree",   "samples/p3.txt");
 
    //tests();
 }
