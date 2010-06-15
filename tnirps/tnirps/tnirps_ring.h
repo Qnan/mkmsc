@@ -154,8 +154,8 @@ typedef Ring::Cf Cf;
 typedef int Cf;
 
 class Ring {
-   static const int p = 31;
 public:
+   static const int p = 31;
    static void init () {
       inv[0] = 0;
       for (int i = 1; i < p; ++i) {
@@ -164,12 +164,6 @@ public:
             t = q;
          inv[i] = t;         
       }
-//      for (int i = 0; i < p; ++i)
-//         printf (" %2d", i);
-//      printf ("\n");
-//      for (int i = 0; i < p; ++i)
-//         printf (" %2d", inv[i]);
-//      printf ("\n");
    }
 
    static void copy (Cf& a, Cf b) {

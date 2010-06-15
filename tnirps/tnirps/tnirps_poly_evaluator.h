@@ -5,71 +5,44 @@
 #include "tnirps_monopool.h"
 #include "tnirps_bigint.h"
 
-//#define DBG(op) op
 #define DBG(op)
 
-//template <typename Ring, typename Cf, typename Numbers, typedef Num>
-//class Evaluator {
-//public:
-//   Evaluator () {}
-//
-//   ~Evaluator () {
-//   }
-//
-//   void evaluate (Cf& res, const Scheme& scheme, const Array<int>& varValues) {
-//      SCHEME_CALLBACKS_SET(scheme);
-//      this->varValues.copy(varValues);
-//      scheme.proceed(this);
-//      Numbers::copy(res, result);
-//   }
-//
-//   SCHEME_CALLBACKS_DEFINE(Evaluator);
-//
-//private:
-//   void evaluateMonomial (const Array<Monomial>& mm, int i) {
-//      DBG(printf("init %i\n", i));
-//      const int* degs = MP.getDegs(mm[i]);
-//      Num& v = values[i];
-//      Numbers::set(v, 1);
-//      Num t;
-//      for (int i = 0; i < MP.nvars(); ++i) {
-//         if (degs[i] > 0) {
-//            Numbers::copy(t, varValues);
-//            Numbers::pow(t, t, degs[i]);
-//            Numbers::mul(v, v, t);
-//         }
-//      }
-//   }
-//
-//   void init (const Array<Monomial>& mm, int total) {
-//      values.clear();
-//      values.resize(total);
-//
-//      for (int i = 0; i < mm.size(); ++i)
-//         evaluateMonomial(mm, i);
-//   }
-//   void add (int id, int a, int b) {
-//      DBG(printf("add %i %i %i\n", id, a, b));
-////      values[id].set(NP.sum(values[a].get(), values[b].get()));
-//   }
-//   void mul (int id, int a, int b) {
-//      DBG(printf("mul %i %i %i\n", id, a, b));
-////      values[id].set(NP.mul(values[a].get(), values[b].get()));
-//   }
-//   void mulnum (int id, int a, const Cf& num) {
-//      DBG(printf("mulnum %i %i \n", id, a); R.print(num.get()); printf("\n"));
-////      values[id].set(NP.mul(values[a].get(), num.get()));
-//   }
-//   void yield (int id) {
-//      DBG(printf("yield %i\n", id));
-////      result.set(values[id].get());
-//      //gmp_printf("result: %Zd\n", result);
-//      DBG(printf("yield done\n"));
-//   }
-//
-//   Array<int> varValues;
-//   ObjArray<Cf> values;
-//   Cf result;
-//};
+class Evaluator {
+public:
+   Evaluator () {}
+
+   ~Evaluator () {
+   }
+
+   void evaluate (const Scheme& scheme) {
+      SCHEME_CALLBACKS_SET(scheme);
+      scheme.proceed(this);
+   }
+
+   SCHEME_CALLBACKS_DEFINE(Evaluator);
+
+private:
+   void evaluateMonomial (const Array<Monomial>& mm, int i) {
+      nmul += MP.totalDeg(mm[i]);
+   }
+
+   void init (const Array<Monomial>& mm, int total) {
+      nmul = 0;
+      for (int i = 0; i < mm.size(); ++i)
+         evaluateMonomial(mm, i);
+   }
+   void add (int id, int a, int b) {
+   }
+   void mul (int id, int a, int b) {
+      nmul++;
+   }
+   void mulnum (int id, int a, const Cf& num) {
+   }
+   void yield (int id) {
+      printf("nmul: %d\n", nmul);
+   }
+
+   int nmul;
+};
 
 #endif /* __TNIRPS_POLY_EVALUATOR_H__ */
