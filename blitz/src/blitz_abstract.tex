@@ -1,0 +1,26 @@
+
+\renewcommand{\abstractname}{Реферат}
+\begin{abstract} 
+Данная работа посвящена схемам вычисления систем разреженных полиномов многих переменных, а также двум их приложениям: символьно-численным интерфейсам для эффективного вычисления значений полиномов с предобработкой и редукции полиномов. Используемый метод редукции действует снизу вверх, вычисляя нормальные формы составляющих согласно схемы, что позволяет сократить число промежуточных членов, возникающих в процессе редукции, и повысить эффективность метода в целом.
+
+Рассмотрены два метода построения схем, исследована их эффективность относительно тривиальной схемы для редукции полиномов над конечным полем и полем рациональных чисел. В обоих случаях рассматриваемый подход оказывается эффективнее алгоритма редукции, используемого в системе компьютерной алгебры Maple.
+
+Мы демонстрируем, однако, что схемы с минимальным числом операций, обычно используемые в символьно-численных интерфейсах, далеки от оптимальности с точки зрения рассматриваемого метода редукции -- особенно в случае полиномов над конечным полем -- и для построения эффективного алгоритма редукции требуется интеграция процесса построения схемы с собственно алгоритмом редукции.
+\vspace{1cm}
+
+\textbf{Ключевые слова:} разреженный полином многих переменных, схема вычисления полинома, редукция полинома, нормальная форма полинома, символьно-численный интерфейс
+\end{abstract}
+
+\renewcommand{\abstractname}{Abstract}
+\begin{abstract} 
+In this paper we consider some schemes for sparse multivariate polynomial evaluation and their applications: fast repeated polynomial evaluation with preprocessing and a polynomial reduction method. The latter method evaluates the normal forms of constituents according to the scheme used, thus reducing the number of intermediate monomials that may have appeared in the traditional top-down approach significantly.
+
+We consider two methods of scheme building and compare their efficiency at the above mentioned problems. In our experiments, the reduction algorithm appears more efficient than the one implemented in CAS Maple for polynomials over both rational field and finite field. 
+
+However, we find that the criteria of having least possible number of operations, often used when building schemes for polynomial evaluation, does not reflect the quality of the scheme from the point of view of reduction algorithm efficiency. We further argue that the design of the scheme optimal in the latter sense cannot be done in advance and should, instead, be integrated with the reduction algorithm itself.
+
+\vspace{1cm}
+
+\textbf{Ключевые слова:} sparse multivariate polynomial, polynomial evaluation schemes, polynomial reduction, polynomial normal form, sparse polynomial evaluation with preprocessing
+\end{abstract}
+

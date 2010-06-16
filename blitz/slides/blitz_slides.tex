@@ -1,0 +1,112 @@
+\section[Введение]{Intro}
+
+		\frame[label=frsvp]
+		{
+			\frametitle{Схемы вычисления полиномов}
+
+			$$x^3+x^2y^2+y^3$$
+			\begin{minipage}[b]{0.45\linewidth}
+				\centering
+				\includegraphics[scale=0.4]{../pic/simpleone}
+			\end{minipage}
+			\begin{minipage}[b]{0.4\linewidth}
+				\centering
+				\begin{align*}
+					\alpha_1 &= x			\\
+					\alpha_2 &= x^2		\\
+					\alpha_3 &= y			\\
+					\alpha_4 &= y^2		\\
+					\beta_1 &= \alpha_3 \cdot \alpha_4 = y^3				\\
+					\beta_2 &= \alpha_1 + \alpha_4 = x + y^2 				\\
+					\beta_3 &= \beta_2 \cdot \alpha_2 = x^3+x^2y^2 	\\
+					\beta_4 &= \beta_3 + \beta_1 = x^3+x^2y^2+y^3
+				\end{align*}
+			\end{minipage}
+		}
+		
+		\frame[label=fraims]
+		{
+			\frametitle{Цели работы}
+
+			\begin{itemize}
+				\item Сравнение методов построения СВП
+				\item Реализация метода редукции на основе СВП (РСВП)
+				\item Оценка эффективности РСВП
+				\item Рассмотрение возможных улучшений РСВП
+			\end{itemize}
+		}
+
+\section[Метод редукции на основе СВП]{Reduction}
+		\frame[label=frreduction]
+		{
+			\frametitle{Задача редукции полинома}
+
+			\begin{itemize}
+				\item Редукция -- это поиск остатка от деления полинома на набор полиномов
+				\item Применяется для
+						\begin{itemize}
+							\item проверки принадлежности идеалу
+							\item построения базиса Гр\"ебнера
+						\end{itemize}
+				\item Простейший алгоритм -- последовательное исключение старшего монома
+				\item Сложность существенно зависит от входных данных 
+				\item Количество членов в полиноме может интенсивно расти
+			\end{itemize}
+		}
+
+		\frame[label=frmonospace0]
+		{
+			\frametitle{Носитель полинома в пространстве мономов}
+			\begin{center}
+			\includegraphics[scale=0.4]{../pic/monogrow0}
+			\end{center}
+		}
+		\frame[label=frmonospace1]
+		{
+			\frametitle{Носитель полинома в пространстве мономов}
+			\begin{center}
+			\includegraphics[scale=0.4]{../pic/monogrow1}
+			\end{center}
+		}
+		\frame[label=frmonospace2]
+		{
+			\frametitle{Носитель полинома в пространстве мономов}
+			\begin{center}
+			\includegraphics[scale=0.4]{../pic/monogrow2}
+			\end{center}
+		}
+		\frame[label=frmonospace3]
+		{
+			\frametitle{Носитель полинома в пространстве мономов}
+			\begin{center}
+			\includegraphics[scale=0.4]{../pic/monogrow3}
+			\end{center}
+		}
+		\frame[label=frmonospace4]
+		{
+			\frametitle{Носитель полинома в пространстве мономов}
+			\begin{center}
+			\includegraphics[scale=0.4]{../pic/monogrow4}
+			\end{center}
+		}
+
+		\frame[label=frrsvpdef]
+		{
+			\frametitle{Метод РСВП}
+			$$N(\lambda p + \mu q)=\lambda N(p) + \mu N(q)$$
+			$$N(p\cdot q)=N(N(p)\cdot N(q))$$
+		  \begin{itemize}
+				\item Вычисляет нормальную форму снизу вверх
+				\item Сохраняет нормальные формы мономов
+				\item Нормальная форма каждого монома вычисляется лишь единожды
+				\item Сокращается число промежуточных членов
+			\end{itemize}
+		}
+
+		\frame[label=frrsvpdyn0]
+		{
+			\frametitle{Динамика редукции по методу РСВП}
+			\begin{center}
+			\includegraphics[scale=0.4]{../pic/monoinc0}
+			\end{center}
+		}
