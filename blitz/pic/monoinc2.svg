@@ -198,7 +198,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -370,16 +370,6 @@
        sodipodi:ry="15"
        d="m 315,400 a 15,15 0 1 1 -30,0 15,15 0 1 1 30,0 z"
        transform="translate(99.51278,97.788434)" />
-    <path
-       transform="translate(-100.99485,148.29096)"
-       d="m 465,300 a 15,15 0 1 1 -30,0 15,15 0 1 1 30,0 z"
-       sodipodi:type="arc"
-       style="fill:#ff6666;fill-opacity:1;stroke:none"
-       id="path4443-5-7-1"
-       sodipodi:cx="450"
-       sodipodi:cy="300"
-       sodipodi:rx="15"
-       sodipodi:ry="15" />
     <path
        transform="translate(-100.99485,98.793484)"
        d="m 465,300 a 15,15 0 1 1 -30,0 15,15 0 1 1 30,0 z"
