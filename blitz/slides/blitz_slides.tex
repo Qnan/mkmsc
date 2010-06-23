@@ -24,6 +24,15 @@
 			\end{minipage}
 		}
 		
+		\frame[label=frsvpapps]
+		{
+			\frametitle{Приложения}
+
+			\begin{itemize}
+				\item<1-> Символьно-численные интерфейсы
+				\item<2-> Метод редукции на основе СВП
+			\end{itemize}
+		}
 		\frame[label=fraims]
 		{
 			\frametitle{Цели работы}
@@ -47,6 +56,7 @@
 						\begin{itemize}
 							\item<2-> проверки принадлежности идеалу
 							\item<3-> построения базиса Гр\"ебнера
+							\item<3-> ... 
 						\end{itemize}
 				\item<4-> Простейший алгоритм -- последовательное исключение старшего монома
 				\item<5-> Сложность существенно зависит от входных данных 
@@ -102,6 +112,135 @@
 				\item<4-> Сокращается число промежуточных членов
 			\end{itemize}
 		}
+
+\frame[label=frrsvpgood0]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp0}
+	\end{center}
+}
+
+\frame[label=frrsvpgood1]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp1}
+	\end{center}
+}
+
+\frame[label=frrsvpgood2]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp2}
+	\end{center}
+}
+
+\frame[label=frrsvpgood3]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp3}
+	\end{center}
+}
+
+\frame[label=frrsvpgood4]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp4}
+	\end{center}
+}
+
+\frame[label=frrsvpgood5]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp5}
+	\end{center}
+}
+
+\frame[label=frrsvpgood6]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp6}
+	\end{center}
+}
+
+\frame[label=frrsvpgood7]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp7}
+	\end{center}
+}
+
+\frame[label=frrsvpgood8]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp8}
+	\end{center}
+}
+
+\frame[label=frrsvpgood9]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp9}
+	\end{center}
+}
+
+\frame[label=frrsvpgood10]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp10}
+	\end{center}
+}
+
+\frame[label=frrsvpgood11]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp11}
+	\end{center}
+}
+
+\frame[label=frrsvpgood12]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp12}
+	\end{center}
+}
+
+\frame[label=frrsvpgood13]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp13}
+	\end{center}
+}
+
+\frame[label=frrsvpgood14]
+{
+	\frametitle{Динамика редукции по методу РСВП}
+	\begin{center}
+	\includegraphics[scale=0.4]{../pic/monosvp14}
+	\end{center}
+}
+
+		\frame[label=frrsvpdm]
+		{
+			\frametitle{Достаточное множество мономов}
+			\begin{center}
+			\includegraphics[scale=0.4]{../pic/monoinc-dm}
+			\end{center}
+		}
+
 
 		\frame[label=frrsvpdyn0]
 		{
@@ -185,12 +324,7 @@
 		\frame[label=frrsvprops]
 		{
 			\frametitle{Метод РСВП}
-		  \begin{itemize}
-				\item<1-> Допустимое множество
-				\item<2-> <<Таблица умножения>> мономов
-				\item<3-> Простые и сложные редукции
-			\end{itemize}
-			\onslide<4-> Эффективность зависит от используемой схемы
+			Эффективность зависит от используемой схемы
 		}
 		
 \section[Методы построения схем]{Schemes}
@@ -200,9 +334,9 @@
 		  \begin{itemize}
 				\item<1-> Тривиальная схема
 				\item<2-> Обобщенный метод Горнера
-				\item<3-> Метод <<минимального мокрывающего дерева>> (ММПД)
+				\item<3-> Метод <<минимального покрывающего дерева>> (ММПД)
 			\end{itemize}
-			\onslide<4-> Вычисление мономов в основании схемы -- тоже схема
+		%\onslide<4-> Вычисление мономов в основании схемы -- тоже схема
 		}
 
 		\frame[label=frschemeshorner]
@@ -231,14 +365,14 @@
 			\end{itemize}
 		}
 
-		\frame[label=frschemejm]
-		{
-			\frametitle{Совместное вычисление мономов}
+%		\frame[label=frschemejm]
+%		{
+%			\frametitle{Совместное вычисление мономов}
 %			\begin{minipage}[b]{0.45\linewidth}
-
-			\begin{center}
-			\includegraphics[scale=0.5]{../pic/split}
-			\end{center}
+%
+%			\begin{center}
+%			\includegraphics[scale=0.5]{../pic/split}
+%			\end{center}
 %			\end{minipage}
 %			\begin{minipage}[b]{0.4\linewidth}
 %				\centering
@@ -248,7 +382,7 @@
 %					\item Кратчайшая цепочка 
 %				\end{itemize}
 %			\end{minipage}
-		}
+%		}
 
 		\frame[label=frcriteria]
 		{
@@ -406,17 +540,17 @@
 			\end{center}
 		}
 
-\section*{Постскритум}
+\section*{PS}
 		\frame[label=frpolys]
 		{
 			\frametitle{Полиномы}
 			
-			Полиномы над полем рациноальных чисел:
+			Полиномы над полем рациональных чисел:
 			
 			\begin{center}
 				\begin{tabular}{|r|r|r|r|r|r|}
 				\hline
-				    & \# переменных & Степень & \# мономов & Размерность базиса & Степень базиса \\
+				    & \# пер. & Степень & \# мономов & Размерность б. & Степень б. \\
 				\hline
 					$p_1$ & 2 & 374 &  45 & 4 & 11 \\
 				\hline
@@ -432,7 +566,7 @@
 			\begin{center}
 				\begin{tabular}{|r|r|r|r|r|r|}
 				\hline
-				    & \# переменных & Степень & \# мономов & Размерность базиса & Степень базиса \\
+				    & \# пер. & Степень & \# мономов & Размерность б. & Степень б. \\
 				\hline
 				$q_1$ & 3 &  53 &  36 & 30 & 20\\
 				\hline
