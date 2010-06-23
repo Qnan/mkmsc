@@ -168,21 +168,24 @@ G:=Basis(F, ord, characteristic=chr):G;</Text-field>
 <Text-field prompt="&gt; " style="Maple Input" layout="Normal">G:=G:
 rdc:=proc(r,p,g);r:=Groebner[Reduce](p,g,ord,'s','q',characteristic=chr);end proc:
 randomize(125):
-p:=rp(20,20):
+p:=rp(50,20):
 #p:=Vector[row](G) . Vector[column](['rp(100,100)'$nops(G)]):
 p:=simplify(expand(p)):
-#t:=time(rdc('r',p,G));
+t:=time(rdc('r',p,G));
 p:=p:
 r:=simplify(r):
 #s:=s;</Text-field>
 </Input>
+<Output>
+<Text-field style="2D Output" layout="Maple Output"><Equation executable="false" style="2D Output" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYnLUkjbWlHRiQ2JVEidEYnLyUnaXRhbGljR1EldHJ1ZUYnLyUsbWF0aHZhcmlhbnRHUSdpdGFsaWNGJy1JI21vR0YkNi1RIzo9RicvRjNRJ25vcm1hbEYnLyUmZmVuY2VHUSZmYWxzZUYnLyUqc2VwYXJhdG9yR0Y9LyUpc3RyZXRjaHlHRj0vJSpzeW1tZXRyaWNHRj0vJShsYXJnZW9wR0Y9LyUubW92YWJsZWxpbWl0c0dGPS8lJ2FjY2VudEdGPS8lJ2xzcGFjZUdRLDAuMjc3Nzc3OGVtRicvJSdyc3BhY2VHRkwtSSNtbkdGJDYkUSYzLjcxNkYnRjkvJStmb3JlZ3JvdW5kR1EoWzAsMCwwXUYnRjk=">JCIlO1AhIiQ=</Equation></Text-field>
+</Output>
 </Group>
 <Group labelreference="L18" drawlabel="true">
 <Input>
 <Text-field prompt="&gt; " style="Maple Input" layout="Normal"><Equation executable="true" style="2D Input" input-equation="t := round(t);" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYsLUkjbWlHRiQ2JVEidEYnLyUnaXRhbGljR1EldHJ1ZUYnLyUsbWF0aHZhcmlhbnRHUSdpdGFsaWNGJy1JI21vR0YkNi1RIn5GJy9GM1Enbm9ybWFsRicvJSZmZW5jZUdRJmZhbHNlRicvJSpzZXBhcmF0b3JHRj0vJSlzdHJldGNoeUdGPS8lKnN5bW1ldHJpY0dGPS8lKGxhcmdlb3BHRj0vJS5tb3ZhYmxlbGltaXRzR0Y9LyUnYWNjZW50R0Y9LyUnbHNwYWNlR1EmMC4wZW1GJy8lJ3JzcGFjZUdGTC1GNjYtUSomY29sb25lcTtGJ0Y5RjtGPkZARkJGREZGRkgvRktRLDAuMjc3Nzc3OGVtRicvRk5GU0Y1LUYsNiVRJnJvdW5kRicvRjBGPUY5LUkobWZlbmNlZEdGJDYkLUYjNiZGKy8lK2ZvcmVncm91bmRHUShbMCwwLDBdRicvJStleGVjdXRhYmxlR0Y9RjlGOS1GNjYtUSI7RidGOUY7L0Y/RjFGQEZCRkRGRkZIRkpGVEZobkZbb0Y5">QyQ+SSJ0RzYiLUkmcm91bmRHNiQlKnByb3RlY3RlZEdJKF9zeXNsaWJHRiU2I0YkIiIi</Equation></Text-field>
 </Input>
 <Output>
-<Text-field style="2D Output" layout="Maple Output"><Equation executable="false" style="2D Output" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYnLUkjbWlHRiQ2JVEidEYnLyUnaXRhbGljR1EldHJ1ZUYnLyUsbWF0aHZhcmlhbnRHUSdpdGFsaWNGJy1JI21vR0YkNi1RIzo9RicvRjNRJ25vcm1hbEYnLyUmZmVuY2VHUSZmYWxzZUYnLyUqc2VwYXJhdG9yR0Y9LyUpc3RyZXRjaHlHRj0vJSpzeW1tZXRyaWNHRj0vJShsYXJnZW9wR0Y9LyUubW92YWJsZWxpbWl0c0dGPS8lJ2FjY2VudEdGPS8lJ2xzcGFjZUdRLDAuMjc3Nzc3OGVtRicvJSdyc3BhY2VHRkwtSSNtbkdGJDYkUSUxNjc0RidGOS8lK2ZvcmVncm91bmRHUShbMCwwLDBdRidGOQ==">IiV1Ow==</Equation></Text-field>
+<Text-field style="2D Output" layout="Maple Output"><Equation executable="false" style="2D Output" display="LUklbXJvd0c2Iy9JK21vZHVsZW5hbWVHNiJJLFR5cGVzZXR0aW5nR0koX3N5c2xpYkdGJzYnLUkjbWlHRiQ2JVEidEYnLyUnaXRhbGljR1EldHJ1ZUYnLyUsbWF0aHZhcmlhbnRHUSdpdGFsaWNGJy1JI21vR0YkNi1RIzo9RicvRjNRJ25vcm1hbEYnLyUmZmVuY2VHUSZmYWxzZUYnLyUqc2VwYXJhdG9yR0Y9LyUpc3RyZXRjaHlHRj0vJSpzeW1tZXRyaWNHRj0vJShsYXJnZW9wR0Y9LyUubW92YWJsZWxpbWl0c0dGPS8lJ2FjY2VudEdGPS8lJ2xzcGFjZUdRLDAuMjc3Nzc3OGVtRicvJSdyc3BhY2VHRkwtSSNtbkdGJDYkUSI0RidGOS8lK2ZvcmVncm91bmRHUShbMCwwLDBdRidGOQ==">IiIl</Equation></Text-field>
 </Output>
 </Group>
 <Group labelreference="L19" drawlabel="true">
